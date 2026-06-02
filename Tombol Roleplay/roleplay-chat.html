@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Roleplay Chat</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+.header{
+background:#181c28;
+padding:15px;
+display:flex;
+align-items:center;
+gap:15px;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.back-btn{
+background:#252c42;
+border:none;
+color:white;
+padding:10px 15px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.role-title{
+font-size:20px;
+font-weight:bold;
+}
+
+.chat-container{
+flex:1;
+overflow-y:auto;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.message{
+padding:14px 16px;
+border-radius:18px;
+max-width:80%;
+line-height:1.5;
+word-wrap:break-word;
+}
+
+.user{
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+align-self:flex-end;
+}
+
+.ai{
+background:#252c42;
+align-self:flex-start;
+}
+
+.input-area{
+display:flex;
+gap:10px;
+padding:15px;
+background:#181c28;
+}
+
+.input-area input{
+flex:1;
+padding:15px;
+border:none;
+outline:none;
+border-radius:15px;
+background:#252c42;
+color:white;
+}
+
+.send-btn{
+width:60px;
+border:none;
+border-radius:15px;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+
+<button class="back-btn"
+onclick="window.location.href='roleplay.html'">
+⬅
+</button>
+
+<div>
+<div class="role-title" id="scenarioName">
+Roleplay
+</div>
+</div>
+
+</div>
+
+<div id="chatContainer"
+class="chat-container">
+</div>
+
+<div class="input-area">
+
+<input
+type="text"
+id="userInput"
+placeholder="Type your message..."
+>
+
+<button
+class="send-btn"
+id="sendBtn">
+➤
+</button>
+
+</div>
+
+<script>
+
+// ======================
+// WORKER URL
+// ======================
+
+const WORKER_URL =
+"https://englishai.adyajaboleh197.workers.dev";
+
+// ======================
+// DATA ROLEPLAY
+// ======================
+
+const scenario =
+localStorage.getItem("roleplayScenario") ||
+"Roleplay";
+
+const prompt =
+localStorage.getItem("roleplayPrompt") ||
+"You are an English teacher.";
+
+// tampilkan nama skenario
+
+document.getElementById(
+"scenarioName"
+).innerText = scenario;
+
+const chatContainer =
+document.getElementById(
+"chatContainer"
+);
+
+const userInput =
+document.getElementById(
+"userInput"
+);
+
+const sendBtn =
+document.getElementById(
+"sendBtn"
+);
+
+// ======================
+// PESAN AWAL
+// ======================
+
+addMessage(
+"ai",
+`✅ ${scenario} mode started.
+
+Let's begin.
+`
+);
+
+// ======================
+// EVENT
+// ======================
+
+sendBtn.onclick =
+sendMessage;
+
+userInput.addEventListener(
+"keypress",
+e=>{
+if(e.key==="Enter"){
+sendMessage();
+}
+}
+);
+
+// ======================
+// CHAT
+// ======================
+
+async function sendMessage(){
+
+const text =
+userInput.value.trim();
+
+if(!text) return;
+
+userInput.value="";
+
+addMessage(
+"user",
+text
+);
+
+const loading =
+document.createElement("div");
+
+loading.className =
+"message ai";
+
+loading.innerText =
+"Typing...";
+
+chatContainer.appendChild(
+loading
+);
+
+chatContainer.scrollTop =
+chatContainer.scrollHeight;
+
+try{
+
+const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+message:text,
+
+systemPrompt:prompt
+
+})
+}
+);
+
+const data =
+await res.json();
+
+loading.remove();
+
+addMessage(
+"ai",
+data.reply ||
+"No response"
+);
+
+}catch(err){
+
+console.error(err);
+
+loading.remove();
+
+addMessage(
+"ai",
+"Server Error"
+);
+
+}
+
+}
+
+// ======================
+// TAMPILKAN PESAN
+// ======================
+
+function addMessage(
+role,
+text
+){
+
+const div =
+document.createElement(
+"div"
+);
+
+div.className =
+`message ${role}`;
+
+div.innerHTML =
+text;
+
+chatContainer.appendChild(
+div
+);
+
+chatContainer.scrollTop =
+chatContainer.scrollHeight;
+
+}
+
+</script>
+
+</body>
+</html>

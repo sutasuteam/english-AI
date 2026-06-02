@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>English AI Roleplay</title>
+
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+    background:#0f1117;
+    color:white;
+    min-height:100vh;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.back-btn{
+    background:#181c28;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.back-btn:hover{
+    background:#222838;
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:700;
+}
+
+.subtitle{
+    color:#9ea7c5;
+    margin-bottom:25px;
+    line-height:1.6;
+}
+
+.scenario-grid{
+    display:grid;
+    gap:15px;
+}
+
+.scenario-card{
+    background:#181c28;
+    border-radius:20px;
+    padding:20px;
+    cursor:pointer;
+    transition:.3s;
+    border:1px solid rgba(255,255,255,.05);
+}
+
+.scenario-card:hover{
+    transform:translateY(-4px);
+    background:#222838;
+}
+
+.scenario-icon{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.scenario-card h3{
+    color:#4facfe;
+    margin-bottom:8px;
+}
+
+.scenario-card p{
+    color:#9ea7c5;
+    line-height:1.5;
+}
+
+@media(max-width:600px){
+
+.page-title{
+    font-size:24px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+
+<button class="back-btn" onclick="window.location.href='index.html'">
+⬅ Kembali
+</button>
+
+<div class="page-title">
+Roleplay Practice
+</div>
+
+</div>
+
+<div class="subtitle">
+Choose a situation and practice English naturally with Gemini AI.
+</div>
+
+<div class="scenario-grid">
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Restaurant',
+'You are a friendly restaurant waiter. Speak English only. Help the customer order food naturally.'
+)">
+<div class="scenario-icon">🍽️</div>
+<h3>Restaurant</h3>
+<p>Practice ordering food and talking with a waiter.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Hotel',
+'You are a hotel receptionist. Speak English only. Help guests check in and answer hotel questions.'
+)">
+<div class="scenario-icon">🏨</div>
+<h3>Hotel</h3>
+<p>Practice hotel check-in and travel conversations.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Airport',
+'You are an airport officer. Speak English only. Ask travel and passport questions.'
+)">
+<div class="scenario-icon">✈️</div>
+<h3>Airport</h3>
+<p>Practice airport and immigration conversations.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Job Interview',
+'You are a professional interviewer. Speak English only. Conduct a realistic job interview.'
+)">
+<div class="scenario-icon">💼</div>
+<h3>Job Interview</h3>
+<p>Practice answering interview questions.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Doctor',
+'You are a doctor. Speak English only. Ask questions about symptoms and health.'
+)">
+<div class="scenario-icon">🏥</div>
+<h3>Doctor</h3>
+<p>Practice explaining health conditions.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Shopping',
+'You are a friendly shopkeeper. Speak English only. Help customers find products.'
+)">
+<div class="scenario-icon">🛍️</div>
+<h3>Shopping</h3>
+<p>Practice shopping conversations.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'Coffee Shop',
+'You are a coffee shop barista. Speak English only. Help customers order drinks.'
+)">
+<div class="scenario-icon">☕</div>
+<h3>Coffee Shop</h3>
+<p>Order coffee and casual conversation.</p>
+</div>
+
+<div class="scenario-card"
+onclick="startRoleplay(
+'English Teacher',
+'You are an English teacher. Speak English only. Correct mistakes politely and help the student improve.'
+)">
+<div class="scenario-icon">📚</div>
+<h3>English Teacher</h3>
+<p>Learn English while chatting naturally.</p>
+</div>
+
+</div>
+
+<script>
+
+function startRoleplay(name,prompt){
+
+    localStorage.setItem(
+        "roleplayScenario",
+        name
+    );
+
+    localStorage.setItem(
+        "roleplayPrompt",
+        prompt
+    );
+
+    window.location.href =
+        "roleplay-chat.html";
+}
+
+</script>
+
+</body>
+</html>

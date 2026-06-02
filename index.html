@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI English Learning</title>
+
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body{
+    background:#0f1117;
+    color:white;
+    overflow-x:hidden;
+}
+
+.container{
+    width:100%;
+    min-height:100vh;
+    padding:20px;
+    padding-bottom:220px;
+    display:block;
+}
+
+/* ✅ TAMBAHAN: Halaman Roleplay */
+.roleplay-container{
+    width:100%;
+    min-height:100vh;
+    padding:20px;
+    padding-bottom:100px;
+    display:none;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    background:linear-gradient(90deg,#4facfe,#00f2fe);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ✅ DIUBAH: Latar putih bulat pas, TANPA garis biru */
+.profile{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#ffffff;
+    padding:4px;
+    object-fit:contain;
+    border:none;
+}
+
+.back-btn{
+    background:rgba(255,255,255,0.1);
+    border:none;
+    color:white;
+    padding:8px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.hero{
+    background:linear-gradient(135deg,#1b1f2e,#252c42);
+    border-radius:30px;
+    padding:30px;
+    margin-bottom:30px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    width:200px;
+    height:200px;
+    background:rgba(79,172,254,0.15);
+    border-radius:50%;
+    top:-80px;
+    right:-80px;
+}
+
+.hero h1{
+    font-size:34px;
+    margin-bottom:15px;
+    line-height:1.2;
+}
+
+.hero p{
+    color:#b8bfd6;
+    line-height:1.7;
+    margin-bottom:25px;
+}
+
+.start-btn{
+    background:linear-gradient(90deg,#4facfe,#00f2fe);
+    border:none;
+    color:white;
+    padding:14px 28px;
+    border-radius:15px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.start-btn:hover{
+    transform:scale(1.05);
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:20px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:18px;
+    margin-bottom:35px;
+}
+
+.feature-card{
+    background:#181c28;
+    border-radius:25px;
+    padding:22px;
+    transition:0.3s;
+    border:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+}
+
+.feature-card:hover{
+    transform:translateY(-5px);
+    background:#1f2433;
+}
+
+.icon{
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    margin-bottom:18px;
+}
+
+.feature-card h3{
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+.feature-card p{
+    font-size:14px;
+    color:#9ea7c5;
+    line-height:1.6;
+}
+
+.chat-preview{
+    background:#181c28;
+    border-radius:28px;
+    padding:25px;
+    margin-bottom:35px;
+    max-height:500px;
+    overflow-y:auto;
+    padding-bottom:120px;
+}
+
+.chat-bubble{
+    padding:15px 18px;
+    border-radius:18px;
+    margin-bottom:15px;
+    max-width:80%;
+    line-height:1.6;
+    font-size:15px;
+    word-wrap:break-word;
+    position:relative;
+}
+
+.ai{
+    background:#252c42;
+    color:white;
+}
+
+.user{
+    background:linear-gradient(90deg,#4facfe,#00f2fe);
+    margin-left:auto;
+}
+
+.msg-actions{
+    position:absolute;
+    top:-8px;
+    right:-8px;
+    display:flex;
+    gap:5px;
+    opacity:0;
+    transition:0.2s;
+}
+.chat-bubble:hover .msg-actions{
+    opacity:1;
+}
+.edit-btn, .del-btn{
+    background:rgba(0,0,0,0.6);
+    border:none;
+    color:white;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    font-size:12px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.edit-btn:hover{background:#2ecc71;}
+.del-btn:hover{background:#e74c3c;}
+
+.edit-form{
+    display:none;
+    margin-top:8px;
+    gap:8px;
+}
+.edit-input{
+    flex:1;
+    padding:8px 12px;
+    border-radius:8px;
+    border:none;
+    background:rgba(255,255,255,0.15);
+    color:white;
+}
+.save-btn, .cancel-btn{
+    padding:6px 12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+}
+.save-btn{background:#2ecc71; color:white;}
+.cancel-btn{background:#95a5a6; color:white;}
+
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:#141824;
+    border-top:1px solid rgba(255,255,255,0.05);
+    display:flex;
+    justify-content:space-around;
+    padding:15px 0;
+    z-index:100;
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    color:#7d87a7;
+    font-size:12px;
+    gap:6px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.nav-item.active{
+    color:#4facfe;
+}
+
+.nav-icon{
+    font-size:22px;
+}
+
+.mini-card-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.mini-card{
+    background:#181c28;
+    border-radius:24px;
+    padding:20px;
+}
+
+.mini-card h4{
+    margin-bottom:10px;
+    font-size:17px;
+}
+
+.mini-card p{
+    color:#9ea7c5;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.mic-btn{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:34px;
+    margin:30px auto;
+    box-shadow:0 0 30px rgba(79,172,254,0.4);
+    animation:pulse 2s infinite;
+}
+
+.chat-input-area{
+    position:fixed;
+    bottom:80px;
+    left:0;
+    width:100%;
+    display:flex;
+    gap:10px;
+    padding:15px;
+    background:#0f1117;
+    z-index:99;
+}
+
+.chat-input{
+    flex:1;
+    border:none;
+    outline:none;
+    background:#181c28;
+    color:white;
+    padding:16px;
+    border-radius:18px;
+    font-size:15px;
+}
+
+.send-btn{
+    width:60px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+
+/* ✅ TAMBAHAN: Style Kartu Skenario Roleplay */
+.scenario-card{
+    background:#181c28;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:15px;
+    border:1px solid rgba(255,255,255,0.05);
+    cursor:pointer;
+    transition:0.3s;
+}
+.scenario-card:hover{
+    background:#222838;
+    transform:translateX(5px);
+}
+.scenario-card h3{
+    color:#4facfe;
+    margin-bottom:5px;
+}
+.scenario-card p{
+    color:#9ea7c5;
+    font-size:14px;
+}
+
+@keyframes pulse{
+    0%{ transform:scale(1); }
+    50%{ transform:scale(1.06); }
+    100%{ transform:scale(1); }
+}
+
+@media(max-width:600px){
+.hero h1{ font-size:28px; }
+.feature-grid{ grid-template-columns:1fr 1fr; }
+.mini-card-wrap{ grid-template-columns:1fr; }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- ✅ HALAMAN UTAMA -->
+<div class="container" id="mainPage">
+<div class="header">
+    <div class="logo">English AI</div>
+    <img src="icon/english ai.png" alt="Logo" class="profile">
+</div>
+
+<div class="hero">
+    <h1>Learn English With AI</h1>
+    <p>
+        Practice speaking, grammar, listening, and roleplay naturally with your personal AI English teacher.
+    </p>
+    <button class="start-btn">Start Learning</button>
+</div>
+
+<h2 class="section-title">AI Features</h2>
+<div class="feature-grid">
+<div class="feature-card">
+    <div class="icon">💬</div>
+    <h3>AI Chat</h3>
+    <p>Talk naturally with AI and improve your English daily.</p>
+</div>
+<div class="feature-card">
+    <div class="icon">🎤</div>
+    <h3>Speaking</h3>
+    <p>Practice pronunciation and speaking confidence.</p>
+</div>
+<!-- ✅ TOMBOL ROLEPLAY SUDAH DIBERI ID -->
+<div class="feature-card" id="roleplayBtn">
+    <div class="icon">🎭</div>
+    <h3>Roleplay</h3>
+    <p>Train with airport, restaurant, and interview scenarios.</p>
+</div>
+<div class="feature-card">
+    <div class="icon">📚</div>
+    <h3>Vocabulary</h3>
+    <p>Learn smart vocabulary generated by AI.</p>
+</div>
+</div>
+
+<h2 class="section-title">AI Conversation</h2>
+<div class="chat-preview" id="chatPreview">
+    <!-- Pesan muncul di sini -->
+</div>
+
+<div class="mic-btn">🎤</div>
+
+<h2 class="section-title">Daily Focus</h2>
+<div class="mini-card-wrap">
+<div class="mini-card">
+    <h4>Vocabulary</h4>
+    <p>Learn new words and examples generated automatically by AI.</p>
+</div>
+<div class="mini-card">
+    <h4>Grammar</h4>
+    <p>Ask grammar questions and get simple explanations instantly.</p>
+</div>
+</div>
+</div>
+
+<!-- ✅ HALAMAN ROLEPLAY BARU -->
+<div class="roleplay-container" id="roleplayPage">
+<div class="header">
+    <button class="back-btn" id="backToMain">⬅️ Kembali</button>
+    <h2 class="section-title" style="margin:0;">Roleplay Scenarios</h2>
+    <div style="width:45px;"></div>
+</div>
+
+<p style="color:#9ea7c5; margin-bottom:20px;">Pilih situasi dan peran yang ingin kamu latih:</p>
+
+<!-- Daftar Skenario -->
+<div class="scenario-card" data-role="Waiter" data-prompt="We are in a restaurant. You are the Waiter, I am the Customer. Start the conversation. Speak English only.">
+    <h3>🍽️ Di Restoran</h3>
+    <p>Peran: Kamu Pelanggan / Saya Pelayan</p>
+</div>
+
+<div class="scenario-card" data-role="Receptionist" data-prompt="We are at a hotel front desk. You are the Receptionist, I am the Guest. Start the conversation. Speak English only.">
+    <h3>🏨 Di Hotel</h3>
+    <p>Peran: Kamu Tamu / Saya Resepsionis</p>
+</div>
+
+<div class="scenario-card" data-role="Officer" data-prompt="We are at the airport check-in counter. You are the Airport Officer, I am the Passenger. Start the conversation. Speak English only.">
+    <h3>✈️ Di Bandara</h3>
+    <p>Peran: Kamu Penumpang / Saya Petugas</p>
+</div>
+
+<div class="scenario-card" data-role="Interviewer" data-prompt="We are in a job interview. You are the Interviewer, I am the Applicant. Ask me questions formally. Speak English only.">
+    <h3>💼 Wawancara Kerja</h3>
+    <p>Peran: Kamu Pelamar / Saya Pewawancara</p>
+</div>
+
+<div class="scenario-card" data-role="Shopkeeper" data-prompt="We are in a clothes shop. You are the Shopkeeper, I am the Buyer. Help me find clothes. Speak English only.">
+    <h3>🛍️ Belanja Baju</h3>
+    <p>Peran: Kamu Pembeli / Saya Penjaga Toko</p>
+</div>
+
+<div class="scenario-card" data-role="Doctor" data-prompt="We are in a clinic. You are the Doctor, I am the Patient. Ask about my health condition. Speak English only.">
+    <h3>🏥 Di Dokter</h3>
+    <p>Peran: Kamu Pasien / Saya Dokter</p>
+</div>
+
+</div>
+
+<div class="chat-input-area">
+<input type="text" id="userInput" placeholder="Type your English here..." class="chat-input"/>
+<button id="sendBtn" class="send-btn">➤</button>
+</div>
+
+<div class="bottom-nav">
+<div class="nav-item active"><div class="nav-icon">🏠</div>Home</div>
+<div class="nav-item"><div class="nav-icon">💬</div>Chat</div>
+<div class="nav-item"><div class="nav-icon">🎤</div>Speak</div>
+<div class="nav-item"><div class="nav-icon">📚</div>Learn</div>
+<div class="nav-item"><div class="nav-icon">⚙️</div>Settings</div>
+</div>
+
+<script>
+// ✅ DATA KAMU
+
+const TABLE_NAME = "chat_messages";
+
+// ✅ INISIALISASI TANPA DUPLIKASI
+
+
+// Elemen Utama
+const aiSendBtn = document.getElementById("sendBtn");
+const aiUserInput = document.getElementById("userInput");
+const aiChatPreview = document.getElementById("chatPreview");
+const mainPage = document.getElementById("mainPage");
+const roleplayPage = document.getElementById("roleplayPage");
+
+console.log("Button ditemukan:", aiSendBtn);
+
+// ✅ ELEMEN BARU ROLEPLAY
+const roleplayBtn = document.getElementById("roleplayBtn");
+const backToMain = document.getElementById("backToMain");
+const scenarioCards = document.querySelectorAll(".scenario-card");
+let roleplayActive = false;
+let currentRolePrompt = ""; // Menyimpan instruksi peran
+
+// Pasang Tombol Umum
+aiSendBtn.onclick = kirimPesan;
+aiUserInput.addEventListener("keypress", e => e.key === "Enter" && kirimPesan());
+
+// ✅ FUNGSI PINDAH HALAMAN
+roleplayBtn.onclick = () => {
+    mainPage.style.display = "none";
+    roleplayPage.style.display = "block";
+    roleplayActive = false;
+};
+
+backToMain.onclick = () => {
+    roleplayPage.style.display = "none";
+    mainPage.style.display = "block";
+    roleplayActive = false;
+    currentRolePrompt = "";
+};
+
+// ✅ KETIKA PILIH SKENARIO
+scenarioCards.forEach(card => {
+    card.onclick = () => {
+        // Simpan instruksi khusus ke AI
+        currentRolePrompt = card.getAttribute('data-prompt');
+        
+        // Pindah ke tampilan chat
+        roleplayPage.style.display = "none";
+        mainPage.style.display = "block";
+        roleplayActive = true;
+
+        // Bersihkan chat lama & mulai percakapan baru
+        aiChatPreview.innerHTML = "";
+        tampilkanPesan({role:"ai", message:`✅ <b>Mode Roleplay Aktif</b><br>Skenario: ${card.querySelector('h3').innerText}<br><br>Mari kita mulai. Saya akan berperan sebagai <b>${card.getAttribute('data-role')}</b>. Anda siap?`});
+    };
+});
+
+
+// ==========================================
+// 🚀 MULAI
+// ==========================================
+
+
+// ==========================================
+// 📤 KIRIM PESAN
+// ==========================================
+async function kirimPesan(){
+    console.log("Tombol diklik");
+const pesan = aiUserInput.value.trim();
+if(!pesan) return;
+
+aiUserInput.value = "";
+
+// tampilkan pesan user langsung
+tampilkanPesan({
+    role:"user",
+    message:pesan
+});
+
+const status = document.createElement("div");
+status.className = "chat-bubble ai";
+status.innerHTML = "⚡ Memproses...";
+aiChatPreview.appendChild(status);
+
+try{
+
+    const res = await fetch(
+        "http://localhost:3000/chat",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                message:pesan
+            })
+        }
+    );
+
+    const data = await res.json();
+
+    status.remove();
+
+    tampilkanPesan({
+        role:"ai",
+        message:data.reply
+    });
+
+}catch(err){
+
+    console.error(err);
+
+    status.remove();
+
+    tampilkanPesan({
+        role:"ai",
+        message:"Server Error"
+    });
+
+}
+}
+
+
+function tampilkanPesan(data){
+
+const bubble = document.createElement("div");
+
+bubble.className =
+    data.role === "user"
+    ? "chat-bubble user"
+    : "chat-bubble ai";
+
+bubble.innerHTML = data.message;
+
+aiChatPreview.appendChild(bubble);
+
+aiChatPreview.scrollTop =
+    aiChatPreview.scrollHeight;
+}
+
+// ==========================================
+// 💾 SIMPAN KE DATABASE
+// ==========================================
+
+
+function escapeHtml(text){
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+
+// ==========================================
+// 🧠 JAWABAN OTOMATIS
+// ==========================================
+function dapatJawabanOtomatis(teks){
+    teks = teks.toLowerCase();
+    if(teks.includes("hello") || teks.includes("hi")) return "Hello! 👋 How are you today? Let's practice English together.";
+    if(teks.includes("how are you")) return "I'm great! 😊 Thank you for asking. And you?";
+    if(teks.includes("thank")) return "You're very welcome! 😄 Keep practicing, you are doing great.";
+    if(teks.includes("bye")) return "Goodbye! 👋 See you next time. Keep learning!";
+    if(teks.includes("name")) return "You can call me English Teacher! 📚 I am here to help you.";
+    if(teks.includes("help")) return "Sure! ✨ I can help with grammar, vocabulary, or conversation. What do you need?";
+    return "Great! ✨ Tell me what you want to learn or practice today.";
+}
+</script>
+</body>
+</html>

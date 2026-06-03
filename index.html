@@ -450,7 +450,9 @@ body{
     </div>
 </div>
 
-<div class="mic-btn">🎤</div>
+<div class="mic-btn" id="micBtn">
+    🎤
+    </div>
 
 <h2 class="section-title">Daily Focus</h2>
 <div class="mini-card-wrap">
@@ -524,6 +526,57 @@ const aiUserInput = document.getElementById("userInput");
 const aiChatPreview = document.getElementById("chatPreview");
 const mainPage = document.getElementById("mainPage");
 
+const micBtn =
+document.getElementById("micBtn");
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+
+const recognition =
+new SpeechRecognition();
+
+recognition.lang = "en-US";
+recognition.continuous = false;
+recognition.interimResults = false;
+
+micBtn.onclick = () => {
+
+micBtn.innerHTML = "🎙️";
+
+recognition.start();
+
+};
+
+
+
+recognition.onerror = (e) => {
+
+console.log(e);
+
+micBtn.innerHTML = "🎤";
+
+};
+
+recognition.onend = () => {
+
+micBtn.innerHTML = "🎤";
+
+};
+
+}else{
+
+micBtn.onclick = () => {
+
+alert(
+"Speech Recognition tidak didukung perangkat ini."
+);
+
+};
+
+}
 
 console.log("Button ditemukan:", aiSendBtn);
 
@@ -616,13 +669,29 @@ aiUserInput.addEventListener("keypress", e => e.key === "Enter" && kirimPesan())
 
 
 // ==========================================
-// 🚀 MULAI
+// 🚀 speakText
 // ==========================================
 
+function speakText(text){
+
+speechSynthesis.cancel();
+
+const speech =
+new SpeechSynthesisUtterance(text);
+
+speech.lang = "en-US";
+speech.rate = 1;
+speech.pitch = 1;
+
+speechSynthesis.speak(speech);
+
+}
 
 // ==========================================
 // 📤 KIRIM PESAN
 // ==========================================
+
+
 async function kirimPesan(){
     console.log("Tombol diklik");
 const pesan = aiUserInput.value.trim();
@@ -658,12 +727,17 @@ try{
 
     const data = await res.json();
 
-    status.remove();
+status.remove();
 
-    tampilkanPesan({
-        role:"ai",
-        message:data.reply
-    });
+tampilkanPesan({
+    role:"ai",
+    message:data.reply
+});
+
+
+
+// 🔊 AI membacakan jawaban
+speakText(data.reply);
 
 }catch(err){
 
@@ -704,7 +778,55 @@ aiChatPreview.scrollTop =
 }
 
 
+if(SpeechRecognition){
 
+const recognition =
+new SpeechRecognition();
+
+recognition.lang = "en-US";
+recognition.continuous = false;
+recognition.interimResults = false;
+
+micBtn.onclick = () => {
+
+    micBtn.innerHTML = "🎙️";
+    recognition.start();
+
+};
+
+recognition.onresult = (event) => {
+
+    const text =
+    event.results[0][0].transcript;
+
+    console.log("Voice:", text);
+
+    aiUserInput.value = text;
+
+    kirimPesan();
+
+};
+
+recognition.onerror = (e) => {
+
+    console.log(e);
+    micBtn.innerHTML = "🎤";
+
+};
+
+recognition.onend = () => {
+
+    micBtn.innerHTML = "🎤";
+
+};
+
+}
+
+console.log(
+"SpeechRecognition:",
+window.SpeechRecognition,
+window.webkitSpeechRecognition
+);
 
 
 </script>

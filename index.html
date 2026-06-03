@@ -416,7 +416,7 @@ body{
     <h3>AI Chat</h3>
     <p>Talk naturally with AI and improve your English daily.</p>
 </div>
-<div class="feature-card">
+<div class="feature-card" id="SpeakingBtn">
     <div class="icon">🎤</div>
     <h3>Speaking</h3>
     <p>Practice pronunciation and speaking confidence.</p>
@@ -511,6 +511,12 @@ const HomeBtn =
 document.getElementById("HomeBtn");
 HomeBtn.onclick = () => {
     window.location.href = "index.html";
+};
+
+const SpeakingBtn =
+document.getElementById("SpeakingBtn");
+SpeakingBtn.onclick = () => {
+    window.location.href = "Tombol Speaking/Speaking.html";
 };
 
 const roleplayBtn =

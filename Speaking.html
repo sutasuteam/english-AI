@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>English AI - Speaking</title>
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#181c28;
+border:none;
+color:white;
+padding:10px 18px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.logo{
+font-size:26px;
+font-weight:700;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero{
+background:linear-gradient(135deg,#1b1f2e,#252c42);
+padding:30px;
+border-radius:30px;
+margin-bottom:25px;
+}
+
+.hero h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.hero p{
+color:#b8bfd6;
+line-height:1.7;
+}
+
+.speaking-card{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+text-align:center;
+}
+
+.speaking-card h2{
+margin-bottom:15px;
+}
+
+.sentence{
+font-size:22px;
+font-weight:600;
+line-height:1.6;
+margin-bottom:25px;
+color:#4facfe;
+}
+
+.buttons{
+display:flex;
+gap:15px;
+}
+
+.buttons button{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+font-size:16px;
+font-weight:600;
+}
+
+.listen-btn{
+background:#252c42;
+color:white;
+}
+
+.mic-btn{
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+color:white;
+}
+
+.score-card{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.score-card h2{
+margin-bottom:20px;
+}
+
+.score{
+margin-bottom:15px;
+}
+
+.progress{
+height:10px;
+background:#2f364b;
+border-radius:30px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.fill{
+height:100%;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+}
+
+.feedback{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.feedback h2{
+margin-bottom:15px;
+}
+
+.feedback p{
+color:#b8bfd6;
+line-height:1.7;
+}
+
+.challenge{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.challenge h2{
+margin-bottom:15px;
+}
+
+.challenge-box{
+background:#252c42;
+padding:20px;
+border-radius:18px;
+margin-top:10px;
+}
+
+.topics{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.topic{
+background:#181c28;
+padding:20px;
+border-radius:20px;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+}
+
+.topic:hover{
+transform:translateY(-5px);
+}
+
+.topic span{
+font-size:30px;
+display:block;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="back-btn">← Back</button>
+<div class="logo">Speaking</div>
+</div>
+
+<div class="hero">
+<h1>🎤 Speaking Practice</h1>
+<p>
+Improve pronunciation and build speaking confidence with AI.
+</p>
+</div>
+
+<div class="speaking-card">
+
+<h2>Today's Sentence</h2>
+
+<div class="sentence">
+"Nice to meet you. How are you today?"
+</div>
+
+<div class="buttons">
+<button class="listen-btn">🔊 Listen</button>
+<button class="mic-btn">🎤 Start Speaking</button>
+</div>
+
+</div>
+
+<div class="score-card">
+
+<h2>Speaking Score</h2>
+
+<div class="score">
+Pronunciation 90%
+<div class="progress">
+<div class="fill" style="width:90%"></div>
+</div>
+</div>
+
+<div class="score">
+Fluency 85%
+<div class="progress">
+<div class="fill" style="width:85%"></div>
+</div>
+</div>
+
+<div class="score">
+Confidence 88%
+<div class="progress">
+<div class="fill" style="width:88%"></div>
+</div>
+</div>
+
+</div>
+
+<div class="feedback">
+
+<h2>💬 AI Feedback</h2>
+
+<p>
+Great job! Your pronunciation was clear and natural.
+Try speaking a little slower when saying "today" to improve fluency.
+</p>
+
+</div>
+
+<div class="challenge">
+
+<h2>🔥 Daily Speaking Challenge</h2>
+
+<div class="challenge-box">
+Describe your favorite food in English for 30 seconds.
+</div>
+
+</div>
+
+<h2 style="margin-bottom:15px;">🗣 Speaking Topics</h2>
+
+<div class="topics">
+
+<div class="topic">
+<span>✈️</span>
+Travel
+</div>
+
+<div class="topic">
+<span>🍔</span>
+Restaurant
+</div>
+
+<div class="topic">
+<span>💼</span>
+Interview
+</div>
+
+<div class="topic">
+<span>🏫</span>
+School
+</div>
+
+<div class="topic">
+<span>🛒</span>
+Shopping
+</div>
+
+<div class="topic">
+<span>🎬</span>
+Movies
+</div>
+
+</div>
+
+</body>
+</html>

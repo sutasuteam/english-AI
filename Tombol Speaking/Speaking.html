@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+<title>English AI - Speaking</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#181c28;
+border:none;
+color:white;
+padding:10px 18px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.logo{
+font-size:26px;
+font-weight:700;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero{
+background:linear-gradient(135deg,#1b1f2e,#252c42);
+padding:30px;
+border-radius:30px;
+margin-bottom:25px;
+}
+
+.hero h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.hero p{
+color:#b8bfd6;
+line-height:1.7;
+}
+
+.speaking-card{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+text-align:center;
+}
+
+.speaking-card h2{
+margin-bottom:15px;
+}
+
+.sentence{
+font-size:22px;
+font-weight:600;
+line-height:1.6;
+margin-bottom:25px;
+color:#4facfe;
+}
+
+.buttons{
+display:flex;
+gap:15px;
+}
+
+.buttons button{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+font-size:16px;
+font-weight:600;
+}
+
+.listen-btn{
+background:#252c42;
+color:white;
+}
+
+.mic-btn{
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+color:white;
+}
+
+.score-card{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.score-card h2{
+margin-bottom:20px;
+}
+
+.score{
+margin-bottom:15px;
+}
+
+.progress{
+height:10px;
+background:#2f364b;
+border-radius:30px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.fill{
+height:100%;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+}
+
+.feedback{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.feedback h2{
+margin-bottom:15px;
+}
+
+.feedback p{
+color:#b8bfd6;
+line-height:1.7;
+}
+
+.challenge{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.challenge h2{
+margin-bottom:15px;
+}
+
+.challenge-box{
+background:#252c42;
+padding:20px;
+border-radius:18px;
+margin-top:10px;
+}
+
+.topics{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.topic{
+background:#181c28;
+padding:20px;
+border-radius:20px;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+}
+
+.topic:hover{
+transform:translateY(-5px);
+}
+
+.topic span{
+font-size:30px;
+display:block;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="back-btn" id="backBtn">Kembali</button>
+<div class="logo">Speaking</div>
+</div>
+
+<div class="hero">
+<h1>🎤 Speaking Practice</h1>
+<p>
+Improve pronunciation and build speaking confidence with AI.
+</p>
+</div>
+
+<div class="speaking-card">
+
+<h2>Today's Sentence</h2>
+
+<div class="sentence">
+"Nice to meet you. How are you today?"
+</div>
+
+<div class="buttons">
+    <button id="listenBtn" class="listen-btn">
+        🔊 Listen
+        </button>
+        
+        <button id="speakBtn" class="mic-btn">
+        🎤 Start Speaking
+        </button>
+</div>
+
+</div>
+
+<div class="score-card">
+
+<h2>Speaking Score</h2>
+
+<div class="score">
+Pronunciation 90%
+<div class="progress">
+<div class="fill" style="width:90%"></div>
+</div>
+</div>
+<div class="score">
+    Pronunciation
+    <span id="pronunciationScore">0%</span>
+    
+    <div class="progress">
+    <div id="pronunciationFill"
+    class="fill"
+    style="width:0%"></div>
+    </div>
+    </div>
+    
+    <div class="score">
+    Fluency
+    <span id="fluencyScore">0%</span>
+    
+    <div class="progress">
+    <div id="fluencyFill"
+    class="fill"
+    style="width:0%"></div>
+    </div>
+    </div>
+    
+    <div class="score">
+    Confidence
+    <span id="confidenceScore">0%</span>
+    
+    <div class="progress">
+    <div id="confidenceFill"
+    class="fill"
+    style="width:0%"></div>
+    </div>
+    </div>
+</div>
+
+<div class="feedback">
+
+<h2>💬 AI Feedback</h2>
+
+<p id="feedbackText">
+    Press Start Speaking...
+    </p>
+
+</div>
+
+<div class="challenge">
+
+<h2>🔥 Daily Speaking Challenge</h2>
+
+<div class="challenge-box">
+Describe your favorite food in English for 30 seconds.
+</div>
+
+</div>
+
+<h2 style="margin-bottom:15px;">🗣 Speaking Topics</h2>
+
+<div class="topics">
+
+<div class="topic">
+<span>✈️</span>
+Travel
+</div>
+
+<div class="topic">
+<span>🍔</span>
+Restaurant
+</div>
+
+<div class="topic">
+<span>💼</span>
+Interview
+</div>
+
+<div class="topic">
+<span>🏫</span>
+School
+</div>
+
+<div class="topic">
+<span>🛒</span>
+Shopping
+</div>
+
+<div class="topic">
+<span>🎬</span>
+Movies
+</div>
+
+</div>
+
+<script>
+
+const backBtn =
+document.getElementById("backBtn");
+backBtn.onclick = () => {
+    window.location.href = "../index.html";
+};
+
+    const WORKER_URL =
+    "https://englishai.adyajaboleh197.workers.dev";
+    
+    const listenBtn =
+    document.getElementById("listenBtn");
+    
+    const speakBtn =
+    document.getElementById("speakBtn");
+    
+    const sentence =
+    document.querySelector(".sentence");
+    
+    const feedbackText =
+    document.getElementById("feedbackText");
+    
+    
+    // ========================
+    // TEXT TO SPEECH
+    // ========================
+    
+    listenBtn.onclick = () => {
+    
+    const speech =
+    new SpeechSynthesisUtterance(
+    sentence.textContent
+    );
+    
+    speech.lang = "en-US";
+    
+    speechSynthesis.speak(speech);
+    
+    };
+    
+    
+    // ========================
+    // SPEECH RECOGNITION
+    // ========================
+    
+    const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+    
+    if(SpeechRecognition){
+    
+    const recognition =
+    new SpeechRecognition();
+    
+    recognition.lang = "en-US";
+    
+    recognition.interimResults = false;
+    
+    recognition.continuous = false;
+    
+    speakBtn.onclick = () => {
+    
+    speakBtn.innerHTML =
+    "🎙 Listening...";
+    
+    recognition.start();
+    
+    };
+    
+    recognition.onresult =
+    async (event)=>{
+    
+    const transcript =
+    event.results[0][0].transcript;
+    
+    feedbackText.innerHTML =
+    "Analyzing with AI...";
+    
+    try{
+    
+    const res = await fetch(
+    WORKER_URL,
+    {
+    method:"POST",
+    headers:{
+    "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+    mode:"speaking",
+    message:transcript
+    })
+    }
+    );
+    
+    const data =
+    await res.json();
+    
+    feedbackText.innerHTML =
+    data.reply;
+    
+    generateFakeScore();
+    
+    }catch(err){
+    
+    feedbackText.innerHTML =
+    "Failed to connect AI.";
+    
+    console.error(err);
+    
+    }
+    
+    speakBtn.innerHTML =
+    "🎤 Start Speaking";
+    
+    };
+    
+    recognition.onerror = ()=>{
+    
+    speakBtn.innerHTML =
+    "🎤 Start Speaking";
+    
+    feedbackText.innerHTML =
+    "Microphone error.";
+    
+    };
+    
+    }else{
+    
+    feedbackText.innerHTML =
+    "Speech Recognition not supported.";
+    
+    }
+    
+    
+    // ========================
+    // SCORE DEMO
+    // ========================
+    
+    function generateFakeScore(){
+    
+    const p =
+    Math.floor(
+    80 + Math.random()*20
+    );
+    
+    const f =
+    Math.floor(
+    75 + Math.random()*25
+    );
+    
+    const c =
+    Math.floor(
+    78 + Math.random()*22
+    );
+    
+    document.getElementById(
+    "pronunciationScore"
+    ).textContent = p + "%";
+    
+    document.getElementById(
+    "fluencyScore"
+    ).textContent = f + "%";
+    
+    document.getElementById(
+    "confidenceScore"
+    ).textContent = c + "%";
+    
+    document.getElementById(
+    "pronunciationFill"
+    ).style.width = p + "%";
+    
+    document.getElementById(
+    "fluencyFill"
+    ).style.width = f + "%";
+    
+    document.getElementById(
+    "confidenceFill"
+    ).style.width = c + "%";
+    
+    }
+    
+    </script>
+
+</body>
+</html>

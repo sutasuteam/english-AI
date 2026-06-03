@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Grammar Practice</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+padding:20px;
+}
+
+.header{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#1f2433;
+border:none;
+color:white;
+padding:10px 15px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+}
+
+.subtitle{
+color:#9ea7c5;
+margin-bottom:25px;
+line-height:1.6;
+}
+
+.grammar-grid{
+display:grid;
+gap:15px;
+}
+
+.grammar-card{
+background:#181c28;
+padding:20px;
+border-radius:20px;
+cursor:pointer;
+transition:.3s;
+}
+
+.grammar-card:hover{
+transform:translateY(-4px);
+background:#222838;
+}
+
+.grammar-card h3{
+color:#4facfe;
+margin-bottom:10px;
+}
+
+.grammar-card p{
+color:#9ea7c5;
+line-height:1.6;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="back-btn" onclick="history.back()">
+Kembali
+</button>
+
+<div class="title">
+Grammar Learning
+</div>
+</div>
+
+<div class="subtitle">
+Choose what you want to practice with AI Grammar Teacher.
+</div>
+
+<div class="grammar-grid">
+
+<div class="grammar-card" onclick="openGrammar('correct')">
+<h3>✍ Grammar Correction</h3>
+<p>Fix grammar mistakes in your sentence.</p>
+</div>
+
+<div class="grammar-card" onclick="openGrammar('tense')">
+<h3>⏰ Tenses Practice</h3>
+<p>Learn Present, Past, Future and more.</p>
+</div>
+
+<div class="grammar-card" onclick="openGrammar('article')">
+<h3>📚 Articles</h3>
+<p>Practice a, an, and the correctly.</p>
+</div>
+
+<div class="grammar-card" onclick="openGrammar('preposition')">
+<h3>📍 Prepositions</h3>
+<p>Learn in, on, at, from, to and others.</p>
+</div>
+
+<div class="grammar-card" onclick="openGrammar('quiz')">
+<h3>🎯 Grammar Quiz</h3>
+<p>Test your grammar skills with AI.</p>
+</div>
+
+<div class="grammar-card" onclick="openGrammar('teacher')">
+<h3>🤖 Ask Grammar AI</h3>
+<p>Ask any grammar question instantly.</p>
+</div>
+
+</div>
+
+<script>
+
+function openGrammar(type){
+
+localStorage.setItem(
+"grammarMode",
+type
+);
+
+window.location.href =
+"grammar-chat.html";
+
+}
+
+</script>
+
+</body>
+</html>

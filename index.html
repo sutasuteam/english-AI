@@ -460,10 +460,10 @@ body{
     </div>
 </div>
 <div class="mini-card">
-    <div class="Daily-Focus" id="vocabularyBtn">
-    <h3>Grammar</h3>
-    <p>Ask grammar questions and get simple explanations instantly.</p>
-</div>
+    <div class="Daily-Focus" id="grammarBtn">
+        <h3>Grammar</h3>
+        <p>Fix grammar mistakes and learn English rules easily.</p>
+    </div>
 </div>
 </div>
 </div>
@@ -477,7 +477,7 @@ body{
 </div>
 
 <div class="bottom-nav">
-<div class="nav-item active"><div class="nav-icon">🏠</div>Home</div>
+<div class="nav-item active" id="HomeBtn" ><div class="nav-icon">🏠</div>Home</div>
 <div class="nav-item"><div class="nav-icon">💬</div>Chat</div>
 <div class="nav-item"><div class="nav-icon">🎤</div>Speak</div>
 <div class="nav-item"><div class="nav-icon">📚</div>Learn</div>
@@ -506,6 +506,13 @@ const mainPage = document.getElementById("mainPage");
 console.log("Button ditemukan:", aiSendBtn);
 
 // ✅ ELEMEN BARU ROLEPLAY
+
+const HomeBtn =
+document.getElementById("HomeBtn");
+HomeBtn.onclick = () => {
+    window.location.href = "index.html";
+};
+
 const roleplayBtn =
 document.getElementById("roleplayBtn");
 roleplayBtn.onclick = () => {
@@ -515,7 +522,13 @@ const vocabularyBtn =
 document.getElementById("vocabularyBtn");
 vocabularyBtn.onclick = () => {
     window.location.href =
-    "Tombol Vocabulary/vocabulary.html";
+    "Tombol-Vocabulary/vocabulary.html";
+};
+
+const grammarBtn = document.getElementById("grammarBtn");
+
+grammarBtn.onclick = () => {
+    window.location.href = "Tombol Grammar/grammar.html";
 };
 
 const writingBtn =

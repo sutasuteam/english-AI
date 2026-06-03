@@ -828,6 +828,29 @@ window.SpeechRecognition,
 window.webkitSpeechRecognition
 );
 
+window.onload = loadHistory;
+async function loadHistory(){
+
+const res = await fetch(WORKER_URL);
+
+const chats = await res.json();
+
+chats.forEach(chat => {
+
+  tampilkanPesan({
+    role:"user",
+    message:chat.user_message
+  });
+
+  tampilkanPesan({
+    role:"ai",
+    message:chat.ai_reply
+  });
+
+});
+
+}
+
 
 </script>
 </body>

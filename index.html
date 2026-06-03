@@ -226,7 +226,7 @@ body{
 
 .chat-placeholder{
     color:#7d87a7;
-    text-align:center;
+    text-align:left;
     padding:40px 20px;
     line-height:1.8;
     font-size:15px;
@@ -405,13 +405,14 @@ body{
     <h1>Learn English With AI</h1>
     <p>
         Practice speaking, grammar, listening, and roleplay naturally with your personal AI English teacher.
-    </p>
-    <button class="start-btn">Start Learning</button>
+    </p><button id="startLearningBtn" class="start-btn">
+        Start Learning
+    </button>
 </div>
 
 <h2 class="section-title">AI Features</h2>
 <div class="feature-grid"> 
-<div class="feature-card">
+    <div class="feature-card" id="chatBtn">
     <div class="icon">💬</div>
     <h3>AI Chat</h3>
     <p>Talk naturally with AI and improve your English daily.</p>
@@ -477,12 +478,33 @@ body{
 </div>
 
 <div class="bottom-nav">
-<div class="nav-item active" id="HomeBtn" ><div class="nav-icon">🏠</div>Home</div>
-<div class="nav-item"><div class="nav-icon">💬</div>Chat</div>
-<div class="nav-item"><div class="nav-icon">🎤</div>Speak</div>
-<div class="nav-item"><div class="nav-icon">📚</div>Learn</div>
-<div class="nav-item"><div class="nav-icon">⚙️</div>Settings</div>
-</div>
+
+    <div class="nav-item active" id="navHomeBtn">
+        <div class="nav-icon">🏠</div>
+        Home
+    </div>
+    
+    <div class="nav-item" id="navChatBtn">
+        <div class="nav-icon">💬</div>
+        Chat
+    </div>
+    
+    <div class="nav-item" id="navSpeakingBtn">
+        <div class="nav-icon">🎤</div>
+        Speak
+    </div>
+    
+    <div class="nav-item" id="navLearnBtn">
+        <div class="nav-icon">📚</div>
+        Learn
+    </div>
+    
+    <div class="nav-item" id="navSettingsBtn">
+        <div class="nav-icon">⚙️</div>
+        Settings
+    </div>
+    
+    </div>
 
 <script>
 
@@ -505,18 +527,53 @@ const mainPage = document.getElementById("mainPage");
 
 console.log("Button ditemukan:", aiSendBtn);
 
-// ✅ ELEMEN BARU ROLEPLAY
+// nav bar
 
-const HomeBtn =
-document.getElementById("HomeBtn");
-HomeBtn.onclick = () => {
+document.getElementById("navHomeBtn").onclick = () => {
     window.location.href = "index.html";
 };
+
+document.getElementById("navChatBtn").onclick = () => {
+    window.location.href = "Tombol Chat/chat.html";
+};
+
+document.getElementById("navSpeakingBtn").onclick = () => {
+    window.location.href = "Tombol Speaking/Speaking.html";
+};
+
+document.getElementById("navLearnBtn").onclick = () => {
+    window.location.href = "Tombol-Learning/learning.html";
+};
+
+document.getElementById("navSettingsBtn").onclick = () => {
+    window.location.href = "settings.html";
+};
+
+
+// ✅ ELEMEN BARU ROLEPLAY
+
+document
+.getElementById("startLearningBtn")
+.onclick = () => {
+
+    window.location.href =
+    "Tombol-Learning/learning.html";
+
+};
+
 
 const SpeakingBtn =
 document.getElementById("SpeakingBtn");
 SpeakingBtn.onclick = () => {
     window.location.href = "Tombol Speaking/Speaking.html";
+};
+
+const chatBtn =
+document.getElementById("chatBtn");
+
+chatBtn.onclick = () => {
+    window.location.href =
+    "Tombol Chat/chat.html";
 };
 
 const roleplayBtn =
@@ -545,10 +602,7 @@ writingBtn.onclick = () => {
     window.location.href =
     "Tombol Writing/writing.html";
 };
-const backToMain = document.getElementById("backToMain");
-const scenarioCards = document.querySelectorAll(".scenario-card");
-let roleplayActive = false;
-let currentRolePrompt = ""; // Menyimpan instruksi peran
+
 
 // Pasang Tombol Umum
 aiSendBtn.onclick = kirimPesan;

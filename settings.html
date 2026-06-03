@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Settings</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#181c28;
+border:none;
+color:white;
+padding:10px 18px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero{
+background:linear-gradient(135deg,#1b1f2e,#252c42);
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+}
+
+.hero h1{
+margin-bottom:10px;
+}
+
+.hero p{
+color:#b8bfd6;
+line-height:1.7;
+}
+
+.setting-card{
+background:#181c28;
+border-radius:20px;
+padding:18px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+transition:.3s;
+}
+
+.setting-card:hover{
+background:#252c42;
+}
+
+.setting-left{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.icon{
+font-size:24px;
+}
+
+.setting-title{
+font-size:16px;
+font-weight:600;
+}
+
+.setting-sub{
+font-size:13px;
+color:#9ea7c5;
+margin-top:4px;
+}
+
+.arrow{
+font-size:20px;
+color:#4facfe;
+}
+
+.stats{
+background:#181c28;
+padding:25px;
+border-radius:20px;
+margin-top:25px;
+}
+
+.stats h2{
+margin-bottom:20px;
+}
+
+.stat-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+}
+
+.value{
+color:#4facfe;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+
+<button class="back-btn" onclick="window.location.href='index.html'">
+Back
+</button>
+
+<div class="logo">
+Settings
+</div>
+
+</div>
+
+<div class="hero">
+<h1>⚙️ English AI Settings</h1>
+<p>
+Customize your learning experience and track your progress.
+</p>
+</div>
+
+<div class="setting-card" id="profileBtn">
+
+<div class="setting-left">
+<div class="icon">👤</div>
+
+<div>
+<div class="setting-title">Profile</div>
+<div class="setting-sub">Manage your account</div>
+</div>
+
+</div>
+
+<div class="arrow">›</div>
+
+</div>
+
+<div class="setting-card" id="goalBtn">
+
+<div class="setting-left">
+<div class="icon">🎯</div>
+
+<div>
+<div class="setting-title">Learning Goal</div>
+<div class="setting-sub">Choose your focus</div>
+</div>
+
+</div>
+
+<div class="arrow">›</div>
+
+</div>
+
+<div class="setting-card">
+
+<div class="setting-left">
+<div class="icon">🔔</div>
+
+<div>
+<div class="setting-title">Daily Reminder</div>
+<div class="setting-sub">Study every day</div>
+</div>
+
+</div>
+
+<label>
+<input type="checkbox" id="reminderSwitch">
+</label>
+
+</div>
+
+<div class="setting-card">
+
+<div class="setting-left">
+<div class="icon">🌙</div>
+
+<div>
+<div class="setting-title">Dark Mode</div>
+<div class="setting-sub">App appearance</div>
+</div>
+
+</div>
+
+<label>
+<input type="checkbox" id="darkSwitch" checked>
+</label>
+
+</div>
+
+<div class="setting-card" id="languageBtn">
+
+<div class="setting-left">
+<div class="icon">🌎</div>
+
+<div>
+<div class="setting-title">Language</div>
+<div class="setting-sub">English / Indonesia</div>
+</div>
+
+</div>
+
+<div class="arrow">›</div>
+
+</div>
+
+<div class="setting-card" id="resetBtn">
+
+<div class="setting-left">
+<div class="icon">🗑️</div>
+
+<div>
+<div class="setting-title">Reset Progress</div>
+<div class="setting-sub">Clear learning data</div>
+</div>
+
+</div>
+
+<div class="arrow">›</div>
+
+</div>
+
+<div class="setting-card">
+
+<div class="setting-left">
+<div class="icon">ℹ️</div>
+
+<div>
+<div class="setting-title">About App</div>
+<div class="setting-sub">Version 1.0</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<h2>📊 Statistics</h2>
+
+<div class="stat-item">
+<span>Vocabulary Learned</span>
+<span class="value" id="vocabCount">15</span>
+</div>
+
+<div class="stat-item">
+<span>AI Chats</span>
+<span class="value" id="chatCount">48</span>
+</div>
+
+<div class="stat-item">
+<span>Speaking Sessions</span>
+<span class="value" id="speakCount">12</span>
+</div>
+
+</div>
+
+<script>
+
+const reminderSwitch =
+document.getElementById("reminderSwitch");
+
+reminderSwitch.checked =
+localStorage.getItem("reminder") === "true";
+
+reminderSwitch.onchange = () => {
+localStorage.setItem(
+"reminder",
+reminderSwitch.checked
+);
+};
+
+document
+.getElementById("resetBtn")
+.onclick = () => {
+
+if(confirm("Reset all progress?")){
+
+localStorage.clear();
+
+alert("Progress Reset!");
+
+location.reload();
+
+}
+
+};
+
+document
+.getElementById("profileBtn")
+.onclick = () => {
+
+alert("Profile page coming soon");
+
+};
+
+document
+.getElementById("goalBtn")
+.onclick = () => {
+
+alert("Learning Goal page coming soon");
+
+};
+
+document
+.getElementById("languageBtn")
+.onclick = () => {
+
+alert("Language page coming soon");
+
+};
+
+</script>
+
+</body>
+</html>

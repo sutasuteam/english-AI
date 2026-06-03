@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Daily English Lesson</title>
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#181c28;
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.lesson-card{
+background:#181c28;
+padding:25px;
+border-radius:25px;
+margin-bottom:20px;
+}
+
+.lesson-card h2{
+margin-bottom:15px;
+}
+
+.lesson-card p{
+line-height:1.8;
+color:#d1d7e6;
+}
+
+.vocab-item{
+padding:15px;
+background:#252c42;
+border-radius:15px;
+margin-bottom:10px;
+}
+
+.grammar-box{
+background:#252c42;
+padding:15px;
+border-radius:15px;
+line-height:1.7;
+}
+
+.question{
+background:#252c42;
+padding:15px;
+border-radius:15px;
+margin-bottom:10px;
+}
+
+.nav-btns{
+display:flex;
+gap:15px;
+margin-top:20px;
+}
+
+.nav-btns button{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+<button class="back-btn"
+onclick="window.location.href='../index.html'">
+Back
+</button>
+
+<div class="logo">
+Daily Lesson
+</div>
+</div>
+
+<div class="lesson-card">
+
+<h2>📖 Story</h2>
+
+<p id="storyText">
+Tom loves learning English.
+Every morning he studies new words
+and practices speaking with his friends.
+One day he spoke confidently with a tourist
+and felt proud of his progress.
+</p>
+
+</div>
+
+<div class="lesson-card">
+
+<h2>📚 Vocabulary</h2>
+
+<div class="vocab-item">
+<b>Confidently</b> = Dengan percaya diri
+</div>
+
+<div class="vocab-item">
+<b>Progress</b> = Kemajuan
+</div>
+
+<div class="vocab-item">
+<b>Practice</b> = Berlatih
+</div>
+
+</div>
+
+<div class="lesson-card">
+
+<h2>✍ Grammar Focus</h2>
+
+<div class="grammar-box">
+
+<b>Simple Present Tense</b>
+
+<br><br>
+
+Tom loves learning English.
+
+<br><br>
+
+Digunakan untuk aktivitas rutin
+atau kebiasaan sehari-hari.
+
+</div>
+
+</div>
+
+<div class="lesson-card">
+
+<h2>❓ Questions</h2>
+
+<div class="question">
+1. What does Tom study every morning?
+</div>
+
+<div class="question">
+2. Who did Tom speak with?
+</div>
+
+<div class="question">
+3. How did Tom feel?
+</div>
+
+</div>
+
+<div class="lesson-card">
+
+<h2>🔥 Daily Challenge</h2>
+
+<p>
+Write 3 sentences about your English learning journey.
+</p>
+
+</div>
+
+<div class="nav-btns">
+<button id="prevLesson">
+⬅ Previous
+</button>
+
+<button id="nextLesson">
+Next ➜
+</button>
+</div>
+
+<script>
+
+const lessons = [
+
+{
+story:
+"Tom loves learning English every morning.",
+
+vocab:[
+"Love = Menyukai",
+"Morning = Pagi",
+"Learning = Belajar"
+],
+
+grammar:
+"Simple Present Tense"
+},
+
+{
+story:
+"Sarah visited Bali and met many tourists.",
+
+vocab:[
+"Visited = Mengunjungi",
+"Tourist = Wisatawan",
+"Met = Bertemu"
+],
+
+grammar:
+"Simple Past Tense"
+},
+
+{
+story:
+"David will travel to Japan next year.",
+
+vocab:[
+"Travel = Bepergian",
+"Next Year = Tahun depan",
+"Japan = Jepang"
+],
+
+grammar:
+"Future Tense"
+}
+
+];
+
+let current =
+parseInt(localStorage.getItem("lessonIndex")) || 0;
+
+function loadLesson(){
+
+document.getElementById("storyText")
+.innerHTML =
+lessons[current].story;
+
+localStorage.setItem(
+"lessonIndex",
+current
+);
+
+}
+
+document
+.getElementById("nextLesson")
+.onclick = () => {
+
+current++;
+
+if(current >= lessons.length){
+current = 0;
+}
+
+loadLesson();
+
+};
+
+document
+.getElementById("prevLesson")
+.onclick = () => {
+
+current--;
+
+if(current < 0){
+current = lessons.length-1;
+}
+
+loadLesson();
+
+};
+
+loadLesson();
+
+</script>
+
+</body>
+</html>

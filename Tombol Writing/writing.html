@@ -23,6 +23,28 @@ body{
     min-height:100vh;
     padding:20px;
 }
+
+.feedback-title{
+margin-top:25px;
+margin-bottom:12px;
+color:#4facfe;
+font-size:18px;
+font-weight:600;
+}
+
+.footer{
+margin-top:40px;
+padding:25px;
+text-align:center;
+color:#8c95b2;
+font-size:14px;
+border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.footer p{
+line-height:1.8;
+}
+
 .container{
     width:100%;
     min-height:100vh;
@@ -260,9 +282,14 @@ white-space:pre-wrap;
         Check Writing
         </button>
         
+        <h3 class="feedback-title">
+        🤖 AI Feedback
+        </h3>
+        
         <div
         id="resultArea"
         class="result-area">
+        Waiting for your writing...
         </div>
         
         </div>
@@ -388,6 +415,12 @@ resultArea.innerHTML =
 
 
 </script>
+
+<footer class="footer">
+    <p>
+        English AI Learning • Practice Every Day 🚀
+    </p>
+</footer>
 
 </body>
 </html>

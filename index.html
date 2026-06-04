@@ -217,7 +217,7 @@ body{
     right:-8px;
     display:flex;
     gap:5px;
-    opacity:0;
+    opacity:1;
     transition:0.2s;
 }
 .chat-bubble:hover .msg-actions{
@@ -533,9 +533,11 @@ const SpeechRecognition =
 window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
+let recognition;
+
 if(SpeechRecognition){
 
-const recognition =
+recognition =
 new SpeechRecognition();
 
 recognition.lang = "en-US";
@@ -727,13 +729,17 @@ try{
 
     const data = await res.json();
 
-status.remove();
+tampilkanPesan({
+    id:data.id,
+    role:"user",
+    message:pesan
+});
 
 tampilkanPesan({
+    id:data.id,
     role:"ai",
     message:data.reply
 });
-
 
 
 // 🔊 AI membacakan jawaban
@@ -769,30 +775,100 @@ bubble.className =
     ? "chat-bubble user"
     : "chat-bubble ai";
 
-bubble.innerHTML = data.message;
+bubble.innerHTML = `
+    ${data.message}
+
+    <div class="msg-actions">
+        <button class="edit-btn">✏️</button>
+        <button class="del-btn">🗑️</button>
+    </div>
+`;
 
 aiChatPreview.appendChild(bubble);
 
 aiChatPreview.scrollTop =
     aiChatPreview.scrollHeight;
-}
 
+    const editBtn = bubble.querySelector(".edit-btn");
+const delBtn = bubble.querySelector(".del-btn");
 
-if(SpeechRecognition){
+editBtn.onclick = async () => {
 
-const recognition =
-new SpeechRecognition();
+  const teksBaru = prompt(
+    "Edit pesan:",
+    data.message
+  );
 
-recognition.lang = "en-US";
-recognition.continuous = false;
-recognition.interimResults = false;
+  if(!teksBaru) return;
 
-micBtn.onclick = () => {
+  try{
 
-    micBtn.innerHTML = "🎙️";
-    recognition.start();
+    await fetch(
+      WORKER_URL,
+      {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          id:data.id,
+          message:teksBaru
+        })
+      }
+    );
+
+    bubble.childNodes[0].textContent =
+      teksBaru;
+
+  }catch(err){
+
+    console.error(err);
+    alert("Gagal edit");
+
+  }
 
 };
+
+delBtn.onclick = async () => {
+
+  if(!confirm("Hapus pesan ini?"))
+    return;
+
+  try{
+
+    const res = await fetch(
+      `${WORKER_URL}?id=${data.id}`,
+      {
+        method:"DELETE"
+      }
+    );
+
+    const result = await res.json();
+
+    console.log(result);
+
+    if(result.success){
+      bubble.remove();
+    }
+
+  }catch(err){
+
+    console.error(err);
+    alert("Gagal hapus");
+
+  }
+
+};
+
+}
+
+ // ✅ PENUTUP fungsi tampilkanPesan()
+
+// ==========================================
+// 🎤 Speech Recognition
+// ==========================================
+
+if (SpeechRecognition) {
 
 recognition.onresult = (event) => {
 
@@ -804,23 +880,22 @@ recognition.onresult = (event) => {
     aiUserInput.value = text;
 
     kirimPesan();
-
 };
 
 recognition.onerror = (e) => {
 
     console.log(e);
-    micBtn.innerHTML = "🎤";
 
+    micBtn.innerHTML = "🎤";
 };
 
 recognition.onend = () => {
 
     micBtn.innerHTML = "🎤";
-
 };
 
 }
+
 
 console.log(
 "SpeechRecognition:",
@@ -837,15 +912,17 @@ const chats = await res.json();
 
 chats.forEach(chat => {
 
-  tampilkanPesan({
-    role:"user",
-    message:chat.user_message
-  });
+    tampilkanPesan({
+        id: chat.id,
+        role: "user",
+        message: chat.user_message
+    });
 
-  tampilkanPesan({
-    role:"ai",
-    message:chat.ai_reply
-  });
+    tampilkanPesan({
+        id: chat.id,
+        role: "ai",
+        message: chat.ai_reply
+    });
 
 });
 

@@ -281,29 +281,7 @@ font-size:15px;
             </p>
         </div>
 
-        <div class="filter-box">
-
-            <select id="difficultySelect">
-            
-            <option value="All">
-            All Levels
-            </option>
-            
-            <option value="Beginner">
-            Beginner
-            </option>
-            
-            <option value="Intermediate">
-            Intermediate
-            </option>
-            
-            <option value="Advanced">
-            Advanced
-            </option>
-            
-            </select>
-            
-            </div>
+        
     
         <div class="vocab-card">
     
@@ -345,11 +323,7 @@ style="margin-top:10px;">
     
         </div>
     
-        <div class="action-buttons">
-            <button id="prevBtn">⬅ Previous</button>
-            <button id="nextBtn">Next ➜</button>
-        </div>
-    
+
         <div class="progress-card">
             <h3>Progress</h3>
     
@@ -357,167 +331,48 @@ style="margin-top:10px;">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
     
-            <span id="progressText">1 / 10 Words</span>
+            <span id="progressText">
+                Daily Vocabulary
+                </span>
         </div>
     
     </div>
 
 
+    <script>
 
-
-<script>
-
-
-
-let current = 0;
-
-function speakWord(){
-
-  const utter =
-  new SpeechSynthesisUtterance(
-    filteredWords[current].word
-  );
-
-  utter.lang = "en-US";
-
-  speechSynthesis.speak(utter);
-
-}
-
-listenBtn.onclick = speakWord;
-
-let selectedLevel =
-localStorage.getItem("vocabLevel")
-|| "Beginner";
-
-difficultySelect.value =
-selectedLevel;
-
-const words = [
-
-{
-word:"Enthusiastic",
-meaning:"Antusias",
-pronunciation:"En-thoo-zee-as-tik",
-example:"She is enthusiastic about learning English.",
-level:"Beginner"
-},
-
-{
-word:"Journey",
-meaning:"Perjalanan",
-pronunciation:"Jur-ni",
-example:"My journey started last year.",
-level:"Beginner"
-},
-
-{
-word:"Achievement",
-meaning:"Pencapaian",
-pronunciation:"A-cheev-ment",
-example:"Passing the test was a great achievement.",
-level:"Intermediate"
-},
-
-{
-word:"Determination",
-meaning:"Tekad",
-pronunciation:"Di-ter-mi-nei-shen",
-example:"Determination helps people succeed.",
-level:"Intermediate"
-},
-
-{
-word:"Extraordinary",
-meaning:"Luar biasa",
-pronunciation:"Eks-tra-or-di-ne-ri",
-example:"She has extraordinary talent.",
-level:"Advanced"
-}
-
-];
-
-let filteredWords = [];
-
-function filterWords(){
-
-  if(selectedLevel === "All"){
-
-    filteredWords = words;
-
-  }else{
-
-    filteredWords =
-    words.filter(
-      w => w.level === selectedLevel
-    );
-
-  }
-
-  current = 0;
-
-  loadWord();
-
-}
-
-function loadWord(){
-
-  const w =
-  filteredWords[current];
-
-  englishWord.textContent =
-  w.word;
-
-  indoMeaning.textContent =
-  w.meaning;
-
-  pronunciation.textContent =
-  w.pronunciation;
-
-  exampleSentence.textContent =
-  w.example;
-
-  wordLevel.textContent =
-  w.level;
-
-  meaningArea.style.display =
-  "none";
-
-  progressFill.style.width =
-  ((current+1) /
-  filteredWords.length) * 100 + "%";
-
-  progressText.textContent =
-  `${current+1} / ${filteredWords.length} Words`;
-
-}
-
-difficultySelect.onchange = () => {
-
-  selectedLevel =
-  difficultySelect.value;
-
-  localStorage.setItem(
-    "vocabLevel",
-    selectedLevel
-  );
-
-  filterWords();
-
-};
-
-showMeaningBtn.onclick = () => {
-
-  meaningArea.style.display =
-  "block";
-
-};
-
-
-
-
-filterWords();
-async function loadTodayWord(){
+        function speakWord(){
+        
+          const utter =
+          new SpeechSynthesisUtterance(
+            englishWord.textContent
+          );
+        
+          utter.lang = "en-US";
+        
+          speechSynthesis.speak(utter);
+        
+        }
+        
+        listenBtn.onclick = speakWord;
+        
+        showMeaningBtn.onclick = () => {
+        
+          if(
+            meaningArea.style.display === "none"
+          ){
+            meaningArea.style.display = "block";
+            showMeaningBtn.textContent =
+            "Hide Meaning";
+          }else{
+            meaningArea.style.display = "none";
+            showMeaningBtn.textContent =
+            "Show Meaning";
+          }
+        
+        };
+        
+        async function loadTodayWord(){
 
 try{
 
@@ -527,12 +382,19 @@ try{
 
   const data = await res.json();
 
+  console.log(data);
+
   let wordData;
 
   if(data.response){
-    wordData = JSON.parse(data.response);
+
+    wordData =
+    JSON.parse(data.response);
+
   }else{
+
     wordData = data;
+
   }
 
   englishWord.textContent =
@@ -555,13 +417,15 @@ catch(err){
 
   console.error(err);
 
-}
+  englishWord.textContent =
+    "Failed Loading";
 
 }
 
-
-
-</script>
-
+}
+        
+        loadTodayWord();
+        
+        </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 
 <title>Settings</title>
 
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
 <style>
 
 *{
@@ -300,17 +301,39 @@ reminderSwitch.checked
 
 document
 .getElementById("resetBtn")
-.onclick = () => {
+.onclick = async () => {
 
-if(confirm("Reset all progress?")){
+  if (!confirm("Reset all progress and AI chats?")) {
+    return;
+  }
 
-localStorage.clear();
+  try {
 
-alert("Progress Reset!");
+    const sessionId =
+      localStorage.getItem("session_id");
 
-location.reload();
+    if (sessionId) {
 
-}
+      await fetch(
+        `https://englishai.adyajaboleh197.workers.dev?action=reset&session_id=${sessionId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+    }
+
+    localStorage.clear();
+
+    alert("All progress and chats deleted.");
+
+    window.location.href = "index.html";
+
+  } catch (err) {
+
+    alert("Reset failed: " + err.message);
+
+  }
 
 };
 

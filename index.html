@@ -533,6 +533,20 @@ const SpeechRecognition =
 window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
+let sessionId =
+localStorage.getItem("session_id");
+
+if(!sessionId){
+
+  sessionId =
+  crypto.randomUUID();
+
+  localStorage.setItem(
+    "session_id",
+    sessionId
+  );
+
+}
 let recognition;
 
 if(SpeechRecognition){
@@ -694,70 +708,69 @@ speechSynthesis.speak(speech);
 // ==========================================
 
 
-async function kirimPesan(){
-    console.log("Tombol diklik");
-const pesan = aiUserInput.value.trim();
-if(!pesan) return;
+let isSending = false;
 
-aiUserInput.value = "";
+async function kirimPesan() {
+    if (isSending) return;
+    isSending = true;
 
-// tampilkan pesan user langsung
-tampilkanPesan({
-    role:"user",
-    message:pesan
-});
+    const pesan = aiUserInput.value.trim();
+    if (!pesan) {
+        isSending = false;
+        return;
+    }
 
-const status = document.createElement("div");
-status.className = "chat-bubble ai";
-status.innerHTML = "⚡ Memproses...";
-aiChatPreview.appendChild(status);
-
-try{
-
-    const res = await fetch(
-    WORKER_URL,
-    {
-        method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                message:pesan
-            })
-        }
-    );
-
-    const data = await res.json();
-
-tampilkanPesan({
-    id:data.id,
-    role:"user",
-    message:pesan
-});
-
-tampilkanPesan({
-    id:data.id,
-    role:"ai",
-    message:data.reply
-});
-
-
-// 🔊 AI membacakan jawaban
-speakText(data.reply);
-
-}catch(err){
-
-    console.error(err);
-
-    status.remove();
+    aiUserInput.value = "";
 
     tampilkanPesan({
-        role:"ai",
-        message:"Server Error"
+        role: "user",
+        message: pesan
     });
 
+    const status = document.createElement("div");
+    status.className = "chat-bubble ai";
+    status.innerHTML = "⚡ Memproses...";
+    aiChatPreview.appendChild(status);
+
+    try {
+        const res = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+  message: userMessage,
+  session_id: sessionId
+})
+        });
+
+        if (!res.ok) throw new Error("Network error");
+
+        const data = await res.json();
+
+        status.remove();
+
+        tampilkanPesan({
+            id: data.id,
+            role: "ai",
+            message: data.reply
+        });
+
+        speakText(data.reply);
+
+    } catch (err) {
+        console.error(err);
+
+        status.remove();
+
+        tampilkanPesan({
+            role: "ai",
+            message: "Server Error"
+        });
+    }
+
+    isSending = false;
 }
-}
+
+
 
 function tampilkanPesan(data){
 

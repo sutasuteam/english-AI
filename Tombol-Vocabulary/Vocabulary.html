@@ -150,6 +150,22 @@ body{
     background:#1f2433;
 }
 
+.filter-box{
+margin-bottom:20px;
+display:flex;
+justify-content:left;
+
+}
+
+#difficultySelect{
+background:#181c28;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:12px;
+font-size:15px;
+}
+
 .icon{
     width:60px;
     height:60px;
@@ -248,6 +264,8 @@ body{
             <button class="back-btn" onclick="window.location.href='../index.html'">
                 Back
                 </button>
+
+               
     
             <div class="logo">
                 Vocabulary
@@ -262,6 +280,30 @@ body{
                 Learn new English words every day and improve your vocabulary.
             </p>
         </div>
+
+        <div class="filter-box">
+
+            <select id="difficultySelect">
+            
+            <option value="All">
+            All Levels
+            </option>
+            
+            <option value="Beginner">
+            Beginner
+            </option>
+            
+            <option value="Intermediate">
+            Intermediate
+            </option>
+            
+            <option value="Advanced">
+            Advanced
+            </option>
+            
+            </select>
+            
+            </div>
     
         <div class="vocab-card">
     
@@ -276,6 +318,13 @@ body{
             <button id="showMeaningBtn" class="meaning-btn">
                 Show Meaning
             </button>
+
+            <button
+id="listenBtn"
+class="meaning-btn"
+style="margin-top:10px;">
+🔊 Listen
+</button>
     
             <div id="meaningArea" style="display:none;">
                 <h3>Meaning</h3>
@@ -313,15 +362,43 @@ body{
     
     </div>
 
+
+
+
 <script>
 
+
+
+let current = 0;
+
+function speakWord(){
+
+  const utter =
+  new SpeechSynthesisUtterance(
+    filteredWords[current].word
+  );
+
+  utter.lang = "en-US";
+
+  speechSynthesis.speak(utter);
+
+}
+
+listenBtn.onclick = speakWord;
+
+let selectedLevel =
+localStorage.getItem("vocabLevel")
+|| "Beginner";
+
+difficultySelect.value =
+selectedLevel;
 
 const words = [
 
 {
 word:"Enthusiastic",
 meaning:"Antusias",
-pronunciation:"/ɪnˌθuːziˈæstɪk/",
+pronunciation:"En-thoo-zee-as-tik",
 example:"She is enthusiastic about learning English.",
 level:"Beginner"
 },
@@ -329,15 +406,15 @@ level:"Beginner"
 {
 word:"Journey",
 meaning:"Perjalanan",
-pronunciation:"/ˈdʒɜːni/",
-example:"My English journey started last year.",
+pronunciation:"Jur-ni",
+example:"My journey started last year.",
 level:"Beginner"
 },
 
 {
 word:"Achievement",
 meaning:"Pencapaian",
-pronunciation:"/əˈtʃiːvmənt/",
+pronunciation:"A-cheev-ment",
 example:"Passing the test was a great achievement.",
 level:"Intermediate"
 },
@@ -345,7 +422,7 @@ level:"Intermediate"
 {
 word:"Determination",
 meaning:"Tekad",
-pronunciation:"/dɪˌtɜːmɪˈneɪʃən/",
+pronunciation:"Di-ter-mi-nei-shen",
 example:"Determination helps people succeed.",
 level:"Intermediate"
 },
@@ -353,66 +430,134 @@ level:"Intermediate"
 {
 word:"Extraordinary",
 meaning:"Luar biasa",
-pronunciation:"/ɪkˈstrɔːdnri/",
+pronunciation:"Eks-tra-or-di-ne-ri",
 example:"She has extraordinary talent.",
 level:"Advanced"
 }
 
 ];
 
-let current =
-parseInt(localStorage.getItem("vocabIndex")) || 0;
+let filteredWords = [];
+
+function filterWords(){
+
+  if(selectedLevel === "All"){
+
+    filteredWords = words;
+
+  }else{
+
+    filteredWords =
+    words.filter(
+      w => w.level === selectedLevel
+    );
+
+  }
+
+  current = 0;
+
+  loadWord();
+
+}
 
 function loadWord(){
 
-const w = words[current];
+  const w =
+  filteredWords[current];
 
-englishWord.textContent = w.word;
-indoMeaning.textContent = w.meaning;
-pronunciation.textContent = w.pronunciation;
-exampleSentence.textContent = w.example;
-wordLevel.textContent = w.level;
+  englishWord.textContent =
+  w.word;
 
-meaningArea.style.display = "none";
+  indoMeaning.textContent =
+  w.meaning;
 
-progressFill.style.width =
-((current+1)/words.length)*100 + "%";
+  pronunciation.textContent =
+  w.pronunciation;
 
-progressText.textContent =
-`${current+1} / ${words.length} Words`;
+  exampleSentence.textContent =
+  w.example;
 
-localStorage.setItem(
-"vocabIndex",
-current
-);
+  wordLevel.textContent =
+  w.level;
+
+  meaningArea.style.display =
+  "none";
+
+  progressFill.style.width =
+  ((current+1) /
+  filteredWords.length) * 100 + "%";
+
+  progressText.textContent =
+  `${current+1} / ${filteredWords.length} Words`;
 
 }
+
+difficultySelect.onchange = () => {
+
+  selectedLevel =
+  difficultySelect.value;
+
+  localStorage.setItem(
+    "vocabLevel",
+    selectedLevel
+  );
+
+  filterWords();
+
+};
 
 showMeaningBtn.onclick = () => {
-meaningArea.style.display = "block";
+
+  meaningArea.style.display =
+  "block";
+
 };
 
-nextBtn.onclick = () => {
-current++;
 
-if(current >= words.length){
-current = 0;
+
+
+filterWords();
+async function loadTodayWord(){
+
+try{
+
+  const res = await fetch(
+    "https://englishai.adyajaboleh197.workers.dev/vocabulary/today"
+  );
+
+  const data = await res.json();
+
+  let wordData;
+
+  if(data.response){
+    wordData = JSON.parse(data.response);
+  }else{
+    wordData = data;
+  }
+
+  englishWord.textContent =
+    wordData.word;
+
+  indoMeaning.textContent =
+    wordData.meaning;
+
+  pronunciation.textContent =
+    wordData.pronunciation;
+
+  exampleSentence.textContent =
+    wordData.example;
+
+  wordLevel.textContent =
+    wordData.level;
+
+}
+catch(err){
+
+  console.error(err);
+
 }
 
-loadWord();
-};
-
-prevBtn.onclick = () => {
-current--;
-
-if(current < 0){
-current = words.length - 1;
 }
-
-loadWord();
-};
-
-loadWord();
 
 
 

@@ -282,6 +282,56 @@ document.getElementById("writingInput");
 const resultArea =
 document.getElementById("resultArea");
 
+async function loadDailyTopic(){
+
+const today =
+new Date()
+.toISOString()
+.split("T")[0];
+
+const savedDate =
+localStorage.getItem(
+  "topicDate"
+);
+
+const savedTopic =
+localStorage.getItem(
+  "dailyTopic"
+);
+
+if(
+  savedDate === today &&
+  savedTopic
+){
+  topicText.textContent =
+  savedTopic;
+  return;
+}
+
+const res =
+await fetch(
+  WORKER_URL +
+  "/writing/topic"
+);
+
+const data =
+await res.json();
+
+topicText.textContent =
+data.topic;
+
+localStorage.setItem(
+  "topicDate",
+  today
+);
+
+localStorage.setItem(
+  "dailyTopic",
+  data.topic
+);
+
+}
+
 checkBtn.onclick =
 async () => {
 

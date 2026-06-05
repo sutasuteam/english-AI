@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Roleplay Chat</title>
-
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
 <style>
 
 *{
@@ -23,13 +23,77 @@ display:flex;
 flex-direction:column;
 }
 
+.control-bar{
+    display:flex;
+    gap:12px;
+    margin-left:auto;
+}
+
+#startBtn,
+#stopBtn{
+    min-width:160px;
+    height:50px;
+    padding:0 24px;
+    border:none;
+    border-radius:10px; /* lebih kotak */
+    cursor:pointer;
+    font-size:15px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:all .25s ease;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+/* START */
+#startBtn{
+    background:linear-gradient(
+        135deg,
+        #22c55e,
+        #16a34a
+    );
+    color:white;
+}
+
+#startBtn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(34,197,94,.35);
+}
+
+/* STOP */
+#stopBtn{
+    background:linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
+    color:white;
+}
+
+#stopBtn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(239,68,68,.35);
+}
+
+#startBtn:active,
+#stopBtn:active{
+    transform:scale(.97);
+}
+
 .header{
-background:#181c28;
-padding:15px;
-display:flex;
-align-items:center;
-gap:15px;
-border-bottom:1px solid rgba(255,255,255,.05);
+    background:#181c28;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.control-bar{
+    margin-left:auto;
+    display:flex;
+    gap:12px;
 }
 
 .back-btn{
@@ -117,7 +181,21 @@ Roleplay
 </div>
 </div>
 
+<div class="control-bar">
+
+    <button id="startBtn">
+    ▶ Start Roleplay
+    </button>
+    
+    <button id="stopBtn">
+    ⏹ Stop
+    </button>
+    
+    </div>
+
 </div>
+
+
 
 <div id="chatContainer"
 class="chat-container">
@@ -257,7 +335,11 @@ body:JSON.stringify({
 
 message:text,
 
-systemPrompt:prompt
+mode:"roleplay",
+
+scenario:scenario,
+
+prompt:prompt
 
 })
 }
@@ -288,6 +370,80 @@ addMessage(
 }
 
 }
+
+const startBtn =
+document.getElementById("startBtn");
+
+startBtn.onclick = async ()=>{
+
+chatContainer.innerHTML = "";
+
+addMessage(
+"ai",
+"⏳ Starting roleplay..."
+);
+
+try{
+
+const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+mode:"roleplay",
+action:"start",
+
+scenario:
+localStorage.getItem(
+"roleplayScenario"
+)
+
+})
+}
+);
+
+const data =
+await res.json();
+
+chatContainer.innerHTML = "";
+
+addMessage(
+"ai",
+data.reply
+);
+
+}catch(err){
+
+console.error(err);
+
+chatContainer.innerHTML = "";
+
+addMessage(
+"ai",
+"❌ Failed to start roleplay"
+);
+
+}
+
+};
+
+// stop 
+const stopBtn =
+document.getElementById("stopBtn");
+
+stopBtn.onclick = ()=>{
+
+addMessage(
+"ai",
+"✅ Roleplay ended."
+);
+
+};
 
 // ======================
 // TAMPILKAN PESAN

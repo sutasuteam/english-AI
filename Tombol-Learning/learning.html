@@ -100,6 +100,130 @@ font-weight:600;
 cursor:pointer;
 }
 
+.chapter-card{
+background:#ffffff;
+color:#222;
+border-radius:25px;
+padding:30px;
+margin-bottom:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+position:relative;
+}
+
+.chapter-card h2{
+font-size:32px;
+font-weight:700;
+margin-bottom:15px;
+}
+
+.chapter-card p{
+font-size:18px;
+line-height:1.8;
+color:#555;
+min-height:140px;
+}
+
+.page-number{
+position:absolute;
+right:30px;
+bottom:95px;
+font-size:28px;
+font-weight:700;
+color:#999;
+}
+
+.chapter-nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-top:1px solid #2e2c2c;
+padding-top:20px;
+margin-top:30px;
+}
+
+.chapter-nav button{
+border:none;
+padding:12px 22px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+background:#0c0c0c;
+color:white;
+}
+
+.chapter-nav button:hover{
+opacity:.9;
+}
+
+.dots{
+display:flex;
+gap:10px;
+}
+
+.dot{
+width:42px;
+height:42px;
+border-radius:50%;
+border:none;
+background:#e5e7eb;
+color:#222;
+font-weight:700;
+cursor:pointer;
+}
+
+.dot.active{
+background:#0d6efd;
+color:white;
+}
+
+.translation-box{
+width:100%;
+height:220px;
+background:#252c42;
+border:none;
+outline:none;
+color:white;
+padding:20px;
+border-radius:20px;
+resize:none;
+font-size:16px;
+margin-top:15px;
+margin-bottom:15px;
+}
+
+#checkTranslation{
+width:100%;
+padding:15px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+font-size:16px;
+font-weight:700;
+background: black;
+color:rgb(253, 250, 250);
+margin-bottom:15px;
+}
+
+#translationResult{
+background:#252c42;
+padding:20px;
+border-radius:15px;
+line-height:1.8;
+white-space:pre-wrap;
+}
+
+.quiz-item{
+background:#252c42;
+padding:18px;
+border-radius:15px;
+margin-bottom:12px;
+line-height:1.7;
+}
+
+.quiz-item b{
+color:#4facfe;
+}
+
 </style>
 </head>
 <body>
@@ -115,141 +239,111 @@ Daily Lesson
 </div>
 </div>
 
-<div class="lesson-card">
+<div class="chapter-card">
 
-<h2>📖 Story</h2>
+    <h2 id="chapterTitle">
+    Bab 1: Perkenalan
+    </h2>
+    
+    <p id="chapterPreview">
+    Cerita singkat untuk belajar bahasa Inggris.
+    </p>
+    
+    <div class="page-number"
+    id="pageNumber">
+    1
+    </div>
+    
+    <div class="chapter-nav">
+    
+    <button id="prevBtn">
+    Sebelumnya
+    </button>
+    
+    <div class="dots">
+    <button class="dot">1</button>
+    <button class="dot">2</button>
+    <button class="dot">3</button>
+    <button class="dot">4</button>
+    </div>
+    
+    <button id="nextBtn">
+    Selanjutnya
+    </button>
+    
+    </div>
+    </div>
 
-<p id="storyText">
-Tom loves learning English.
-Every morning he studies new words
-and practices speaking with his friends.
-One day he spoke confidently with a tourist
-and felt proud of his progress.
-</p>
+    <div class="lesson-card">
+        📖 Daily Story
+        </div>
+    <div class="lesson-card">
 
-</div>
+        <h2>
+        ✍ Translate To English
+        </h2>
+        
+        <textarea
+        id="translationInput"
+        class="translation-box"
+        placeholder="Tulis terjemahan bahasa Inggris..."
+        ></textarea>
+        
+        <button id="checkTranslation">
+        Check Translation
+        </button>
+        
+        <div id="translationResult">
+        Waiting...
+        </div>
+        
+        </div>
 
-<div class="lesson-card">
+        <div class="lesson-card">
 
-<h2>📚 Vocabulary</h2>
+            <h2>
+            🧠 Daily Quiz
+            </h2>
+            
+            <div id="quizArea"></div>
+            
+            </div>
 
-<div class="vocab-item">
-<b>Confidently</b> = Dengan percaya diri
-</div>
-
-<div class="vocab-item">
-<b>Progress</b> = Kemajuan
-</div>
-
-<div class="vocab-item">
-<b>Practice</b> = Berlatih
-</div>
-
-</div>
-
-<div class="lesson-card">
-
-<h2>✍ Grammar Focus</h2>
-
-<div class="grammar-box">
-
-<b>Simple Present Tense</b>
-
-<br><br>
-
-Tom loves learning English.
-
-<br><br>
-
-Digunakan untuk aktivitas rutin
-atau kebiasaan sehari-hari.
-
-</div>
-
-</div>
-
-<div class="lesson-card">
-
-<h2>❓ Questions</h2>
-
-<div class="question">
-1. What does Tom study every morning?
-</div>
-
-<div class="question">
-2. Who did Tom speak with?
-</div>
-
-<div class="question">
-3. How did Tom feel?
-</div>
-
-</div>
-
-<div class="lesson-card">
-
-<h2>🔥 Daily Challenge</h2>
-
-<p>
-Write 3 sentences about your English learning journey.
-</p>
-
-</div>
-
-<div class="nav-btns">
-<button id="prevLesson">
-⬅ Previous
-</button>
-
-<button id="nextLesson">
-Next ➜
-</button>
-</div>
 
 <script>
 
 const lessons = [
 
 {
-story:
-"Tom loves learning English every morning.",
+title:"Bab 1: Perkenalan",
 
-vocab:[
-"Love = Menyukai",
-"Morning = Pagi",
-"Learning = Belajar"
-],
+story:`
+Nama saya Andi.
+Saya seorang pelajar.
+Saya belajar bahasa Inggris setiap hari.
+`,
 
-grammar:
-"Simple Present Tense"
+quiz:[
+"Siapa nama tokoh cerita?",
+"Apa pekerjaan Andi?",
+"Apa yang dipelajari Andi?"
+]
 },
 
 {
-story:
-"Sarah visited Bali and met many tourists.",
+title:"Bab 2: Di Sekolah",
 
-vocab:[
-"Visited = Mengunjungi",
-"Tourist = Wisatawan",
-"Met = Bertemu"
-],
+story:`
+Hari ini Andi pergi ke sekolah.
+Dia bertemu guru bahasa Inggris.
+Mereka belajar bersama.
+`,
 
-grammar:
-"Simple Past Tense"
-},
-
-{
-story:
-"David will travel to Japan next year.",
-
-vocab:[
-"Travel = Bepergian",
-"Next Year = Tahun depan",
-"Japan = Jepang"
-],
-
-grammar:
-"Future Tense"
+quiz:[
+"Andi pergi ke mana?",
+"Siapa yang ditemui?",
+"Apa yang mereka lakukan?"
+]
 }
 
 ];
@@ -299,6 +393,77 @@ loadLesson();
 };
 
 loadLesson();
+
+function loadQuiz(){
+
+const area =
+document.getElementById(
+"quizArea"
+);
+
+area.innerHTML = "";
+
+lessons[current]
+.quiz
+.forEach((q,i)=>{
+
+area.innerHTML += `
+<div class="question">
+${i+1}. ${q}
+</div>
+`;
+
+});
+
+}
+
+document
+.getElementById(
+"checkTranslation"
+)
+.onclick = async ()=>{
+
+const text =
+document
+.getElementById(
+"translationInput"
+)
+.value;
+
+const story =
+lessons[current].story;
+
+const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+mode:"translation",
+
+story:story,
+
+message:text
+
+})
+}
+);
+
+const data =
+await res.json();
+
+document
+.getElementById(
+"translationResult"
+)
+.innerHTML =
+data.reply;
+
+};
 
 </script>
 

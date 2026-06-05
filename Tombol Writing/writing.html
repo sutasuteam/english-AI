@@ -261,12 +261,19 @@ white-space:pre-wrap;
         </div>
         
         <div class="topic-card">
+
+            <h3>Today's Topic</h3>
         
-        <h3>Today's Topic</h3>
+            <p id="topicText">
+                Loading...
+            </p>
         
-        <p id="topicText">
-        Describe your favorite hobby.
-        </p>
+            <br>
+        
+            <p style="color:#4facfe;">
+                Next Topic In:
+                <span id="countdown">00:00:00</span>
+            </p>
         
         </div>
         
@@ -293,52 +300,85 @@ white-space:pre-wrap;
         </div>
         
         </div>
+        <script>
 
-<script>
+            const WORKER_URL =
+            "https://englishai.adyajaboleh197.workers.dev?v=" + Date.now();
+            
+            const topicText =
+            document.getElementById("topicText");
+            
+            const checkBtn =
+            document.getElementById("checkBtn");
+            
+            const writingInput =
+            document.getElementById("writingInput");
+            
+            const resultArea =
+            document.getElementById("resultArea");
+            
+            
+            // ======================
+            // SESSION KHUSUS WRITING
+            // ======================
+            
+            let sessionId =
+            localStorage.getItem("writing_session");
+            
+            if(!sessionId){
+            
+                sessionId =
+                crypto.randomUUID();
+            
+                localStorage.setItem(
+                    "writing_session",
+                    sessionId
+                );
+            
+            }
+            
+            
+            // ======================
+            // LOAD DAILY TOPIC
+            // ======================
+            
+            async function loadDailyTopic(){
 
+const topicText =
+document.getElementById("topicText");
 
-const WORKER_URL =
-"https://englishai.adyajaboleh197.workers.dev";
-
-const checkBtn =
-document.getElementById("checkBtn");
-
-const writingInput =
-document.getElementById("writingInput");
-
-const resultArea =
-document.getElementById("resultArea");
-
-async function loadDailyTopic(){
-
-const today =
-new Date()
-.toISOString()
-.split("T")[0];
-
-const savedDate =
-localStorage.getItem(
-  "topicDate"
-);
+const now =
+Date.now();
 
 const savedTopic =
-localStorage.getItem(
-  "dailyTopic"
+localStorage.getItem("dailyTopic");
+
+const expireTime =
+Number(
+localStorage.getItem("topicExpire")
 );
 
 if(
-  savedDate === today &&
-  savedTopic
+savedTopic &&
+expireTime &&
+now < expireTime
 ){
-  topicText.textContent =
-  savedTopic;
-  return;
+
+topicText.textContent =
+savedTopic;
+
+startCountdown(expireTime);
+
+return;
+
 }
+
+try{
 
 const res =
 await fetch(
-  WORKER_URL +
-  "/writing/topic"
+WORKER_URL.replace(/\?.*/,"")
++ "/writing/topic"
 );
 
 const data =
@@ -347,74 +387,200 @@ await res.json();
 topicText.textContent =
 data.topic;
 
-localStorage.setItem(
-  "topicDate",
-  today
-);
+const nextExpire =
+now + (24 * 60 * 60 * 1000);
 
 localStorage.setItem(
-  "dailyTopic",
-  data.topic
+"dailyTopic",
+data.topic
 );
 
-}
-
-checkBtn.onclick =
-async () => {
-
-const text =
-writingInput.value.trim();
-
-if(!text) return;
-
-resultArea.innerHTML =
-"⚡ Checking...";
-
-try{
-
-const res =
-await fetch(
-WORKER_URL,
-{
-method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
-body:JSON.stringify({
-message:
-`Check this English writing:
-
-${text}
-
-Give:
-
-1. Corrected version
-2. Grammar mistakes
-3. Suggestions
-4. Score out of 10`
-})
-}
+localStorage.setItem(
+"topicExpire",
+nextExpire
 );
 
-const data =
-await res.json();
+startCountdown(nextExpire);
 
-resultArea.innerHTML =
-data.reply;
+}catch(err){
 
-}catch{
+console.error(err);
 
-resultArea.innerHTML =
-"Server Error";
+topicText.textContent =
+"Describe your favorite hobby.";
 
 }
 
-};
+}
 
+//countdown
 
+function startCountdown(expireTime){
 
-</script>
+const countdown =
+document.getElementById("countdown");
+
+function update(){
+
+const diff =
+expireTime - Date.now();
+
+if(diff <= 0){
+
+countdown.textContent =
+"00:00:00";
+
+localStorage.removeItem(
+"dailyTopic"
+);
+
+localStorage.removeItem(
+"topicExpire"
+);
+
+location.reload();
+
+return;
+
+}
+
+const hours =
+Math.floor(
+diff / 1000 / 60 / 60
+);
+
+const minutes =
+Math.floor(
+(diff / 1000 / 60) % 60
+);
+
+const seconds =
+Math.floor(
+(diff / 1000) % 60
+);
+
+countdown.textContent =
+`${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+
+}
+
+update();
+
+setInterval(update,1000);
+
+}
+
+            
+            
+            // ======================
+            // SAVE DRAFT
+            // ======================
+            
+            writingInput.value =
+            localStorage.getItem("writingDraft")
+            || "";
+            
+            writingInput.addEventListener(
+            "input",
+            ()=>{
+            
+            localStorage.setItem(
+            "writingDraft",
+            writingInput.value
+            );
+            
+            }
+            );
+            
+            
+            // ======================
+            // CHECK WRITING
+            // ======================
+            
+            checkBtn.onclick = async ()=>{
+            
+            const text =
+            writingInput.value.trim();
+            
+            if(!text){
+            
+            alert(
+            "Please write something first."
+            );
+            
+            return;
+            
+            }
+            
+            resultArea.innerHTML =
+            "⚡ Checking...";
+            
+            try{
+            
+            const res =
+            await fetch(
+            WORKER_URL,
+            {
+            method:"POST",
+            headers:{
+            "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+            
+            message:text,
+            
+            mode:"writing",
+            
+            session_id:sessionId
+            
+            })
+            }
+            );
+            
+            const data =
+            await res.json();
+            
+            console.log(
+            "WRITING RESPONSE:",
+            data
+            );
+            
+            if(data.error){
+            
+            resultArea.innerHTML =
+            "❌ " + data.error;
+            
+            return;
+            
+            }
+            
+            resultArea.innerHTML =
+            data.reply ||
+            "No feedback received.";
+            
+            }catch(err){
+            
+            console.error(err);
+            
+            resultArea.innerHTML =
+            "❌ Server Error";
+            
+            }
+            
+            };
+            
+            
+            // ======================
+            // INIT
+            // ======================
+            
+            window.onload = ()=>{
+            
+            loadDailyTopic();
+            
+            };
+            
+            </script>
 
 <footer class="footer">
     <p>

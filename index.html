@@ -723,6 +723,7 @@ async function kirimPesan() {
     aiUserInput.value = "";
 
     tampilkanPesan({
+        
         role: "user",
         message: pesan
     });
@@ -737,8 +738,9 @@ async function kirimPesan() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-  message: userMessage,
-  session_id: sessionId
+  message: pesan,
+  session_id: sessionId,
+  mode: "chat"
 })
         });
 
@@ -788,15 +790,21 @@ bubble.className =
     ? "chat-bubble user"
     : "chat-bubble ai";
 
-bubble.innerHTML = `
+    bubble.innerHTML = `
     ${data.message}
 
-    <div class="msg-actions">
-        <button class="edit-btn">✏️</button>
-        <button class="del-btn">🗑️</button>
-    </div>
+    ${
+      data.id
+      ? `
+      <div class="msg-actions">
+          <button class="edit-btn">✏️</button>
+          <button class="del-btn">🗑️</button>
+      </div>
+      `
+      : ""
+    }
 `;
-
+if(!data.id) return;
 aiChatPreview.appendChild(bubble);
 
 aiChatPreview.scrollTop =
@@ -824,9 +832,10 @@ editBtn.onclick = async () => {
           "Content-Type":"application/json"
         },
         body:JSON.stringify({
-          id:data.id,
-          message:teksBaru
-        })
+  id:data.id,
+  message:teksBaru,
+  session_id:sessionId
+})
       }
     );
 
@@ -850,11 +859,11 @@ delBtn.onclick = async () => {
   try{
 
     const res = await fetch(
-      `${WORKER_URL}?id=${data.id}`,
-      {
-        method:"DELETE"
-      }
-    );
+  `${WORKER_URL}?id=${data.id}&session_id=${sessionId}`,
+  {
+    method:"DELETE"
+  }
+);
 
     const result = await res.json();
 
@@ -917,9 +926,12 @@ window.webkitSpeechRecognition
 );
 
 window.onload = loadHistory;
+
 async function loadHistory(){
 
-const res = await fetch(WORKER_URL);
+const res = await fetch(
+  `${WORKER_URL}?session_id=${sessionId}&mode=chat`
+);
 
 const chats = await res.json();
 

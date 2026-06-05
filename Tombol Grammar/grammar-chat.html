@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Grammar AI Chat</title>
+<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#0f1117;
+color:white;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+.header{
+display:flex;
+align-items:center;
+gap:15px;
+padding:20px;
+background:#181c28;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.back-btn{
+background:#252c42;
+border:none;
+color:white;
+padding:10px 15px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.title{
+font-size:22px;
+font-weight:bold;
+}
+
+.mode{
+color:#4facfe;
+font-size:14px;
+margin-top:5px;
+}
+
+.chat-area{
+flex:1;
+overflow-y:auto;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.message{
+max-width:85%;
+padding:14px;
+border-radius:18px;
+line-height:1.6;
+white-space:pre-wrap;
+}
+
+.user{
+align-self:flex-end;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+}
+
+.ai{
+align-self:flex-start;
+background:#181c28;
+}
+
+.input-area{
+display:flex;
+gap:10px;
+padding:15px;
+background:#181c28;
+}
+
+.input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+background:#252c42;
+color:white;
+outline:none;
+}
+
+.send-btn{
+width:60px;
+border:none;
+border-radius:15px;
+background:linear-gradient(90deg,#4facfe,#00f2fe);
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+
+<button
+class="back-btn"
+onclick="history.back()">
+Back
+</button>
+
+<div>
+
+<div class="title">
+Grammar AI
+</div>
+
+<div
+class="mode"
+id="modeLabel">
+Loading...
+</div>
+
+</div>
+
+</div>
+
+<div
+class="chat-area"
+id="chatArea">
+
+<div class="message ai">
+Hello 👋
+
+Ask me anything about English grammar.
+</div>
+
+</div>
+
+<div class="input-area">
+
+<input
+id="userInput"
+class="input"
+placeholder="Type your grammar question...">
+
+<button
+id="sendBtn"
+class="send-btn">
+➤
+</button>
+
+</div>
+
+<script>
+
+const WORKER_URL =
+"https://englishai.adyajaboleh197.workers.dev";
+
+const grammarMode =
+localStorage.getItem("grammarMode")
+|| "teacher";
+
+const modeLabel =
+document.getElementById("modeLabel");
+
+modeLabel.textContent =
+"Mode: " + grammarMode;
+
+const chatArea =
+document.getElementById("chatArea");
+
+const userInput =
+document.getElementById("userInput");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+function addMessage(text,type){
+
+const div =
+document.createElement("div");
+
+div.className =
+`message ${type}`;
+
+div.textContent =
+text;
+
+chatArea.appendChild(div);
+
+chatArea.scrollTop =
+chatArea.scrollHeight;
+
+}
+
+async function sendMessage(){
+
+const text =
+userInput.value.trim();
+
+if(!text) return;
+
+addMessage(
+text,
+"user"
+);
+
+userInput.value = "";
+
+addMessage(
+"⚡ Processing...",
+"ai"
+);
+
+const loading =
+chatArea.lastElementChild;
+
+let prompt = text;
+
+switch(grammarMode){
+
+case "correct":
+
+prompt =
+`Correct this sentence and explain the mistakes:
+
+${text}`;
+
+break;
+
+case "tense":
+
+prompt =
+`Explain which tense is used in this sentence and correct if needed:
+
+${text}`;
+
+break;
+
+case "article":
+
+prompt =
+`Check article usage (a, an, the):
+
+${text}`;
+
+break;
+
+case "preposition":
+
+prompt =
+`Check prepositions:
+
+${text}`;
+
+break;
+
+case "quiz":
+
+prompt =
+`Create a grammar quiz question about:
+
+${text}`;
+
+break;
+
+case "teacher":
+
+prompt =
+text;
+
+break;
+
+}
+
+try{
+
+const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+message:prompt,
+mode:"grammar"
+})
+}
+);
+
+const data =
+await res.json();
+
+loading.remove();
+
+addMessage(
+data.reply ||
+"No response",
+"ai"
+);
+
+}catch(err){
+
+loading.remove();
+
+addMessage(
+"❌ Server Error",
+"ai"
+);
+
+console.error(err);
+
+}
+
+}
+
+sendBtn.onclick =
+sendMessage;
+
+userInput.addEventListener(
+"keypress",
+e=>{
+
+if(e.key==="Enter"){
+sendMessage();
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
+

@@ -353,20 +353,26 @@ loading
 
 try{
 
-const res =
-await fetch(
+
+  const sessionId =
+localStorage.getItem("session_id");
+
+const res = await fetch(
 WORKER_URL,
 {
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
-body: JSON.stringify({
-  message: msg,
-  session_id: localStorage.getItem("session_id") || "main"
+body:JSON.stringify({
+message: msg,
+session_id: sessionId,
+mode: "chat"
 })
 }
 );
+
+
 
 const data =
 await res.json();

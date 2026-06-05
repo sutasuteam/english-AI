@@ -69,6 +69,77 @@ border-radius:15px;
 margin-bottom:10px;
 }
 
+.page-title{
+font-size:48px;
+font-weight:900;
+margin-bottom:30px;
+line-height:1.2;
+}
+
+.page-text{
+font-size:28px;
+line-height:1.9;
+text-align:justify;
+font-family:"Times New Roman", serif;
+}
+
+
+
+.book-container{
+max-width:900px;
+margin:auto;
+}
+.page-card{
+background:#f5f2ea;
+color:#222;
+min-height:850px;
+padding:50px 60px;
+border-radius:12px;
+overflow-y:auto;
+}
+
+.book-nav{
+margin-top:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:15px;
+}
+
+.book-nav button{
+width:55px;
+height:55px;
+border:none;
+border-radius:50%;
+font-size:22px;
+cursor:pointer;
+background:#111;
+color:white;
+}
+
+.page-dots{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+justify-content:center;
+max-width:700px;
+}
+
+.page-dot{
+width:40px;
+height:40px;
+border:none;
+border-radius:50%;
+background:#ddd;
+cursor:pointer;
+font-weight:bold;
+}
+
+.page-dot.active{
+background:#0d6efd;
+color:white;
+}
+
 .grammar-box{
 background:#252c42;
 padding:15px;
@@ -82,79 +153,41 @@ padding:15px;
 border-radius:15px;
 margin-bottom:10px;
 }
-
-.nav-btns{
-display:flex;
-gap:15px;
-margin-top:20px;
-}
-
-.nav-btns button{
-flex:1;
-padding:15px;
-border:none;
-border-radius:15px;
-background:linear-gradient(90deg,#4facfe,#00f2fe);
-color:white;
-font-weight:600;
-cursor:pointer;
-}
-
-.chapter-card{
-background:#ffffff;
+.toc-page{
+background:#f4f1eb;
 color:#222;
-border-radius:25px;
-padding:30px;
-margin-bottom:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.2);
-position:relative;
+padding:50px;
+border-radius:8px;
+font-family:"Times New Roman", serif;
 }
 
-.chapter-card h2{
-font-size:32px;
-font-weight:700;
-margin-bottom:15px;
+.toc-title{
+text-align:center;
+font-size:56px;
+font-weight:900;
+letter-spacing:3px;
+margin-bottom:50px;
 }
 
-.chapter-card p{
-font-size:18px;
-line-height:1.8;
-color:#555;
-min-height:140px;
-}
-
-.page-number{
-position:absolute;
-right:30px;
-bottom:95px;
-font-size:28px;
-font-weight:700;
-color:#999;
-}
-
-.chapter-nav{
+.toc-list{
 display:flex;
-justify-content:space-between;
+flex-direction:column;
+gap:12px;
+}
+
+.toc-row{
+display:flex;
 align-items:center;
-border-top:1px solid #2e2c2c;
-padding-top:20px;
-margin-top:30px;
-}
-
-.chapter-nav button{
-border:none;
-padding:12px 22px;
-border-radius:12px;
-cursor:pointer;
+font-size:26px;
 font-weight:600;
-background:#0c0c0c;
-color:white;
 }
 
-.chapter-nav button:hover{
-opacity:.9;
+.toc-row .leader{
+flex:1;
+border-bottom:4px dotted #555;
+margin:0 10px;
+transform:translateY(-4px);
 }
-
 .dots{
 display:flex;
 gap:10px;
@@ -224,6 +257,11 @@ line-height:1.7;
 color:#4facfe;
 }
 
+.book-container{
+max-width:900px;
+margin:0 auto 60px auto;
+}
+
 </style>
 </head>
 <body>
@@ -239,40 +277,28 @@ Daily Lesson
 </div>
 </div>
 
-<div class="chapter-card">
+<div class="book-container">
 
-    <h2 id="chapterTitle">
-    Bab 1: Perkenalan
-    </h2>
-    
-    <p id="chapterPreview">
-    Cerita singkat untuk belajar bahasa Inggris.
-    </p>
-    
-    <div class="page-number"
-    id="pageNumber">
-    1
-    </div>
-    
-    <div class="chapter-nav">
-    
-    <button id="prevBtn">
-    Sebelumnya
-    </button>
-    
-    <div class="dots">
-    <button class="dot">1</button>
-    <button class="dot">2</button>
-    <button class="dot">3</button>
-    <button class="dot">4</button>
-    </div>
-    
-    <button id="nextBtn">
-    Selanjutnya
-    </button>
+    <div class="page-card">
+
+        <div id="pageContent"></div>
     
     </div>
+
+    <div class="book-nav">
+
+        <button id="prevPage">◀</button>
+
+        <div id="pageDots" class="page-dots"></div>
+
+        <button id="nextPage">▶</button>
+
+
+  
     </div>
+
+</div>
+
 
     <div class="lesson-card">
         📖 Daily Story
@@ -312,87 +338,7 @@ Daily Lesson
 
 <script>
 
-const lessons = [
 
-{
-title:"Bab 1: Perkenalan",
-
-story:`
-Nama saya Andi.
-Saya seorang pelajar.
-Saya belajar bahasa Inggris setiap hari.
-`,
-
-quiz:[
-"Siapa nama tokoh cerita?",
-"Apa pekerjaan Andi?",
-"Apa yang dipelajari Andi?"
-]
-},
-
-{
-title:"Bab 2: Di Sekolah",
-
-story:`
-Hari ini Andi pergi ke sekolah.
-Dia bertemu guru bahasa Inggris.
-Mereka belajar bersama.
-`,
-
-quiz:[
-"Andi pergi ke mana?",
-"Siapa yang ditemui?",
-"Apa yang mereka lakukan?"
-]
-}
-
-];
-
-let current =
-parseInt(localStorage.getItem("lessonIndex")) || 0;
-
-function loadLesson(){
-
-document.getElementById("storyText")
-.innerHTML =
-lessons[current].story;
-
-localStorage.setItem(
-"lessonIndex",
-current
-);
-
-}
-
-document
-.getElementById("nextLesson")
-.onclick = () => {
-
-current++;
-
-if(current >= lessons.length){
-current = 0;
-}
-
-loadLesson();
-
-};
-
-document
-.getElementById("prevLesson")
-.onclick = () => {
-
-current--;
-
-if(current < 0){
-current = lessons.length-1;
-}
-
-loadLesson();
-
-};
-
-loadLesson();
 
 function loadQuiz(){
 
@@ -464,6 +410,215 @@ document
 data.reply;
 
 };
+
+//pages
+const pages = [
+
+{
+title:"DAFTAR ISI",
+content:`
+
+<div class="toc-list">
+
+<div class="toc-row">
+<span>DAFTAR ISI</span>
+<span class="leader"></span>
+<span>iv</span>
+</div>
+
+<div class="toc-row">
+<span>Basic Grammar Tata Bahasa Dasar</span>
+<span class="leader"></span>
+<span>v</span>
+</div>
+
+<div class="toc-row">
+<span>Simple Sentence Pattern</span>
+<span class="leader"></span>
+<span>1</span>
+</div>
+
+</div>
+
+`
+},
+
+{
+title:"Basic Grammar<br>Tata Bahasa Dasar",
+content:`
+
+<p class="page-text">
+
+Meskipun pelajaran Bahasa Inggris telah ada semenjak TK sampai dengan Perguruan Tinggi, namun tidak sedikit yang masih bingung bagaimana menggunakan Bahasa Inggris.
+
+<br><br>
+
+Atau bisa saja merasa sudah fasih berbahasa Inggris tapi ketika praktek tergagap-gagap dan menguap semua pelajaran yang sudah dikuasai. Kedua hal tersebut jamak terjadi dan menjadi persoalan tersendiri.
+
+<br><br>
+
+Padahal sebenarnya, English is SIMPLE, English is FUN. Cukup menguasai dasar-dasarnya saja maka anda dipastikan sudah bisa cas cis cus. Kalau masalah lancar tidaknya itu relatif dan tergantung jam terbang "praktek".
+
+<br><br>
+
+Mahasiswa dengan nilai A di mata kuliah Bahasa Inggris belum tentu lancar ngomong bahasa Inggris, sedangkan tukang becak yang nggak lulus SD lancar ngobrol dengan turis di Malioboro.
+
+<br><br>
+
+Tata bahasa dasar adalah:
+
+<br><br>
+
+1. Susunan Kata / Word Orders
+<br>
+2. Perubahan Kata Kerja
+<br>
+3. Kosakata / Vocabulary
+
+<br><br>
+
+Ketiga hal inilah merupakan dasar-dasar menguasai percakapan Bahasa Inggris. Mari kita kupas satu per satu.
+
+</p>
+
+<h2 style="
+margin-top:40px;
+font-size:36px;
+font-weight:800;
+border-bottom:3px dashed #555;
+padding-bottom:10px;
+">
+1. Susunan Kata / Word Orders
+</h2>
+
+<p class="page-text">
+
+Yang dimaksud dengan susunan kata adalah bahwa setiap bahasa pasti memiliki pola kalimat tertentu. Seperti misalnya kalimat dasar dalam Bahasa Indonesia terdiri dari pola tertentu yang digunakan dalam percakapan sehari-hari.
+
+</p>
+
+`
+},
+
+{
+title:"Simple Present Tense",
+content:`...`
+},
+
+{
+title:"Present Continuous Tense",
+content:`...`
+},
+
+{
+title:"Present Perfect Tense",
+content:`...`
+}
+
+
+
+];
+for(let i=4;i<=250;i++){
+
+pages.push({
+title:`Halaman ${i}`,
+content:`
+<p class="page-text">
+Isi materi halaman ${i}
+</p>
+`
+});
+
+}
+
+let currentPage = 0;
+
+function renderPage(){
+
+document.getElementById("pageContent").innerHTML = `
+
+<h1 class="page-title">
+${pages[currentPage].title}
+</h1>
+
+${pages[currentPage].content}
+
+`;
+
+renderDots();
+
+}
+
+function renderDots(){
+
+const wrap =
+document.getElementById("pageDots");
+
+wrap.innerHTML = "";
+
+const start =
+Math.max(0,currentPage-4);
+
+const end =
+Math.min(
+pages.length,
+start+9
+);
+
+for(let i=start;i<end;i++){
+
+const btn =
+document.createElement("button");
+
+btn.className =
+"page-dot";
+
+if(i===currentPage)
+btn.classList.add("active");
+
+btn.innerText = i+1;
+
+btn.onclick = ()=>{
+
+currentPage=i;
+renderPage();
+
+};
+
+wrap.appendChild(btn);
+
+}
+
+}
+
+document
+.getElementById("nextPage")
+.onclick=()=>{
+
+if(currentPage<pages.length-1){
+
+currentPage++;
+renderPage();
+
+}
+
+};
+
+document
+.getElementById("prevPage")
+.onclick=()=>{
+
+if(currentPage>0){
+
+currentPage--;
+renderPage();
+
+}
+
+};
+
+renderPage();
+
 
 </script>
 

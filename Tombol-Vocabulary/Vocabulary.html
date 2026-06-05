@@ -341,19 +341,27 @@ style="margin-top:10px;">
 
     <script>
 
-        function speakWord(){
-        
-          const utter =
-          new SpeechSynthesisUtterance(
-            englishWord.textContent
-          );
-        
-          utter.lang = "en-US";
-        
-          speechSynthesis.speak(utter);
-        
-        }
-        
+const listenBtn =
+document.getElementById("listenBtn");
+
+listenBtn.onclick = () => {
+
+const text = `
+${englishWord.textContent}.
+${exampleSentence.textContent}
+`;
+
+speechSynthesis.cancel();
+
+const utter =
+new SpeechSynthesisUtterance(text);
+
+utter.lang = "en-US";
+utter.rate = 0.9;
+
+speechSynthesis.speak(utter);
+
+};
         listenBtn.onclick = speakWord;
         
         showMeaningBtn.onclick = () => {

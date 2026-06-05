@@ -90,7 +90,7 @@ max-width:900px;
 margin:auto;
 }
 .page-card{
-background:#f5f2ea;
+background:white;
 color:#222;
 min-height:850px;
 padding:50px 60px;
@@ -225,6 +225,7 @@ margin-bottom:15px;
 }
 
 #checkTranslation{
+display:none;
 width:100%;
 padding:15px;
 border:none;
@@ -232,8 +233,8 @@ border-radius:15px;
 cursor:pointer;
 font-size:16px;
 font-weight:700;
-background: black;
-color:rgb(253, 250, 250);
+background:black;
+color:white;
 margin-bottom:15px;
 }
 
@@ -346,68 +347,19 @@ Book Lesson
 </div>
 
 
-    <div class="lesson-card">
-        📖 Daily Story
-        </div>
-    <div class="lesson-card">
 
-        <h2>
-        ✍ Translate To English
-        </h2>
-        
-        <textarea
-        id="translationInput"
-        class="translation-box"
-        placeholder="Tulis terjemahan bahasa Inggris..."
-        ></textarea>
         
         <button id="checkTranslation">
         Check Translation
         </button>
         
-        <div id="translationResult">
-        Waiting...
-        </div>
-        
-        </div>
 
-        <div class="lesson-card">
-
-            <h2>
-            🧠 Daily Quiz
-            </h2>
-            
-            <div id="quizArea"></div>
-            
-            </div>
+    
 
 
 <script>
 
 
-
-function loadQuiz(){
-
-const area =
-document.getElementById(
-"quizArea"
-);
-
-area.innerHTML = "";
-
-lessons[current]
-.quiz
-.forEach((q,i)=>{
-
-area.innerHTML += `
-<div class="question">
-${i+1}. ${q}
-</div>
-`;
-
-});
-
-}
 
 document
 .getElementById(
@@ -603,7 +555,7 @@ Dalam sebuah kalimat dasar, minimal harus terdapat Subject dan Verb agar kalimat
 },
 
 {
-title:"Present Continuous Tense",
+title:"",
 content:`<p class="page-text">
 
 Tetapi dalam Bahasa Inggris tidak seperti itu, keterangan waktu sangatlah penting karena mengakibatkan perubahan bentuk kata kerja, perhatikan contoh :
@@ -670,7 +622,42 @@ Yang dimaksud dengan regular verbs adalah perubahan kata kerja yang hanya ditamb
 },
 
 {
-title:"Present Perfect Tense",
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
+content:`...`
+},
+
+{
+title:"",
 content:`...`
 }
 

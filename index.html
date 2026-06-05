@@ -105,6 +105,7 @@ body{
     margin-bottom:25px;
 }
 
+
 .start-btn{
     background:linear-gradient(90deg,#4facfe,#00f2fe);
     border:none;
@@ -468,6 +469,18 @@ body{
         <p>Fix grammar mistakes and learn English rules easily.</p>
     </div>
 </div>
+<div class="mini-card">
+    <div class="Daily-Focus" id="QuizBtn">
+        <h3>Quiz</h3>
+        <p>Challenge yourself with English quizzes and track your learning progress every day.</p>
+    </div>
+</div>
+<div class="mini-card">
+    <div class="Daily-Focus" id="StoryBtn">
+        <h3>Story</h3>
+        <p>Learn English naturally through engaging stories and real-life situations.</p>
+    </div>
+</div>
 </div>
 </div>
 
@@ -670,6 +683,16 @@ document.getElementById("writingBtn");
 writingBtn.onclick = () => {
     window.location.href =
     "Tombol Writing/writing.html";
+};
+
+QuizBtn.onclick = () => {
+    window.location.href =
+    "Tombol-Quiz/Quiz.html";
+};
+
+StoryBtn.onclick = () => {
+    window.location.href =
+    "Tombol-Story/Story.html";
 };
 
 

@@ -785,35 +785,18 @@ data
     100,
     score + 5
     );
-    
-    document.getElementById(
-    "fluencyScore"
-    ).textContent =
-    fluency + "%";
-    
-    document.getElementById(
-    "fluencyFill"
-    ).style.width =
-    fluency + "%";
-    
-    document.getElementById(
-    "confidenceScore"
-    ).textContent =
-    confidence + "%";
-    
-    document.getElementById(
-    "confidenceFill"
-    ).style.width =
-    confidence + "%";
+
     
     }catch(err){
-    
-    feedbackText.innerHTML =
-    "AI connection failed.";
-    
-    console.error(err);
-    
-    }
+
+log(
+"FETCH ERROR: " +
+err.message
+);
+
+console.error(err);
+
+}
     
     };
     

@@ -794,9 +794,14 @@ headers:{
 
 
 body:JSON.stringify({
-mode:"speaking",
-message:finalTranscript
 
+mode:"speaking",
+
+target:
+sentence.textContent,
+
+spoken:
+finalTranscript
 
 })
 
@@ -821,8 +826,76 @@ data
    
 if(data.reply){
 
-feedbackText.innerHTML =
+    feedbackText.innerHTML =
 data.reply;
+
+// SCORE BAR
+
+const fluency =
+Math.min(100, score + 10);
+
+const confidence =
+Math.min(100, score + 5);
+
+// Pronunciation
+
+const pScore =
+document.getElementById(
+"pronunciationScore"
+);
+
+const pFill =
+document.getElementById(
+"pronunciationFill"
+);
+
+if(pScore)
+pScore.textContent =
+score + "%";
+
+if(pFill)
+pFill.style.width =
+score + "%";
+
+// Fluency
+
+const fScore =
+document.getElementById(
+"fluencyScore"
+);
+
+const fFill =
+document.getElementById(
+"fluencyFill"
+);
+
+if(fScore)
+fScore.textContent =
+fluency + "%";
+
+if(fFill)
+fFill.style.width =
+fluency + "%";
+
+// Confidence
+
+const cScore =
+document.getElementById(
+"confidenceScore"
+);
+
+const cFill =
+document.getElementById(
+"confidenceFill"
+);
+
+if(cScore)
+cScore.textContent =
+confidence + "%";
+
+if(cFill)
+cFill.style.width =
+confidence + "%";
 
 }else{
 

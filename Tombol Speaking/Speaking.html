@@ -830,6 +830,8 @@ if(data.reply){
     feedbackText.innerHTML =
 data.reply;
 
+console.log("BEFORE FLUENCY");
+
 const fluency =
 Math.min(
 100,
@@ -841,6 +843,9 @@ Math.min(
 100,
 score + 5
 );
+
+console.log("FLUENCY =", fluency);
+console.log("CONFIDENCE =", confidence);
 
 document.getElementById(
 "fluencyScore"

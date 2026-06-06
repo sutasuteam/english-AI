@@ -818,21 +818,6 @@ console.log(
 res.status
 );
 
-const data =
-await res.json();
-
-console.log(
-"AI RESPONSE:",
-data
-);
-   
-if(data.reply){
-
-    feedbackText.innerHTML =
-data.reply;
-
-console.log("BEFORE FLUENCY");
-
 const fluency =
 Math.min(
 100,
@@ -867,6 +852,25 @@ document.getElementById(
 "confidenceFill"
 ).style.width =
 confidence + "%";
+
+const data =
+await res.json();
+
+console.log(
+"AI RESPONSE:",
+data
+);
+
+
+   
+if(data.reply){
+
+    feedbackText.innerHTML =
+data.reply;
+
+console.log("BEFORE FLUENCY");
+
+
 // Fluency
 
 const fScore =

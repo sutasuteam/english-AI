@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
 <title>English AI - Speaking</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -52,848 +50,208 @@ border-radius:30px;
 margin-bottom:25px;
 }
 
-.hero h1{
-font-size:32px;
-margin-bottom:10px;
-}
-
-.hero p{
-color:#b8bfd6;
-line-height:1.7;
-}
-
 .speaking-card{
 background:#181c28;
 padding:25px;
 border-radius:25px;
-margin-bottom:25px;
 text-align:center;
-}
-
-.speaking-card h2{
-margin-bottom:15px;
 }
 
 .sentence{
 font-size:22px;
-font-weight:600;
-line-height:1.6;
-margin-bottom:25px;
 color:#4facfe;
-}
-
-.buttons{
-display:grid;
-grid-template-columns:1fr;
-gap:12px;
-margin-top:20px;
-}
-
-.buttons button{
-flex:1;
-padding:15px;
-border:none;
-border-radius:15px;
-cursor:pointer;
-font-size:16px;
-font-weight:600;
-}
-
-.listen-btn{
-background:#252c42;
-color:white;
-}
-
-.mic-btn{
-background:linear-gradient(90deg,#4facfe,#00f2fe);
-color:white;
-}
-
-.score-card{
-background:#181c28;
-padding:25px;
-border-radius:25px;
-margin-bottom:25px;
-}
-
-.score-card h2{
 margin-bottom:20px;
 }
 
-.score{
-margin-bottom:15px;
+button{
+padding:12px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+margin:5px;
 }
+
+.listen-btn{background:#252c42;color:white;}
+.mic-btn{background:#4facfe;color:white;}
 
 .progress{
 height:10px;
 background:#2f364b;
-border-radius:30px;
+border-radius:20px;
 overflow:hidden;
-margin-top:8px;
+margin-top:6px;
 }
 
 .fill{
 height:100%;
 background:linear-gradient(90deg,#4facfe,#00f2fe);
+width:0%;
 }
 
-.feedback{
-background:#181c28;
-padding:25px;
-border-radius:25px;
-margin-bottom:25px;
-}
-
-.feedback h2{
-margin-bottom:15px;
-}
-
-.feedback p{
-color:#b8bfd6;
-line-height:1.7;
-}
-
-.challenge{
-background:#181c28;
-padding:25px;
-border-radius:25px;
-margin-bottom:25px;
-}
-
-.challenge h2{
-margin-bottom:15px;
-}
-
-.challenge-box{
-background:#252c42;
-padding:20px;
-border-radius:18px;
-margin-top:10px;
-}
-
-.topics{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-}
-
-.listening{
-animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-
-0%{
-transform:scale(1);
-}
-
-50%{
-transform:scale(1.05);
-}
-
-100%{
-transform:scale(1);
-}
-
-}
-
-.topic{
+.score-card{
 background:#181c28;
 padding:20px;
 border-radius:20px;
-text-align:center;
-cursor:pointer;
-transition:.3s;
+margin-top:20px;
 }
 
-.topic:hover{
-transform:translateY(-5px);
+.feedback{
+margin-top:15px;
+color:#b8bfd6;
 }
-
-.topic span{
-font-size:30px;
-display:block;
-margin-bottom:10px;
-}
-
 </style>
 </head>
+
 <body>
 
 <div class="header">
-<button class="back-btn" id="backBtn">Back</button>
+<button class="back-btn" onclick="location.href='../index.html'">Back</button>
 <div class="logo">Speaking</div>
 </div>
 
 <div class="hero">
 <h1>🎤 Speaking Practice</h1>
-<p>
-Improve pronunciation and build speaking confidence with AI.
-</p>
 </div>
 
 <div class="speaking-card">
 
-<h2>Today's Sentence</h2>
-
-<div class="sentence">
-    "Nice to meet you. How are you today?"
-    </div>
-
-    <div id="countdown"
-style="
-margin-top:10px;
-color:#b8bfd6;
-font-size:14px;
-">
-Loading...
-</div>
-    
-    <div id="speechResult"
-    style="
-    margin-top:20px;
-    padding:15px;
-    background:#252c42;
-    border-radius:15px;
-    min-height:60px;
-    color:#4facfe;
-    ">
-    Waiting for speech...
-    </div>
-
-
-
-
-<div class="buttons">
-    <button id="listenBtn" class="listen-btn">
-        🔊 Listen
-        </button>
-        
-        <button id="speakBtn" class="mic-btn">
-            🎤 Start Speaking
-            </button>
-            
-            <button id="stopBtn"
-            class="listen-btn">
-            ⏹ Stop
-            </button>
+<div class="sentence" id="sentence">
+Nice to meet you. How are you today?
 </div>
 
+<div id="speechResult">Waiting speech...</div>
 
-
-
-
-
-</div>
+<button class="listen-btn" onclick="listen()">🔊 Listen</button>
+<button class="mic-btn" onclick="startSpeech()">🎤 Start</button>
+<button class="listen-btn" onclick="stopSpeech()">⏹ Stop</button>
 
 <div class="score-card">
 
-    <h2>📊 Speaking Score</h2>
-    
-    <div class="score">
-    Pronunciation:
-    <span id="pronunciationScore">0%</span>
-    
-    <div class="progress">
-    <div
-    id="pronunciationFill"
-    class="fill"
-    style="width:0%">
-    </div>
-    </div>
-    
-    </div>
-    
-    <div class="score">
-    Fluency:
-    <span id="fluencyScore">0%</span>
-    
-    <div class="progress">
-    <div
-    id="fluencyFill"
-    class="fill"
-    style="width:0%">
-    </div>
-    </div>
-    
-    </div>
+<h3>Pronunciation</h3>
+<div id="pronScore">0%</div>
+<div class="progress"><div class="fill" id="pronFill"></div></div>
 
+<h3>Fluency</h3>
+<div id="fluencyScore">0%</div>
+<div class="progress"><div class="fill" id="fluencyFill"></div></div>
 
-    
-    <div class="score">
-    Confidence:
-    <span id="confidenceScore">0%</span>
-    
-    <div class="progress">
-    <div
-    id="confidenceFill"
-    class="fill"
-    style="width:0%">
-    </div>
-    </div>
-    
-    </div>
-    
-    </div>
+<h3>Confidence</h3>
+<div id="confScore">0%</div>
+<div class="progress"><div class="fill" id="confFill"></div></div>
 
-<div class="feedback">
-
-<h2>💬 AI Feedback</h2>
-
-<p id="feedbackText">
-    Press Start Speaking...
-    </p>
-
-</div>
-
-<div class="challenge">
-
-<h2>🔥 Daily Speaking Challenge</h2>
-
-<div class="challenge-box">
-Describe your favorite food in English for 30 seconds.
+<div class="feedback" id="feedback">
+Press start speaking...
 </div>
 
 </div>
-
-<h2 style="margin-bottom:15px;">🗣 Speaking Topics</h2>
-
-<div class="topics">
-
-<div class="topic">
-<span>✈️</span>
-Travel
-</div>
-
-<div class="topic">
-<span>🍔</span>
-Restaurant
-</div>
-
-<div class="topic">
-<span>💼</span>
-Interview
-</div>
-
-<div class="topic">
-<span>🏫</span>
-School
-</div>
-
-<div class="topic">
-<span>🛒</span>
-Shopping
-</div>
-
-<div class="topic">
-<span>🎬</span>
-Movies
-</div>
-
 </div>
 
 <script>
 
+const WORKER_URL = "https://englishai.adyajaboleh197.workers.dev";
 
+let finalText = "";
 
-
-const WORKER_URL =
-"https://englishai.adyajaboleh197.workers.dev";
-
-// ELEMENTS
-
-const backBtn =
-document.getElementById("backBtn");
-
-const listenBtn =
-document.getElementById("listenBtn");
-
-const speakBtn =
-document.getElementById("speakBtn");
-
-const stopBtn =
-document.getElementById("stopBtn");
-
-const sentence =
-document.querySelector(".sentence");
-
-const speechResult =
-document.getElementById("speechResult");
-
-const feedbackText =
-document.getElementById("feedbackText");
-
-const countdown =
-document.getElementById("countdown");
-
-// DEBUG
-
-window.onerror = function(
-msg,
-url,
-line
-){
-
-console.error(
-msg,
-line
-);
-
-};
-
-// BACK
-
-backBtn.onclick = () => {
-
-window.location.href =
-"../index.html";
-
-};
-
-// DAILY SENTENCE
-
-const dailySentences = [
-
-"Nice to meet you. How are you today?",
-"What do you usually do on weekends?",
-"I would like to order a cup of coffee.",
-"Can you tell me where the station is?",
-"My favorite hobby is playing video games.",
-"I am learning English every day.",
-"What time does the movie start?",
-"I enjoy traveling with my family.",
-"The weather is beautiful today.",
-"I want to become a software developer."
-
-];
-
-function loadDailySentence(){
-
-const today =
-new Date().getDate();
-
-const index =
-today % dailySentences.length;
-
-sentence.textContent =
-dailySentences[index];
-
+// ================= ANDROID BRIDGE =================
+function listen(){
+    if(window.AndroidTTS){
+        AndroidTTS.speak(document.getElementById("sentence").innerText);
+    }
 }
 
-loadDailySentence();
+function startSpeech(){
+    finalText = "";
+    document.getElementById("speechResult").innerText = "Listening...";
 
-// COUNTDOWN
-
-function startCountdown(){
-
-function update(){
-
-const now =
-new Date();
-
-const next =
-new Date();
-
-next.setHours(
-24,
-0,
-0,
-0
-);
-
-const diff =
-next - now;
-
-const h =
-Math.floor(
-diff / 1000 / 60 / 60
-);
-
-const m =
-Math.floor(
-(diff / 1000 / 60) % 60
-);
-
-const s =
-Math.floor(
-(diff / 1000) % 60
-);
-
-countdown.textContent =
-`Next sentence in ${h}h ${m}m ${s}s`;
-
+    if(window.AndroidTTS){
+        AndroidTTS.startSpeech();
+    }
 }
 
-update();
-
-setInterval(
-update,
-1000
-);
-
+function stopSpeech(){
+    if(window.AndroidTTS){
+        AndroidTTS.stopSpeech();
+    }
 }
 
-startCountdown();
+// ================= RESULT FROM ANDROID =================
+window.onNativeSpeechResult = function(text){
 
-// TEXT TO SPEECH
+finalText = text;
 
-listenBtn.onclick = () => {
+document.getElementById("speechResult").innerText = text;
 
-speechSynthesis.cancel();
-
-const speech =
-new SpeechSynthesisUtterance(
-sentence.textContent
-);
-
-speech.lang = "en-US";
-speech.rate = 0.9;
-
-speechSynthesis.speak(
-speech
-);
-
-};
-
-// SCORE UPDATE
-
-function updateScores(score){
-
-const pronunciation =
-score;
-
-const fluency =
-Math.min(
-100,
-score + 10
-);
-
-const confidence =
-Math.min(
-100,
-score + 5
-);
-
-document.getElementById(
-"pronunciationScore"
-).textContent =
-pronunciation + "%";
-
-document.getElementById(
-"pronunciationFill"
-).style.width =
-pronunciation + "%";
-
-document.getElementById(
-"fluencyScore"
-).textContent =
-fluency + "%";
-
-document.getElementById(
-"fluencyFill"
-).style.width =
-fluency + "%";
-
-document.getElementById(
-"confidenceScore"
-).textContent =
-confidence + "%";
-
-document.getElementById(
-"confidenceFill"
-).style.width =
-confidence + "%";
-
-}
-
-// SIMILARITY
-
-function similarity(a,b){
-
-a =
-a.toLowerCase()
-.replace(/[^\w\s]/g,"");
-
-b =
-b.toLowerCase()
-.replace(/[^\w\s]/g,"");
-
-const arrA =
-a.split(" ");
-
-const arrB =
-b.split(" ");
-
-let same = 0;
-
-arrA.forEach(word=>{
-
-if(arrB.includes(word))
-same++;
-
-});
-
-return Math.round(
-same /
-arrA.length *
-100
-);
-
-}
-
-// SPEECH RECOGNITION
-
-const SpeechRecognition =
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
-
-let recognition = null;
-
-let finalTranscript = "";
-
-let isRecording = false;
-
-if(SpeechRecognition){
-
-recognition =
-new SpeechRecognition();
-
-recognition.lang =
-"en-US";
-
-recognition.continuous =
-false;
-
-recognition.interimResults =
-true;
-
-recognition.maxAlternatives =
-5;
-
-// START
-
-speakBtn.onclick = () => {
-
-if(isRecording)
-return;
-
-finalTranscript = "";
-
-speechResult.innerHTML =
-"🎙 Listening...";
-
-recognition.start();
-
-};
-
-// STOP
-
-stopBtn.onclick = () => {
-
-try{
-
-recognition.stop();
-
-}catch(e){
-
-console.error(e);
-
-}
-
-};
-
-// ON START
-
-recognition.onstart = () => {
-
-isRecording = true;
-
-speakBtn.innerHTML =
-"🎙 Listening...";
-
-speakBtn.classList.add(
-"listening"
-);
-
-feedbackText.innerHTML =
-"Listening...";
-
-};
-
-// ON RESULT
-
-recognition.onresult =
-(event) => {
-
-let interim = "";
-
-for(
-let i = event.resultIndex;
-i < event.results.length;
-i++
-){
-
-const text =
-event.results[i][0].transcript;
-
-if(
-event.results[i].isFinal
-){
-
-finalTranscript +=
-text + " ";
-
-}else{
-
-interim += text;
-
-}
-
-}
-
-speechResult.innerHTML =
-finalTranscript +
-"<span style='opacity:.5'>" +
-interim +
-"</span>";
-
-};
-
-// ON END
-
-recognition.onend =
-async () => {
-
-isRecording = false;
-
-speakBtn.innerHTML =
-"🎤 Start Speaking";
-
-speakBtn.classList.remove(
-"listening"
-);
-
-if(
-!finalTranscript.trim()
-){
-
-feedbackText.innerHTML =
-"No speech detected.";
-
-return;
-
-}
-
-const score =
-similarity(
-sentence.textContent,
-finalTranscript
+let score = similarity(
+document.getElementById("sentence").innerText,
+text
 );
 
 updateScores(score);
+sendToAI(text);
 
-feedbackText.innerHTML =
-"Analyzing...";
+};
+
+// ================= SCORE =================
+function similarity(a,b){
+
+a = a.toLowerCase();
+b = b.toLowerCase();
+
+let arrA = a.split(" ");
+let arrB = b.split(" ");
+
+let same = 0;
+
+arrA.forEach(w=>{
+if(arrB.includes(w)) same++;
+});
+
+return Math.round((same / arrA.length) * 100);
+}
+
+// ================= UI SCORE =================
+function updateScores(score){
+
+let fluency = Math.min(100, score + 10);
+let confidence = Math.min(100, score + 5);
+
+document.getElementById("pronScore").innerText = score + "%";
+document.getElementById("pronFill").style.width = score + "%";
+
+document.getElementById("fluencyScore").innerText = fluency + "%";
+document.getElementById("fluencyFill").style.width = fluency + "%";
+
+document.getElementById("confScore").innerText = confidence + "%";
+document.getElementById("confFill").style.width = confidence + "%";
+
+}
+
+// ================= AI =================
+async function sendToAI(text){
+
+document.getElementById("feedback").innerText = "Analyzing...";
 
 try{
 
-const res =
-await fetch(
-WORKER_URL,
-{
+const res = await fetch(WORKER_URL,{
 method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 mode:"speaking",
-message:
-finalTranscript
+message:text
 })
-}
-);
+});
 
-const data =
-await res.json();
+const data = await res.json();
 
-if(
-data.reply
-){
+document.getElementById("feedback").innerText =
+data.reply || "Good job!";
 
-feedbackText.innerHTML =
-data.reply;
-
-}else{
-
-if(score >= 95){
-
-feedbackText.innerHTML =
-"✅ Excellent! Your pronunciation is almost perfect.";
-
-}else if(
-score >= 80
-){
-
-feedbackText.innerHTML =
-"👍 Very good pronunciation.";
-
-}else if(
-score >= 60
-){
-
-feedbackText.innerHTML =
-"🙂 Good attempt. Keep practicing.";
-
-}else{
-
-feedbackText.innerHTML =
-"📚 Try again and speak more clearly.";
-
+}catch(e){
+document.getElementById("feedback").innerText = "Server error";
 }
 
 }
-
-}catch(err){
-
-feedbackText.innerHTML =
-"Server error.";
-
-console.error(err);
-
-}
-
-};
-
-// ERROR
-
-recognition.onerror =
-(err) => {
-
-isRecording = false;
-
-speakBtn.innerHTML =
-"🎤 Start Speaking";
-
-speakBtn.classList.remove(
-"listening"
-);
-
-feedbackText.innerHTML =
-"Microphone error.";
-
-console.error(err);
-
-};
-
-}else{
-
-feedbackText.innerHTML =
-"Speech Recognition not supported.";
-
-}
-
-
 
 </script>
 

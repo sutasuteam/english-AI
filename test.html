@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>English AI Speaking</title>
+
+<style>
+body{
+background:#0f1117;
+color:white;
+font-family:sans-serif;
+padding:20px;
+}
+
+button{
+padding:12px;
+margin:5px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.listen-btn{background:#333;color:white;}
+.mic-btn{background:#4facfe;color:white;}
+
+.box{
+background:#1b1f2e;
+padding:15px;
+border-radius:12px;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎤 Speaking AI</h2>
+
+<div id="sentence">Nice to meet you. How are you today?</div>
+
+<div class="box" id="result">Waiting...</div>
+
+<button class="listen-btn" onclick="listen()">🔊 Listen</button>
+<button class="mic-btn" onclick="start()">🎤 Speak</button>
+<button class="listen-btn" onclick="stop()">⏹ Stop</button>
+
+<h3>Score: <span id="score">0</span>%</h3>
+
+<script>
+
+// ================= TTS ANDROID =================
+function listen(){
+    if(window.AndroidTTS){
+        AndroidTTS.speak(document.getElementById("sentence").innerText);
+    }
+}
+
+// ================= START SPEECH =================
+function start(){
+    if(window.AndroidTTS){
+        AndroidTTS.startSpeech();
+    }
+}
+
+// ================= STOP SPEECH =================
+function stop(){
+    if(window.AndroidTTS){
+        AndroidTTS.stopSpeech();
+    }
+}
+
+// ================= RESULT FROM ANDROID =================
+window.onNativeSpeechResult = function(text){
+
+    document.getElementById("result").innerText = text;
+
+    let score = similarity(
+        document.getElementById("sentence").innerText,
+        text
+    );
+
+    document.getElementById("score").innerText = score;
+};
+
+// ================= SIMPLE SCORE =================
+function similarity(a,b){
+
+a = a.toLowerCase();
+b = b.toLowerCase();
+
+let arrA = a.split(" ");
+let arrB = b.split(" ");
+
+let same = 0;
+
+arrA.forEach(w=>{
+    if(arrB.includes(w)) same++;
+});
+
+return Math.round((same / arrA.length) * 100);
+}
+
+</script>
+
+</body>
+</html>

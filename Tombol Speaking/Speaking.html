@@ -286,6 +286,54 @@ Loading...
 
 </div>
 
+<div class="score-card">
+
+    <h2>📊 Speaking Score</h2>
+    
+    <div class="score">
+    Pronunciation:
+    <span id="pronunciationScore">0%</span>
+    
+    <div class="progress">
+    <div
+    id="pronunciationFill"
+    class="fill"
+    style="width:0%">
+    </div>
+    </div>
+    
+    </div>
+    
+    <div class="score">
+    Fluency:
+    <span id="fluencyScore">0%</span>
+    
+    <div class="progress">
+    <div
+    id="fluencyFill"
+    class="fill"
+    style="width:0%">
+    </div>
+    </div>
+    
+    </div>
+    
+    <div class="score">
+    Confidence:
+    <span id="confidenceScore">0%</span>
+    
+    <div class="progress">
+    <div
+    id="confidenceFill"
+    class="fill"
+    style="width:0%">
+    </div>
+    </div>
+    
+    </div>
+    
+    </div>
+
 <div class="feedback">
 
 <h2>💬 AI Feedback</h2>
@@ -771,21 +819,56 @@ console.log(
 data
 );
    
-    feedbackText.innerHTML =
-    data.reply;
-    
-    const fluency =
-    Math.min(
-    100,
-    score + 10
-    );
-    
-    const confidence =
-    Math.min(
-    100,
-    score + 5
-    );
+if(data.reply){
 
+feedbackText.innerHTML =
+data.reply;
+
+}else{
+
+if(score >= 95){
+
+feedbackText.innerHTML =
+"✅ Excellent! Your pronunciation is almost perfect.";
+
+}else if(score >= 80){
+
+feedbackText.innerHTML =
+"👍 Very good pronunciation. Only a few small mistakes.";
+
+}else if(score >= 60){
+
+feedbackText.innerHTML =
+"🙂 Good attempt. Keep practicing your pronunciation.";
+
+}else{
+
+feedbackText.innerHTML =
+"📚 Try again and speak more clearly.";
+
+}
+
+}
+    
+    document.getElementById(
+    "fluencyScore"
+    ).textContent =
+    fluency + "%";
+    
+    document.getElementById(
+    "fluencyFill"
+    ).style.width =
+    fluency + "%";
+    
+    document.getElementById(
+    "confidenceScore"
+    ).textContent =
+    confidence + "%";
+    
+    document.getElementById(
+    "confidenceFill"
+    ).style.width =
+    confidence + "%";
     
     }catch(err){
 

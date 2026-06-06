@@ -305,8 +305,7 @@ Loading...
     </div>
     
     <div class="score">
-    Fluency:
-    <span id="fluencyScore">0%</span>
+  
     
     <div class="progress">
     <div
@@ -829,13 +828,6 @@ if(data.reply){
     feedbackText.innerHTML =
 data.reply;
 
-// SCORE BAR
-
-const fluency =
-Math.min(100, score + 10);
-
-const confidence =
-Math.min(100, score + 5);
 
 // Pronunciation
 
@@ -857,69 +849,7 @@ if(pFill)
 pFill.style.width =
 score + "%";
 
-// Fluency
 
-const fScore =
-document.getElementById(
-"fluencyScore"
-);
-
-const fFill =
-document.getElementById(
-"fluencyFill"
-);
-
-if(fScore)
-fScore.textContent =
-fluency + "%";
-
-if(fFill)
-fFill.style.width =
-fluency + "%";
-
-// Confidence
-
-const cScore =
-document.getElementById(
-"confidenceScore"
-);
-
-const cFill =
-document.getElementById(
-"confidenceFill"
-);
-
-if(cScore)
-cScore.textContent =
-confidence + "%";
-
-if(cFill)
-cFill.style.width =
-confidence + "%";
-
-}else{
-
-if(score >= 95){
-
-feedbackText.innerHTML =
-"✅ Excellent! Your pronunciation is almost perfect.";
-
-}else if(score >= 80){
-
-feedbackText.innerHTML =
-"👍 Very good pronunciation. Only a few small mistakes.";
-
-}else if(score >= 60){
-
-feedbackText.innerHTML =
-"🙂 Good attempt. Keep practicing your pronunciation.";
-
-}else{
-
-feedbackText.innerHTML =
-"📚 Try again and speak more clearly.";
-
-}
 
 }
     

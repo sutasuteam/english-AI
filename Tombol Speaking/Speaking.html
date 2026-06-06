@@ -13,6 +13,57 @@ box-sizing:border-box;
 font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 }
 
+.footer{
+margin-top:40px;
+background:#181c28;
+border-radius:25px;
+padding:25px;
+color:#b8bfd6;
+}
+
+.footer-content{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.footer-left h3{
+margin-bottom:8px;
+color:white;
+}
+
+.footer-left p{
+font-size:14px;
+color:#b8bfd6;
+}
+
+.footer-right{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.footer-right a{
+color:#b8bfd6;
+text-decoration:none;
+font-size:14px;
+transition:0.2s;
+}
+
+.footer-right a:hover{
+color:#4facfe;
+}
+
+.footer-bottom{
+margin-top:15px;
+text-align:center;
+font-size:12px;
+color:#6b7280;
+border-top:1px solid #2f364b;
+padding-top:10px;
+}
+
 body{
 background:#0f1117;
 color:white;
@@ -119,6 +170,10 @@ color:#b8bfd6;
 Nice to meet you. How are you today?
 </div>
 
+<div id="countdown" style="margin:10px;color:#b8bfd6;">
+    Loading countdown...
+    </div>
+
 <div id="speechResult">Waiting speech...</div>
 
 <button class="listen-btn" onclick="listen()">🔊 Listen</button>
@@ -150,7 +205,11 @@ Press start speaking...
 
 const WORKER_URL = "https://englishai.adyajaboleh197.workers.dev";
 
+
 let finalText = "";
+
+let nextResetTime = null;
+
 
 // ================= ANDROID BRIDGE =================
 function listen(){
@@ -253,7 +312,72 @@ document.getElementById("feedback").innerText = "Server error";
 
 }
 
+async function loadSentence(){
+
+const res = await fetch(WORKER_URL + "/speaking/sentence");
+const data = await res.json();
+
+document.getElementById("sentence").innerText =
+  data.sentence || "No sentence";
+
+// set reset jam 00:00 besok
+const now = new Date();
+
+nextResetTime = new Date();
+nextResetTime.setDate(now.getDate() + 1);
+nextResetTime.setHours(0,0,0,0);
+
+}
+
+function startCountdown(){
+
+setInterval(() => {
+
+  if (!nextResetTime) return;
+
+  const now = new Date();
+  const diff = nextResetTime - now;
+
+  if (diff <= 0) {
+    loadSentence(); // refresh sentence
+    return;
+  }
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerText =
+    `Next sentence in: ${hours}h ${minutes}m ${seconds}s`;
+
+}, 1000);
+
+}
+
+loadSentence();
+startCountdown();
+
 </script>
+
+<footer class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <h3>English AI</h3>
+        <p>Learn English daily with AI-powered practice.</p>
+      </div>
+  
+      <div class="footer-right">
+        <a href="../index.html">Home</a>
+        <a href="speaking.html">Speaking</a>
+        <a href="writing.html">Writing</a>
+        <a href="quiz.html">Quiz</a>
+      </div>
+    </div>
+  
+    <div class="footer-bottom">
+      © 2026 English AI. All rights reserved.
+    </div>
+  </footer>
 
 </body>
 </html>

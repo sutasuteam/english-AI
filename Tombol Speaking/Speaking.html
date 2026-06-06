@@ -317,6 +317,12 @@ Loading...
     </div>
     
     </div>
+
+    <span id="fluencyScore"></span>
+<div id="fluencyFill"></div>
+
+<span id="confidenceScore"></span>
+<div id="confidenceFill"></div>
     
     <div class="score">
     Confidence:
@@ -824,34 +830,37 @@ if(data.reply){
     feedbackText.innerHTML =
 data.reply;
 
-// SCORE BAR
-
 const fluency =
-Math.min(100, score + 10);
+Math.min(
+100,
+score + 10
+);
 
 const confidence =
-Math.min(100, score + 5);
-
-// Pronunciation
-
-const pScore =
-document.getElementById(
-"pronunciationScore"
+Math.min(
+100,
+score + 5
 );
 
-const pFill =
 document.getElementById(
-"pronunciationFill"
-);
+"fluencyScore"
+).textContent =
+fluency + "%";
 
-if(pScore)
-pScore.textContent =
-score + "%";
+document.getElementById(
+"fluencyFill"
+).style.width =
+fluency + "%";
 
-if(pFill)
-pFill.style.width =
-score + "%";
+document.getElementById(
+"confidenceScore"
+).textContent =
+confidence + "%";
 
+document.getElementById(
+"confidenceFill"
+).style.width =
+confidence + "%";
 // Fluency
 
 const fScore =

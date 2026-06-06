@@ -394,427 +394,173 @@ Movies
 
 <script>
 
-    const WORKER_URL =
-    "https://englishai.adyajaboleh197.workers.dev";
-    
-    // ====================
-    // ELEMENT
-    // ====================
-    
-    const backBtn =
-    document.getElementById("backBtn");
-    
-    const listenBtn =
-    document.getElementById("listenBtn");
-    
-    const speakBtn =
-    document.getElementById("speakBtn");
-    
-    const stopBtn =
-    document.getElementById("stopBtn");
-    
-    const sentence =
-    document.querySelector(".sentence");
-    
-    const speechResult =
-    document.getElementById("speechResult");
-    
-    const feedbackText =
-    document.getElementById("feedbackText");
-    
-    const countdown =
-    document.getElementById("countdown");
 
 
-    //
-    window.onerror = function(
+
+const WORKER_URL =
+"https://englishai.adyajaboleh197.workers.dev";
+
+// ELEMENTS
+
+const backBtn =
+document.getElementById("backBtn");
+
+const listenBtn =
+document.getElementById("listenBtn");
+
+const speakBtn =
+document.getElementById("speakBtn");
+
+const stopBtn =
+document.getElementById("stopBtn");
+
+const sentence =
+document.querySelector(".sentence");
+
+const speechResult =
+document.getElementById("speechResult");
+
+const feedbackText =
+document.getElementById("feedbackText");
+
+const countdown =
+document.getElementById("countdown");
+
+// DEBUG
+
+window.onerror = function(
 msg,
 url,
-line,
-col,
-error
+line
 ){
 
-alert(
-msg +
-"\nLine: " +
+console.error(
+msg,
 line
 );
 
 };
 
-    //
+// BACK
 
-    function log(msg){
+backBtn.onclick = () => {
 
-console.log(msg);
-try{
-feedbackText.innerHTML += "<br>" + msg;
-}catch(e){
-console.log(e);
-}
-
-
-
-}
-
-console.log(
-"SpeechRecognition:",
-window.SpeechRecognition
-);
-
-console.log(
-"webkitSpeechRecognition:",
-window.webkitSpeechRecognition
-);
-
-
-
-    
-    // ====================
-    // BACK
-    // ====================
-    
-    backBtn.onclick = () => {
-    window.location.href =
-    "../index.html";
-    };
-    
-    // ====================
-    // DAILY SENTENCE
-    // ====================
-    
-    const dailySentences = [
-    
-    "Nice to meet you. How are you today?",
-    
-    "What do you usually do on weekends?",
-    
-    "I would like to order a cup of coffee.",
-    
-    "Can you tell me where the station is?",
-    
-    "My favorite hobby is playing video games.",
-    
-    "I am learning English every day.",
-    
-    "What time does the movie start?",
-    
-    "I enjoy traveling with my family.",
-    
-    "The weather is beautiful today.",
-    
-    "I want to become a software developer."
-    
-    ];
-    
-    function loadDailySentence(){
-    
-    const today =
-    new Date().getDate();
-    
-    const index =
-    today % dailySentences.length;
-    
-    sentence.textContent =
-    dailySentences[index];
-    
-    }
-    
-    loadDailySentence();
-    
-    // ====================
-    // COUNTDOWN
-    // ====================
-    
-    function startCountdown(){
-    
-    function update(){
-    
-    const now = new Date();
-    
-    const next = new Date();
-    
-    next.setHours(
-    24,
-    0,
-    0,
-    0
-    );
-    
-    const diff =
-    next - now;
-    
-    const h =
-    Math.floor(diff / 1000 / 60 / 60);
-    
-    const m =
-    Math.floor(
-    (diff / 1000 / 60) % 60
-    );
-    
-    const s =
-    Math.floor(
-    (diff / 1000) % 60
-    );
-    
-    countdown.textContent =
-    "Next sentence in " +
-    h + "h " +
-    m + "m " +
-    s + "s";
-    
-    }
-    
-    update();
-    
-    setInterval(update,1000);
-    
-    }
-    
-    startCountdown();
-    
-    // ====================
-    // SPEAK SENTENCE
-    // ====================
-    
-    listenBtn.onclick = () => {
-    
-    speechSynthesis.cancel();
-    
-    const speech =
-    new SpeechSynthesisUtterance(
-    sentence.textContent
-    );
-    
-    speech.lang = "en-US";
-    speech.rate = 0.9;
-    
-    speechSynthesis.speak(
-    speech
-    );
-    
-    };
-    
-    // ====================
-    // SPEECH RECOGNITION
-    // ====================
-    
-    const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-    
-    let recognition = null;
-    
-    let finalTranscript = "";
-    
-    let isRecording = false;
-    
-    if(SpeechRecognition){
-    
-    recognition =
-    new SpeechRecognition();
-    
-    recognition.lang =
-    "en-US";
-    
-    recognition.continuous = false;
-    
-    recognition.interimResults =
-    true;
-    
-    recognition.maxAlternatives =
-    5;
-    
-    // START
-    
-    speakBtn.onclick = () => {
-
-log("START CLICKED");
-
-if(isRecording) return;
-
-finalTranscript = "";
-
-speechResult.innerHTML =
-"🎙 Listening...";
-
-recognition.start();
+window.location.href =
+"../index.html";
 
 };
-    // ON START
-    
-    recognition.onstart = () => {
 
-console.log("MIC STARTED");
+// DAILY SENTENCE
 
-isRecording = true;
-    
-    speakBtn.innerHTML =
-    "🎙 Listening...";
-    
-    speakBtn.classList.add(
-    "listening"
-    );
-    
-    feedbackText.innerHTML =
-    "Listening...";
-    
-    };
-    
-    // RESULT
-    
-    recognition.onresult =
-(event) => {
+const dailySentences = [
 
-console.log(
-"RESULT EVENT",
-event.results
+"Nice to meet you. How are you today?",
+"What do you usually do on weekends?",
+"I would like to order a cup of coffee.",
+"Can you tell me where the station is?",
+"My favorite hobby is playing video games.",
+"I am learning English every day.",
+"What time does the movie start?",
+"I enjoy traveling with my family.",
+"The weather is beautiful today.",
+"I want to become a software developer."
+
+];
+
+function loadDailySentence(){
+
+const today =
+new Date().getDate();
+
+const index =
+today % dailySentences.length;
+
+sentence.textContent =
+dailySentences[index];
+
+}
+
+loadDailySentence();
+
+// COUNTDOWN
+
+function startCountdown(){
+
+function update(){
+
+const now =
+new Date();
+
+const next =
+new Date();
+
+next.setHours(
+24,
+0,
+0,
+0
 );
 
-let interim = "";
-    
-    for(
-    let i = event.resultIndex;
-    i < event.results.length;
-    i++
-    ){
-    
-    const text =
-    event.results[i][0].transcript;
-    
-    if(event.results[i].isFinal){
-    
-    finalTranscript +=
-    text + " ";
-    
-    }else{
-    
-    interim += text;
-    
-    }
-    
-    }
-    
-    speechResult.innerHTML =
-    finalTranscript +
-    "<span style='opacity:.5'>" +
-    interim +
-    "</span>";
-    
-    };
-    
-    // STOP BUTTON
-    
-    stopBtn.onclick = () => {
+const diff =
+next - now;
 
-log("STOP CLICKED");
+const h =
+Math.floor(
+diff / 1000 / 60 / 60
+);
 
-if(!recognition){
-log("Recognition null");
-return;
-}
+const m =
+Math.floor(
+(diff / 1000 / 60) % 60
+);
 
-try{
+const s =
+Math.floor(
+(diff / 1000) % 60
+);
 
-recognition.stop();
-
-log("STOP SENT");
-
-}catch(e){
-
-log("STOP ERROR");
+countdown.textContent =
+`Next sentence in ${h}h ${m}m ${s}s`;
 
 }
+
+update();
+
+setInterval(
+update,
+1000
+);
+
+}
+
+startCountdown();
+
+// TEXT TO SPEECH
+
+listenBtn.onclick = () => {
+
+speechSynthesis.cancel();
+
+const speech =
+new SpeechSynthesisUtterance(
+sentence.textContent
+);
+
+speech.lang = "en-US";
+speech.rate = 0.9;
+
+speechSynthesis.speak(
+speech
+);
 
 };
-    
-    // END
-    
-    recognition.onend = async () => {
 
-log("ONEND");
-    
-    isRecording = false;
-    
-    speakBtn.innerHTML =
-    "🎤 Start Speaking";
-    
-    speakBtn.classList.remove(
-    "listening"
-    );
+// SCORE UPDATE
 
-    log(
-"TRANSCRIPT = " +
-finalTranscript
-);
-    
-    if(
-    !finalTranscript.trim()
-    ){
-    
-    feedbackText.innerHTML =
-    "No speech detected.";
-    
-    return;
-    
-    }
-    const score =
-similarity(
-sentence.textContent,
-finalTranscript
-);
+function updateScores(score){
 
-console.log(
-"SCORE =",
-score
-);
-
-updateScores(score);
-    
-    document.getElementById(
-    "pronunciationFill"
-    ).style.width =
-    score + "%";
-    
-    feedbackText.innerHTML =
-    "Analyzing...";
-
-    console.log(
-"Sending to AI:",
-finalTranscript
-);
-    
-    try{
-    
-        const res =
-await fetch(
-WORKER_URL,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-
-
-
-body:JSON.stringify({
-mode:"speaking",
-message:finalTranscript
-
-
-})
-
-
-}
-);
-
-
-
-console.log(
-"HTTP STATUS:",
-res.status
-);
+const pronunciation =
+score;
 
 const fluency =
 Math.min(
@@ -828,68 +574,255 @@ Math.min(
 score + 5
 );
 
-console.log("FLUENCY =", fluency);
-console.log("CONFIDENCE =", confidence);
+document.getElementById(
+"pronunciationScore"
+).textContent =
+pronunciation + "%";
 
+document.getElementById(
+"pronunciationFill"
+).style.width =
+pronunciation + "%";
 
+document.getElementById(
+"fluencyScore"
+).textContent =
+fluency + "%";
+
+document.getElementById(
+"fluencyFill"
+).style.width =
+fluency + "%";
+
+document.getElementById(
+"confidenceScore"
+).textContent =
+confidence + "%";
+
+document.getElementById(
+"confidenceFill"
+).style.width =
+confidence + "%";
+
+}
+
+// SIMILARITY
+
+function similarity(a,b){
+
+a =
+a.toLowerCase()
+.replace(/[^\w\s]/g,"");
+
+b =
+b.toLowerCase()
+.replace(/[^\w\s]/g,"");
+
+const arrA =
+a.split(" ");
+
+const arrB =
+b.split(" ");
+
+let same = 0;
+
+arrA.forEach(word=>{
+
+if(arrB.includes(word))
+same++;
+
+});
+
+return Math.round(
+same /
+arrA.length *
+100
+);
+
+}
+
+// SPEECH RECOGNITION
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+let recognition = null;
+
+let finalTranscript = "";
+
+let isRecording = false;
+
+if(SpeechRecognition){
+
+recognition =
+new SpeechRecognition();
+
+recognition.lang =
+"en-US";
+
+recognition.continuous =
+false;
+
+recognition.interimResults =
+true;
+
+recognition.maxAlternatives =
+5;
+
+// START
+
+speakBtn.onclick = () => {
+
+if(isRecording)
+return;
+
+finalTranscript = "";
+
+speechResult.innerHTML =
+"🎙 Listening...";
+
+recognition.start();
+
+};
+
+// STOP
+
+stopBtn.onclick = () => {
+
+try{
+
+recognition.stop();
+
+}catch(e){
+
+console.error(e);
+
+}
+
+};
+
+// ON START
+
+recognition.onstart = () => {
+
+isRecording = true;
+
+speakBtn.innerHTML =
+"🎙 Listening...";
+
+speakBtn.classList.add(
+"listening"
+);
+
+feedbackText.innerHTML =
+"Listening...";
+
+};
+
+// ON RESULT
+
+recognition.onresult =
+(event) => {
+
+let interim = "";
+
+for(
+let i = event.resultIndex;
+i < event.results.length;
+i++
+){
+
+const text =
+event.results[i][0].transcript;
+
+if(
+event.results[i].isFinal
+){
+
+finalTranscript +=
+text + " ";
+
+}else{
+
+interim += text;
+
+}
+
+}
+
+speechResult.innerHTML =
+finalTranscript +
+"<span style='opacity:.5'>" +
+interim +
+"</span>";
+
+};
+
+// ON END
+
+recognition.onend =
+async () => {
+
+isRecording = false;
+
+speakBtn.innerHTML =
+"🎤 Start Speaking";
+
+speakBtn.classList.remove(
+"listening"
+);
+
+if(
+!finalTranscript.trim()
+){
+
+feedbackText.innerHTML =
+"No speech detected.";
+
+return;
+
+}
+
+const score =
+similarity(
+sentence.textContent,
+finalTranscript
+);
+
+updateScores(score);
+
+feedbackText.innerHTML =
+"Analyzing...";
+
+try{
+
+const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+mode:"speaking",
+message:
+finalTranscript
+})
+}
+);
 
 const data =
 await res.json();
 
-console.log(
-"AI RESPONSE:",
-data
-);
+if(
+data.reply
+){
 
-
-   
-if(data.reply){
-
-    feedbackText.innerHTML =
+feedbackText.innerHTML =
 data.reply;
-
-console.log("BEFORE FLUENCY");
-
-
-// Fluency
-
-const fScore =
-document.getElementById(
-"fluencyScore"
-);
-
-const fFill =
-document.getElementById(
-"fluencyFill"
-);
-
-if(fScore)
-fScore.textContent =
-fluency + "%";
-
-if(fFill)
-fFill.style.width =
-fluency + "%";
-
-// Confidence
-
-const cScore =
-document.getElementById(
-"confidenceScore"
-);
-
-const cFill =
-document.getElementById(
-"confidenceFill"
-);
-
-if(cScore)
-cScore.textContent =
-confidence + "%";
-
-if(cFill)
-cFill.style.width =
-confidence + "%";
 
 }else{
 
@@ -898,15 +831,19 @@ if(score >= 95){
 feedbackText.innerHTML =
 "✅ Excellent! Your pronunciation is almost perfect.";
 
-}else if(score >= 80){
+}else if(
+score >= 80
+){
 
 feedbackText.innerHTML =
-"👍 Very good pronunciation. Only a few small mistakes.";
+"👍 Very good pronunciation.";
 
-}else if(score >= 60){
+}else if(
+score >= 60
+){
 
 feedbackText.innerHTML =
-"🙂 Good attempt. Keep practicing your pronunciation.";
+"🙂 Good attempt. Keep practicing.";
 
 }else{
 
@@ -916,109 +853,49 @@ feedbackText.innerHTML =
 }
 
 }
-    
-    document.getElementById(
-    "fluencyScore"
-    ).textContent =
-    fluency + "%";
-    
-    document.getElementById(
-    "fluencyFill"
-    ).style.width =
-    fluency + "%";
-    
-    document.getElementById(
-    "confidenceScore"
-    ).textContent =
-    confidence + "%";
-    
-    document.getElementById(
-    "confidenceFill"
-    ).style.width =
-    confidence + "%";
-    
-    }catch(err){
 
-log(
-"FETCH ERROR: " +
-err.message
-);
+}catch(err){
+
+feedbackText.innerHTML =
+"Server error.";
 
 console.error(err);
 
 }
-    
-    };
-    
-    recognition.onerror =
-(err)=>{
 
-log(
-"ERROR: " +
-err.error
+};
+
+// ERROR
+
+recognition.onerror =
+(err) => {
+
+isRecording = false;
+
+speakBtn.innerHTML =
+"🎤 Start Speaking";
+
+speakBtn.classList.remove(
+"listening"
 );
-    
-    isRecording = false;
-    
-    speakBtn.innerHTML =
-    "🎤 Start Speaking";
-    
-    speakBtn.classList.remove(
-    "listening"
-    );
-    
-    feedbackText.innerHTML =
-    "Microphone error.";
-    
-    console.error(err);
-    
-    };
-    
-    }else{
-    
-    feedbackText.innerHTML =
-    "Speech Recognition not supported.";
-    
-    }
-    
-    // ====================
-    // SIMILARITY
-    // ====================
-    
-    function similarity(a,b){
-    
-    a =
-    a.toLowerCase()
-    .replace(/[^\w\s]/g,"");
-    
-    b =
-    b.toLowerCase()
-    .replace(/[^\w\s]/g,"");
-    
-    const arrA =
-    a.split(" ");
-    
-    const arrB =
-    b.split(" ");
-    
-    let same = 0;
-    
-    arrA.forEach(word=>{
-    
-    if(arrB.includes(word))
-    same++;
-    
-    });
-    
-    return Math.round(
-    same /
-    arrA.length *
-    100
-    );
-    
-    }
-    
-    </script>
+
+feedbackText.innerHTML =
+"Microphone error.";
+
+console.error(err);
+
+};
+
+}else{
+
+feedbackText.innerHTML =
+"Speech Recognition not supported.";
+
+}
+
+
+
+</script>
 
 </body>
 </html>

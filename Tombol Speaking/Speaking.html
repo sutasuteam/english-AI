@@ -567,8 +567,7 @@ window.webkitSpeechRecognition
     recognition.lang =
     "en-US";
     
-    recognition.continuous =
-    true;
+    recognition.continuous = false;
     
     recognition.interimResults =
     true;
@@ -709,17 +708,16 @@ finalTranscript
     return;
     
     }
-    
     const score =
-    similarity(
-    sentence.textContent,
-    finalTranscript
-    );
-    
-    document.getElementById(
-    "pronunciationScore"
-    ).textContent =
-    score + "%";
+similarity(
+sentence.textContent,
+finalTranscript
+);
+
+console.log(
+"SCORE =",
+score
+);
     
     document.getElementById(
     "pronunciationFill"
@@ -744,12 +742,21 @@ method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
+
+
+
 body:JSON.stringify({
 mode:"speaking",
 message:finalTranscript
+
+
 })
+
+
 }
 );
+
+
 
 console.log(
 "HTTP STATUS:",

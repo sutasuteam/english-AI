@@ -642,43 +642,58 @@ aiUserInput.addEventListener("keypress", e => e.key === "Enter" && kirimPesan())
 
 // ✅ FUNGSI PINDAH HALAMAN
 
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
+let isSending = false;
+  let isListening = false;
 
-let sessionId = localStorage.getItem("session_id");
+  // session id SAFE (tidak error redeclare)
+  let sessionId = localStorage.getItem("session_id");
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("session_id", sessionId);
+  }
+ // ===================== SPEECH RECOGNITION SAFE
+ const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-if (!sessionId) {
-  sessionId = crypto.randomUUID();
-  localStorage.setItem("session_id", sessionId);
-}
+  let recognition = null;
 
-let recognition;
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
 
-if (SpeechRecognition) {
-  recognition = new SpeechRecognition();
-  recognition.lang = "en-US";
+    micBtn.onclick = () => {
+      if (isListening) return;
 
-  micBtn.onclick = () => {
-    micBtn.innerHTML = "🎙️";
-    recognition.start();
-  };
+      try {
+        isListening = true;
+        micBtn.innerHTML = "🎙️";
+        recognition.start();
+      } catch (e) {
+        console.log("Mic error:", e);
+        isListening = false;
+      }
+    };
 
-  recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    aiUserInput.value = text;
-    kirimPesan();
-  };
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      aiUserInput.value = text;
+      kirimPesan();
+    };
 
-  recognition.onend = () => (micBtn.innerHTML = "🎤");
-}
+    recognition.onerror = (e) => {
+      console.log("Speech error:", e);
+      isListening = false;
+      micBtn.innerHTML = "🎤";
+    };
 
-aiSendBtn.onclick = kirimPesan;
-aiUserInput.addEventListener("keypress", (e) =>
-  e.key === "Enter" && kirimPesan()
-);
+    recognition.onend = () => {
+      isListening = false;
+      micBtn.innerHTML = "🎤";
+    };
+  }
 
 // ===================== SEND MESSAGE
-let isSending = false;
+
 
 async function kirimPesan() {
   if (isSending) return;
@@ -857,15 +872,19 @@ window.SpeechRecognition,
 window.webkitSpeechRecognition
 );
 
-// ===================== SPEECH
-function speakText(text) {
-  speechSynthesis.cancel();
-  const speech = new SpeechSynthesisUtterance(text);
-  speech.lang = "en-US";
-  speech.rate = 1;
-  speechSynthesis.speak(speech);
-}
 
+  // ===================== SPEECH SYNTH FIX (WEBVIEW SAFE)
+  function speakText(text) {
+    if (!window.speechSynthesis) return;
+
+    window.speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.rate = 1;
+
+    window.speechSynthesis.speak(speech);
+  }
 
 // ===================== LOAD HISTORY
 async function loadHistory() {
@@ -893,6 +912,8 @@ async function loadHistory() {
     console.log("No history");
   }
 }
+
+
 
 window.onload = loadHistory;
 

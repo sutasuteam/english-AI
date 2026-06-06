@@ -83,8 +83,10 @@ color:#4facfe;
 }
 
 .buttons{
-display:flex;
-gap:15px;
+display:grid;
+grid-template-columns:1fr;
+gap:12px;
+margin-top:20px;
 }
 
 .buttons button{
@@ -175,6 +177,26 @@ grid-template-columns:repeat(2,1fr);
 gap:15px;
 }
 
+.listening{
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.05);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
 .topic{
 background:#181c28;
 padding:20px;
@@ -215,8 +237,32 @@ Improve pronunciation and build speaking confidence with AI.
 <h2>Today's Sentence</h2>
 
 <div class="sentence">
-"Nice to meet you. How are you today?"
+    "Nice to meet you. How are you today?"
+    </div>
+
+    <div id="countdown"
+style="
+margin-top:10px;
+color:#b8bfd6;
+font-size:14px;
+">
+Loading...
 </div>
+    
+    <div id="speechResult"
+    style="
+    margin-top:20px;
+    padding:15px;
+    background:#252c42;
+    border-radius:15px;
+    min-height:60px;
+    color:#4facfe;
+    ">
+    Waiting for speech...
+    </div>
+
+
+
 
 <div class="buttons">
     <button id="listenBtn" class="listen-btn">
@@ -224,54 +270,20 @@ Improve pronunciation and build speaking confidence with AI.
         </button>
         
         <button id="speakBtn" class="mic-btn">
-        🎤 Start Speaking
-        </button>
+            🎤 Start Speaking
+            </button>
+            
+            <button id="stopBtn"
+            class="listen-btn">
+            ⏹ Stop
+            </button>
 </div>
 
-</div>
 
-<div class="score-card">
 
-<h2>Speaking Score</h2>
 
-<div class="score">
-Pronunciation 90%
-<div class="progress">
-<div class="fill" style="width:90%"></div>
-</div>
-</div>
-<div class="score">
-    Pronunciation
-    <span id="pronunciationScore">0%</span>
-    
-    <div class="progress">
-    <div id="pronunciationFill"
-    class="fill"
-    style="width:0%"></div>
-    </div>
-    </div>
-    
-    <div class="score">
-    Fluency
-    <span id="fluencyScore">0%</span>
-    
-    <div class="progress">
-    <div id="fluencyFill"
-    class="fill"
-    style="width:0%"></div>
-    </div>
-    </div>
-    
-    <div class="score">
-    Confidence
-    <span id="confidenceScore">0%</span>
-    
-    <div class="progress">
-    <div id="confidenceFill"
-    class="fill"
-    style="width:0%"></div>
-    </div>
-    </div>
+
+
 </div>
 
 <div class="feedback">
@@ -332,14 +344,15 @@ Movies
 
 <script>
 
-const backBtn =
-document.getElementById("backBtn");
-backBtn.onclick = () => {
-    window.location.href = "../index.html";
-};
-
     const WORKER_URL =
     "https://englishai.adyajaboleh197.workers.dev";
+    
+    // ====================
+    // ELEMENT
+    // ====================
+    
+    const backBtn =
+    document.getElementById("backBtn");
     
     const listenBtn =
     document.getElementById("listenBtn");
@@ -347,18 +360,131 @@ backBtn.onclick = () => {
     const speakBtn =
     document.getElementById("speakBtn");
     
+    const stopBtn =
+    document.getElementById("stopBtn");
+    
     const sentence =
     document.querySelector(".sentence");
+    
+    const speechResult =
+    document.getElementById("speechResult");
     
     const feedbackText =
     document.getElementById("feedbackText");
     
+    const countdown =
+    document.getElementById("countdown");
     
-    // ========================
-    // TEXT TO SPEECH
-    // ========================
+    // ====================
+    // BACK
+    // ====================
+    
+    backBtn.onclick = () => {
+    window.location.href =
+    "../index.html";
+    };
+    
+    // ====================
+    // DAILY SENTENCE
+    // ====================
+    
+    const dailySentences = [
+    
+    "Nice to meet you. How are you today?",
+    
+    "What do you usually do on weekends?",
+    
+    "I would like to order a cup of coffee.",
+    
+    "Can you tell me where the station is?",
+    
+    "My favorite hobby is playing video games.",
+    
+    "I am learning English every day.",
+    
+    "What time does the movie start?",
+    
+    "I enjoy traveling with my family.",
+    
+    "The weather is beautiful today.",
+    
+    "I want to become a software developer."
+    
+    ];
+    
+    function loadDailySentence(){
+    
+    const today =
+    new Date().getDate();
+    
+    const index =
+    today % dailySentences.length;
+    
+    sentence.textContent =
+    dailySentences[index];
+    
+    }
+    
+    loadDailySentence();
+    
+    // ====================
+    // COUNTDOWN
+    // ====================
+    
+    function startCountdown(){
+    
+    function update(){
+    
+    const now = new Date();
+    
+    const next = new Date();
+    
+    next.setHours(
+    24,
+    0,
+    0,
+    0
+    );
+    
+    const diff =
+    next - now;
+    
+    const h =
+    Math.floor(diff / 1000 / 60 / 60);
+    
+    const m =
+    Math.floor(
+    (diff / 1000 / 60) % 60
+    );
+    
+    const s =
+    Math.floor(
+    (diff / 1000) % 60
+    );
+    
+    countdown.textContent =
+    "Next sentence in " +
+    h + "h " +
+    m + "m " +
+    s + "s";
+    
+    }
+    
+    update();
+    
+    setInterval(update,1000);
+    
+    }
+    
+    startCountdown();
+    
+    // ====================
+    // SPEAK SENTENCE
+    // ====================
     
     listenBtn.onclick = () => {
+    
+    speechSynthesis.cancel();
     
     const speech =
     new SpeechSynthesisUtterance(
@@ -366,61 +492,184 @@ backBtn.onclick = () => {
     );
     
     speech.lang = "en-US";
+    speech.rate = 0.9;
     
-    speechSynthesis.speak(speech);
+    speechSynthesis.speak(
+    speech
+    );
     
     };
     
-    
-    // ========================
+    // ====================
     // SPEECH RECOGNITION
-    // ========================
+    // ====================
     
     const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
     
+    let recognition = null;
+    
+    let finalTranscript = "";
+    
+    let isRecording = false;
+    
     if(SpeechRecognition){
     
-    const recognition =
+    recognition =
     new SpeechRecognition();
     
-    recognition.lang = "en-US";
+    recognition.lang =
+    "en-US";
     
-    recognition.interimResults = false;
+    recognition.continuous =
+    true;
     
-    recognition.continuous = false;
+    recognition.interimResults =
+    true;
+    
+    recognition.maxAlternatives =
+    5;
+    
+    // START
     
     speakBtn.onclick = () => {
     
-    speakBtn.innerHTML =
+    if(isRecording) return;
+    
+    finalTranscript = "";
+    
+    speechResult.innerHTML =
     "🎙 Listening...";
     
     recognition.start();
     
     };
     
-    recognition.onresult =
-    async (event)=>{
+    // ON START
     
-    const transcript =
-    event.results[0][0].transcript;
+    recognition.onstart = () => {
+    
+    isRecording = true;
+    
+    speakBtn.innerHTML =
+    "🎙 Listening...";
+    
+    speakBtn.classList.add(
+    "listening"
+    );
     
     feedbackText.innerHTML =
-    "Analyzing with AI...";
+    "Listening...";
+    
+    };
+    
+    // RESULT
+    
+    recognition.onresult =
+    (event) => {
+    
+    let interim = "";
+    
+    for(
+    let i = event.resultIndex;
+    i < event.results.length;
+    i++
+    ){
+    
+    const text =
+    event.results[i][0].transcript;
+    
+    if(event.results[i].isFinal){
+    
+    finalTranscript +=
+    text + " ";
+    
+    }else{
+    
+    interim += text;
+    
+    }
+    
+    }
+    
+    speechResult.innerHTML =
+    finalTranscript +
+    "<span style='opacity:.5'>" +
+    interim +
+    "</span>";
+    
+    };
+    
+    // STOP BUTTON
+    
+    stopBtn.onclick = () => {
+    
+    if(!isRecording) return;
+    
+    recognition.stop();
+    
+    };
+    
+    // END
+    
+    recognition.onend =
+    async () => {
+    
+    isRecording = false;
+    
+    speakBtn.innerHTML =
+    "🎤 Start Speaking";
+    
+    speakBtn.classList.remove(
+    "listening"
+    );
+    
+    if(
+    !finalTranscript.trim()
+    ){
+    
+    feedbackText.innerHTML =
+    "No speech detected.";
+    
+    return;
+    
+    }
+    
+    const score =
+    similarity(
+    sentence.textContent,
+    finalTranscript
+    );
+    
+    document.getElementById(
+    "pronunciationScore"
+    ).textContent =
+    score + "%";
+    
+    document.getElementById(
+    "pronunciationFill"
+    ).style.width =
+    score + "%";
+    
+    feedbackText.innerHTML =
+    "Analyzing...";
     
     try{
     
-    const res = await fetch(
+    const res =
+    await fetch(
     WORKER_URL,
     {
     method:"POST",
     headers:{
-    "Content-Type":"application/json"
+    "Content-Type":
+    "application/json"
     },
     body:JSON.stringify({
     mode:"speaking",
-    message:transcript
+    message:
+    finalTranscript
     })
     }
     );
@@ -431,29 +680,65 @@ backBtn.onclick = () => {
     feedbackText.innerHTML =
     data.reply;
     
-    generateFakeScore();
+    const fluency =
+    Math.min(
+    100,
+    score + 10
+    );
+    
+    const confidence =
+    Math.min(
+    100,
+    score + 5
+    );
+    
+    document.getElementById(
+    "fluencyScore"
+    ).textContent =
+    fluency + "%";
+    
+    document.getElementById(
+    "fluencyFill"
+    ).style.width =
+    fluency + "%";
+    
+    document.getElementById(
+    "confidenceScore"
+    ).textContent =
+    confidence + "%";
+    
+    document.getElementById(
+    "confidenceFill"
+    ).style.width =
+    confidence + "%";
     
     }catch(err){
     
     feedbackText.innerHTML =
-    "Failed to connect AI.";
+    "AI connection failed.";
     
     console.error(err);
     
     }
     
-    speakBtn.innerHTML =
-    "🎤 Start Speaking";
-    
     };
     
-    recognition.onerror = ()=>{
+    recognition.onerror =
+    (err)=>{
+    
+    isRecording = false;
     
     speakBtn.innerHTML =
     "🎤 Start Speaking";
+    
+    speakBtn.classList.remove(
+    "listening"
+    );
     
     feedbackText.innerHTML =
     "Microphone error.";
+    
+    console.error(err);
     
     };
     
@@ -464,51 +749,40 @@ backBtn.onclick = () => {
     
     }
     
+    // ====================
+    // SIMILARITY
+    // ====================
     
-    // ========================
-    // SCORE DEMO
-    // ========================
+    function similarity(a,b){
     
-    function generateFakeScore(){
+    a =
+    a.toLowerCase()
+    .replace(/[^\w\s]/g,"");
     
-    const p =
-    Math.floor(
-    80 + Math.random()*20
+    b =
+    b.toLowerCase()
+    .replace(/[^\w\s]/g,"");
+    
+    const arrA =
+    a.split(" ");
+    
+    const arrB =
+    b.split(" ");
+    
+    let same = 0;
+    
+    arrA.forEach(word=>{
+    
+    if(arrB.includes(word))
+    same++;
+    
+    });
+    
+    return Math.round(
+    same /
+    arrA.length *
+    100
     );
-    
-    const f =
-    Math.floor(
-    75 + Math.random()*25
-    );
-    
-    const c =
-    Math.floor(
-    78 + Math.random()*22
-    );
-    
-    document.getElementById(
-    "pronunciationScore"
-    ).textContent = p + "%";
-    
-    document.getElementById(
-    "fluencyScore"
-    ).textContent = f + "%";
-    
-    document.getElementById(
-    "confidenceScore"
-    ).textContent = c + "%";
-    
-    document.getElementById(
-    "pronunciationFill"
-    ).style.width = p + "%";
-    
-    document.getElementById(
-    "fluencyFill"
-    ).style.width = f + "%";
-    
-    document.getElementById(
-    "confidenceFill"
-    ).style.width = c + "%";
     
     }
     

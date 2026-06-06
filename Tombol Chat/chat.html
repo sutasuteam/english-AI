@@ -240,11 +240,13 @@ class="send-btn">
 <script>
 
     // 🔥 SESSION ID (WAJIB TARUH DI AWAL)
-if (!localStorage.getItem("session_id")) {
-  localStorage.setItem(
-    "session_id",
-    crypto.randomUUID()
-  );
+    if (!localStorage.getItem("chat_session_id")) {
+
+localStorage.setItem(
+  "chat_session_id",
+  crypto.randomUUID()
+);
+
 }
 
 const WORKER_URL =
@@ -355,7 +357,7 @@ try{
 
 
   const sessionId =
-localStorage.getItem("session_id");
+localStorage.getItem("chat_session_id");
 
 const res = await fetch(
 WORKER_URL,

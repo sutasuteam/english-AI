@@ -455,8 +455,12 @@ console.log(msg);
 
 try{
 feedbackText.innerHTML += "<br>" + msg;
-}catch(e){
-console.log(e);
+} catch(err){
+
+console.error(err);
+
+// jangan tampilkan error ke user
+
 }
 
 }

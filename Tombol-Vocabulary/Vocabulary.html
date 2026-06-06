@@ -157,6 +157,20 @@ justify-content:left;
 
 }
 
+#meaningArea{
+max-height:0;
+overflow:hidden;
+opacity:0;
+transition:all .3s ease;
+text-align:left;
+}
+
+#meaningArea.show{
+max-height:500px;
+opacity:1;
+margin-top:25px;
+}
+
 #difficultySelect{
 background:#181c28;
 color:white;
@@ -304,7 +318,7 @@ style="margin-top:10px;">
 🔊 Listen
 </button>
     
-            <div id="meaningArea" style="display:none;">
+            <div id="meaningArea" >
                 <h3>Meaning</h3>
                 <p id="indoMeaning">
                     Antusias
@@ -344,41 +358,52 @@ style="margin-top:10px;">
 const listenBtn =
 document.getElementById("listenBtn");
 
-listenBtn.onclick = () => {
+listenBtn.addEventListener("click", () => {
 
-const text = `
-${englishWord.textContent}.
-${exampleSentence.textContent}
-`;
+const word =
+document.getElementById("englishWord")
+.textContent.trim();
+
+const example =
+document.getElementById("exampleSentence")
+.textContent.trim();
 
 speechSynthesis.cancel();
 
 const utter =
-new SpeechSynthesisUtterance(text);
+new SpeechSynthesisUtterance(
+`${word}. ${example}`
+);
 
 utter.lang = "en-US";
 utter.rate = 0.9;
+utter.pitch = 1;
 
 speechSynthesis.speak(utter);
 
-};
-        listenBtn.onclick = speakWord;
-        
-        showMeaningBtn.onclick = () => {
-        
-          if(
-            meaningArea.style.display === "none"
-          ){
-            meaningArea.style.display = "block";
-            showMeaningBtn.textContent =
-            "Hide Meaning";
-          }else{
-            meaningArea.style.display = "none";
-            showMeaningBtn.textContent =
-            "Show Meaning";
-          }
-        
-        };
+});
+
+
+const showMeaningBtn =
+document.getElementById("showMeaningBtn");
+
+
+showMeaningBtn.addEventListener("click",()=>{
+
+meaningArea.classList.toggle("show");
+
+showMeaningBtn.textContent =
+meaningArea.classList.contains("show")
+? "Hide Meaning"
+: "Show Meaning";
+
+});
+
+const meaningArea =
+document.getElementById("meaningArea");
+
+
+       
         
         async function loadTodayWord(){
 
@@ -405,20 +430,20 @@ try{
 
   }
 
-  englishWord.textContent =
-    wordData.word;
+  document.getElementById("englishWord").textContent =
+wordData.word;
 
-  indoMeaning.textContent =
-    wordData.meaning;
+document.getElementById("indoMeaning").textContent =
+wordData.meaning;
 
-  pronunciation.textContent =
-    wordData.pronunciation;
+document.getElementById("pronunciation").textContent =
+wordData.pronunciation;
 
-  exampleSentence.textContent =
-    wordData.example;
+document.getElementById("exampleSentence").textContent =
+wordData.example;
 
-  wordLevel.textContent =
-    wordData.level;
+document.getElementById("wordLevel").textContent =
+wordData.level;
 
 }
 catch(err){

@@ -375,14 +375,35 @@ Movies
     const countdown =
     document.getElementById("countdown");
 
+
+    //
+    window.onerror = function(
+msg,
+url,
+line,
+col,
+error
+){
+
+alert(
+msg +
+"\nLine: " +
+line
+);
+
+};
+
     //
 
     function log(msg){
 
 console.log(msg);
 
-feedbackText.innerHTML +=
-"<br>" + msg;
+try{
+feedbackText.innerHTML += "<br>" + msg;
+}catch(e){
+console.log(e);
+}
 
 }
 
@@ -575,9 +596,9 @@ recognition.start();
     
     recognition.onstart = () => {
 
-log("ONSTART");
-    
-    isRecording = true;
+console.log("MIC STARTED");
+
+isRecording = true;
     
     speakBtn.innerHTML =
     "🎙 Listening...";
@@ -594,9 +615,12 @@ log("ONSTART");
     // RESULT
     
     recognition.onresult =
-(event)=>{
+(event) => {
 
-log("ONRESULT");
+console.log(
+"RESULT EVENT",
+event.results
+);
 
 let interim = "";
     

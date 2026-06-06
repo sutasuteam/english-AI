@@ -318,11 +318,7 @@ Loading...
     
     </div>
 
-    <span id="fluencyScore"></span>
-<div id="fluencyFill"></div>
 
-<span id="confidenceScore"></span>
-<div id="confidenceFill"></div>
     
     <div class="score">
     Confidence:
@@ -773,6 +769,8 @@ console.log(
 "SCORE =",
 score
 );
+
+updateScores(score);
     
     document.getElementById(
     "pronunciationFill"
@@ -833,25 +831,7 @@ score + 5
 console.log("FLUENCY =", fluency);
 console.log("CONFIDENCE =", confidence);
 
-document.getElementById(
-"fluencyScore"
-).textContent =
-fluency + "%";
 
-document.getElementById(
-"fluencyFill"
-).style.width =
-fluency + "%";
-
-document.getElementById(
-"confidenceScore"
-).textContent =
-confidence + "%";
-
-document.getElementById(
-"confidenceFill"
-).style.width =
-confidence + "%";
 
 const data =
 await res.json();

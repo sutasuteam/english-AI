@@ -377,6 +377,14 @@ Movies
 
     //
 
+    function log(msg){
+
+console.log(msg);
+
+feedbackText.innerHTML +=
+"<br>" + msg;
+
+}
 
 console.log(
 "SpeechRecognition:",
@@ -550,21 +558,24 @@ window.webkitSpeechRecognition
     // START
     
     speakBtn.onclick = () => {
-    
-    if(isRecording) return;
-    
-    finalTranscript = "";
-    
-    speechResult.innerHTML =
-    "🎙 Listening...";
-    
-    recognition.start();
-    
-    };
-    
+
+log("START CLICKED");
+
+if(isRecording) return;
+
+finalTranscript = "";
+
+speechResult.innerHTML =
+"🎙 Listening...";
+
+recognition.start();
+
+};
     // ON START
     
     recognition.onstart = () => {
+
+log("ONSTART");
     
     isRecording = true;
     
@@ -583,9 +594,11 @@ window.webkitSpeechRecognition
     // RESULT
     
     recognition.onresult =
-    (event) => {
-    
-    let interim = "";
+(event)=>{
+
+log("ONRESULT");
+
+let interim = "";
     
     for(
     let i = event.resultIndex;
@@ -620,17 +633,33 @@ window.webkitSpeechRecognition
     // STOP BUTTON
     
     stopBtn.onclick = () => {
-    
-    if(!isRecording) return;
-    
-    recognition.stop();
-    
-    };
+
+log("STOP CLICKED");
+
+if(!recognition){
+log("Recognition null");
+return;
+}
+
+try{
+
+recognition.stop();
+
+log("STOP SENT");
+
+}catch(e){
+
+log("STOP ERROR");
+
+}
+
+};
     
     // END
     
-    recognition.onend =
-    async () => {
+    recognition.onend = async () => {
+
+log("ONEND");
     
     isRecording = false;
     
@@ -640,6 +669,11 @@ window.webkitSpeechRecognition
     speakBtn.classList.remove(
     "listening"
     );
+
+    log(
+"TRANSCRIPT = " +
+finalTranscript
+);
     
     if(
     !finalTranscript.trim()
@@ -670,29 +704,42 @@ window.webkitSpeechRecognition
     
     feedbackText.innerHTML =
     "Analyzing...";
+
+    console.log(
+"Sending to AI:",
+finalTranscript
+);
     
     try{
     
-    const res =
-    await fetch(
-    WORKER_URL,
-    {
-    method:"POST",
-    headers:{
-    "Content-Type":
-    "application/json"
-    },
-    body:JSON.stringify({
-    mode:"speaking",
-    message:
-    finalTranscript
-    })
-    }
-    );
-    
-    const data =
-    await res.json();
-    
+        const res =
+await fetch(
+WORKER_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+mode:"speaking",
+message:finalTranscript
+})
+}
+);
+
+console.log(
+"HTTP STATUS:",
+res.status
+);
+
+const data =
+await res.json();
+
+console.log(
+"AI RESPONSE:",
+data
+);
+   
     feedbackText.innerHTML =
     data.reply;
     
@@ -740,7 +787,12 @@ window.webkitSpeechRecognition
     };
     
     recognition.onerror =
-    (err)=>{
+(err)=>{
+
+log(
+"ERROR: " +
+err.error
+);
     
     isRecording = false;
     

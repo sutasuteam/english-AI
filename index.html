@@ -542,70 +542,7 @@ const mainPage = document.getElementById("mainPage");
 const micBtn =
 document.getElementById("micBtn");
 
-const SpeechRecognition =
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
 
-let sessionId =
-localStorage.getItem("session_id");
-
-if(!sessionId){
-
-  sessionId =
-  crypto.randomUUID();
-
-  localStorage.setItem(
-    "session_id",
-    sessionId
-  );
-
-}
-let recognition;
-
-if(SpeechRecognition){
-
-recognition =
-new SpeechRecognition();
-
-recognition.lang = "en-US";
-recognition.continuous = false;
-recognition.interimResults = false;
-
-micBtn.onclick = () => {
-
-micBtn.innerHTML = "🎙️";
-
-recognition.start();
-
-};
-
-
-
-recognition.onerror = (e) => {
-
-console.log(e);
-
-micBtn.innerHTML = "🎤";
-
-};
-
-recognition.onend = () => {
-
-micBtn.innerHTML = "🎤";
-
-};
-
-}else{
-
-micBtn.onclick = () => {
-
-alert(
-"Speech Recognition tidak didukung perangkat ini."
-);
-
-};
-
-}
 
 console.log("Button ditemukan:", aiSendBtn);
 
@@ -685,16 +622,19 @@ writingBtn.onclick = () => {
     "Tombol Writing/writing.html";
 };
 
-QuizBtn.onclick = () => {
-    window.location.href =
-    "Tombol-Quiz/Quiz.html";
-};
+const QuizBtn = document.getElementById("QuizBtn");
+if (QuizBtn) {
+  QuizBtn.onclick = () => {
+    window.location.href = "Tombol-Quiz/Quiz.html";
+  };
+}
 
-StoryBtn.onclick = () => {
-    window.location.href =
-    "Tombol-Story/Story.html";
-};
-
+const StoryBtn = document.getElementById("StoryBtn");
+if (StoryBtn) {
+  StoryBtn.onclick = () => {
+    window.location.href = "Tombol-Story/Story.html";
+  };
+}
 
 // Pasang Tombol Umum
 aiSendBtn.onclick = kirimPesan;
@@ -702,210 +642,179 @@ aiUserInput.addEventListener("keypress", e => e.key === "Enter" && kirimPesan())
 
 // ✅ FUNGSI PINDAH HALAMAN
 
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 
+let sessionId = localStorage.getItem("session_id");
 
-
-
-
-// ==========================================
-// 🚀 speakText
-// ==========================================
-
-function speakText(text){
-
-speechSynthesis.cancel();
-
-const speech =
-new SpeechSynthesisUtterance(text);
-
-speech.lang = "en-US";
-speech.rate = 1;
-speech.pitch = 1;
-
-speechSynthesis.speak(speech);
-
+if (!sessionId) {
+  sessionId = crypto.randomUUID();
+  localStorage.setItem("session_id", sessionId);
 }
 
-// ==========================================
-// 📤 KIRIM PESAN
-// ==========================================
+let recognition;
 
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
 
+  micBtn.onclick = () => {
+    micBtn.innerHTML = "🎙️";
+    recognition.start();
+  };
+
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    aiUserInput.value = text;
+    kirimPesan();
+  };
+
+  recognition.onend = () => (micBtn.innerHTML = "🎤");
+}
+
+aiSendBtn.onclick = kirimPesan;
+aiUserInput.addEventListener("keypress", (e) =>
+  e.key === "Enter" && kirimPesan()
+);
+
+// ===================== SEND MESSAGE
 let isSending = false;
 
 async function kirimPesan() {
-    if (isSending) return;
-    isSending = true;
+  if (isSending) return;
+  isSending = true;
 
-    const pesan = aiUserInput.value.trim();
-    if (!pesan) {
-        isSending = false;
-        return;
-    }
+  const pesan = aiUserInput.value.trim();
+  if (!pesan) {
+    isSending = false;
+    return;
+  }
 
-    aiUserInput.value = "";
+  aiUserInput.value = "";
 
-    tampilkanPesan({
-        
-        role: "user",
-        message: pesan
+  tampilkanPesan({
+    id: null,
+    role: "user",
+    message: pesan,
+  });
+
+  const status = document.createElement("div");
+  status.className = "chat-bubble ai";
+  status.innerHTML = "⚡ Memproses...";
+  aiChatPreview.appendChild(status);
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: pesan,
+        session_id: sessionId,
+        mode: "chat",
+      }),
     });
 
-    const status = document.createElement("div");
-    status.className = "chat-bubble ai";
-    status.innerHTML = "⚡ Memproses...";
-    aiChatPreview.appendChild(status);
+    const aiResult = await res.json();
 
-    try {
-        const res = await fetch(WORKER_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-  message: pesan,
-  session_id: sessionId,
-  mode: "chat"
-})
-        });
+    const reply =
+      aiResult?.reply ||
+      aiResult?.response ||
+      aiResult?.result ||
+      aiResult?.answer ||
+      "No response";
 
-        if (!res.ok) throw new Error("Network error");
+    status.remove();
 
-        const data = await res.json();
+    tampilkanPesan({
+      id: aiResult?.id || null,
+      role: "ai",
+      message: reply,
+    });
 
-        status.remove();
+    speakText(reply);
+  } catch (err) {
+    console.error(err);
+    status.remove();
 
-        tampilkanPesan({
-            id: data.id,
-            role: "ai",
-            message: data.reply
-        });
+    tampilkanPesan({
+      role: "ai",
+      message: "Server Error",
+    });
+  }
 
-        speakText(data.reply);
-
-    } catch (err) {
-        console.error(err);
-
-        status.remove();
-
-        tampilkanPesan({
-            role: "ai",
-            message: "Server Error"
-        });
-    }
-
-    isSending = false;
+  isSending = false;
 }
 
+// ===================== CHAT UI
+function tampilkanPesan(data) {
+  const placeholder = document.querySelector(".chat-placeholder");
+  if (placeholder) placeholder.remove();
 
+  const bubble = document.createElement("div");
+  bubble.className =
+    data.role === "user" ? "chat-bubble user" : "chat-bubble ai";
 
-function tampilkanPesan(data){
-
-const placeholder =
-document.querySelector(".chat-placeholder");
-
-if(placeholder){
-    placeholder.remove();
-}
-
-const bubble = document.createElement("div");
-
-bubble.className =
-    data.role === "user"
-    ? "chat-bubble user"
-    : "chat-bubble ai";
-
-    bubble.innerHTML = `
-    ${data.message}
+  bubble.innerHTML = `
+    <span class="msg-text">${data.message}</span>
 
     ${
-      data.id
-      ? `
+      data.role === "ai"
+        ? `
       <div class="msg-actions">
-          <button class="edit-btn">✏️</button>
-          <button class="del-btn">🗑️</button>
+        <button class="edit-btn">✏️</button>
+        <button class="del-btn">🗑️</button>
       </div>
-      `
-      : ""
+    `
+        : ""
     }
-`;
-if(!data.id) return;
-aiChatPreview.appendChild(bubble);
+  `;
 
-aiChatPreview.scrollTop =
-    aiChatPreview.scrollHeight;
+  aiChatPreview.appendChild(bubble);
 
-    const editBtn = bubble.querySelector(".edit-btn");
-const delBtn = bubble.querySelector(".del-btn");
+  const editBtn = bubble.querySelector(".edit-btn");
+  const delBtn = bubble.querySelector(".del-btn");
 
-editBtn.onclick = async () => {
+  if (editBtn) {
+    editBtn.onclick = async () => {
+      const teksBaru = prompt("Edit pesan:", data.message);
+      if (!teksBaru) return;
 
-  const teksBaru = prompt(
-    "Edit pesan:",
-    data.message
-  );
+      data.message = teksBaru;
+      bubble.querySelector(".msg-text").textContent = teksBaru;
 
-  if(!teksBaru) return;
-
-  try{
-
-    await fetch(
-      WORKER_URL,
-      {
-        method:"PUT",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-  id:data.id,
-  message:teksBaru,
-  session_id:sessionId
-})
+      if (data.id) {
+        await fetch(WORKER_URL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: data.id,
+            message: teksBaru,
+          }),
+        });
       }
-    );
-
-    bubble.childNodes[0].textContent =
-      teksBaru;
-
-  }catch(err){
-
-    console.error(err);
-    alert("Gagal edit");
-
+    };
   }
 
-};
+  if (delBtn) {
+    delBtn.onclick = async () => {
+      if (!confirm("Hapus pesan ini?")) return;
 
-delBtn.onclick = async () => {
+      if (data.id) {
+        const res = await fetch(`${WORKER_URL}?id=${data.id}`, {
+          method: "DELETE",
+        });
 
-  if(!confirm("Hapus pesan ini?"))
-    return;
-
-  try{
-
-    const res = await fetch(
-  `${WORKER_URL}?id=${data.id}&session_id=${sessionId}`,
-  {
-    method:"DELETE"
-  }
-);
-
-    const result = await res.json();
-
-    console.log(result);
-
-    if(result.success){
-      bubble.remove();
-    }
-
-  }catch(err){
-
-    console.error(err);
-    alert("Gagal hapus");
-
+        const result = await res.json();
+        if (result.success) bubble.remove();
+      } else {
+        bubble.remove();
+      }
+    };
   }
 
-};
-
+  aiChatPreview.scrollTop = aiChatPreview.scrollHeight;
 }
+
 
  // ✅ PENUTUP fungsi tampilkanPesan()
 
@@ -948,33 +857,45 @@ window.SpeechRecognition,
 window.webkitSpeechRecognition
 );
 
-window.onload = loadHistory;
+// ===================== SPEECH
+function speakText(text) {
+  speechSynthesis.cancel();
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  speech.rate = 1;
+  speechSynthesis.speak(speech);
+}
 
-async function loadHistory(){
 
-const res = await fetch(
-  `${WORKER_URL}?session_id=${sessionId}&mode=chat`
-);
+// ===================== LOAD HISTORY
+async function loadHistory() {
+  try {
+    const res = await fetch(
+      `${WORKER_URL}?session_id=${sessionId}&mode=chat`
+    );
 
-const chats = await res.json();
+    const chats = await res.json();
 
-chats.forEach(chat => {
-
-    tampilkanPesan({
+    chats.forEach((chat) => {
+      tampilkanPesan({
         id: chat.id,
         role: "user",
-        message: chat.user_message
-    });
+        message: chat.user_message,
+      });
 
-    tampilkanPesan({
+      tampilkanPesan({
         id: chat.id,
         role: "ai",
-        message: chat.ai_reply
+        message: chat.ai_reply,
+      });
     });
-
-});
-
+  } catch (e) {
+    console.log("No history");
+  }
 }
+
+window.onload = loadHistory;
+
 
 
 </script>

@@ -354,11 +354,20 @@ style="margin-top:10px;">
 
 
     <script>
-
 const listenBtn =
 document.getElementById("listenBtn");
 
 listenBtn.addEventListener("click", () => {
+
+if (!("speechSynthesis" in window)) {
+
+alert(
+"Speech Synthesis tidak didukung WebView ini"
+);
+
+return;
+
+}
 
 const word =
 document.getElementById("englishWord")
@@ -367,8 +376,6 @@ document.getElementById("englishWord")
 const example =
 document.getElementById("exampleSentence")
 .textContent.trim();
-
-speechSynthesis.cancel();
 
 const utter =
 new SpeechSynthesisUtterance(
@@ -379,7 +386,8 @@ utter.lang = "en-US";
 utter.rate = 0.9;
 utter.pitch = 1;
 
-speechSynthesis.speak(utter);
+window.speechSynthesis.cancel();
+window.speechSynthesis.speak(utter);
 
 });
 

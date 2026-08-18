@@ -1,924 +1,727 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI English Learning</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English Learn</title>
+<link rel="shortcut icon" href="icons/favicon-32.png" type="image/x-icon">
 
-<link rel="shortcut icon" href="icon/english ai.png" type="image/x-icon">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="English Learn">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+:root{
+  --bg:#0f172a; --surface:#1a2333; --surface2:#212d42; --border:#2c3a52;
+  --text:#f0f4fa; --muted:#93a1bd; --accent:#2563eb; --accent2:#60a5fa;
+  --good:#22c55e; --bad:#ef4444; --warn:#f5a623;
 }
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); padding-bottom:70px;}
+header.top{padding:16px 18px 10px; position:sticky; top:0; background:var(--bg); z-index:10; border-bottom:1px solid var(--border);}
+header.top h1{font-size:20px; font-weight:800;}
+nav.maintabs{display:flex; gap:6px; padding:10px 12px; position:sticky; top:52px; background:var(--bg); z-index:9; border-bottom:1px solid var(--border); overflow-x:auto;}
+nav.maintabs button{flex-shrink:0; padding:10px 14px; border:none; border-radius:10px; background:var(--surface); color:var(--muted); font-weight:700; font-size:13px; cursor:pointer;}
+nav.maintabs button.active{background:var(--accent); color:#fff;}
+main{padding:14px;}
+.tab{display:none;} .tab.active{display:block;}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:14px;}
+.card h3{font-size:14px; margin-bottom:10px; color:var(--accent2);}
+.big-btn{width:100%; padding:14px; border:none; border-radius:12px; font-weight:800; font-size:14.5px; cursor:pointer; background:var(--accent); color:#fff; margin-top:8px;}
+.big-btn.secondary{background:var(--surface2); color:var(--text);}
+input,select{width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:14px; margin-bottom:8px;}
 
-body{
-    background:#0f1117;
-    color:white;
-    overflow-x:hidden;
-}
+/* KOSAKATA */
+.word-result{background:var(--surface2); border-radius:10px; padding:14px; margin-top:10px;}
+.word-title{font-size:22px; font-weight:800; color:var(--accent2);}
+.word-phonetic{color:var(--muted); font-size:13px; margin-bottom:8px;}
+.word-pos{display:inline-block; background:var(--accent); color:#fff; font-size:10.5px; padding:2px 8px; border-radius:99px; margin:6px 0 4px;}
+.word-def{font-size:13.5px; margin-bottom:4px;}
+.word-example{font-size:12.5px; color:var(--muted); font-style:italic;}
+.wotd-card{text-align:center;}
+.wotd-word{font-size:28px; font-weight:900; color:var(--accent2); margin-bottom:4px;}
 
-.container{
-    width:100%;
-    min-height:100vh;
-    padding:20px;
-    padding-bottom:220px;
-    display:block;
-}
+/* GRAMMAR LIST */
+.topic-item{background:var(--surface2); border-radius:10px; padding:14px; margin-bottom:10px; cursor:pointer;}
+.topic-item h4{font-size:14.5px; margin-bottom:4px;}
+.topic-item p{font-size:12px; color:var(--muted);}
+.lesson-text{font-size:13.5px; line-height:1.7; margin-bottom:12px;}
+.lesson-example{background:var(--surface2); border-left:3px solid var(--accent2); padding:8px 12px; border-radius:6px; margin-bottom:8px; font-size:13px;}
 
-/* ✅ TAMBAHAN: Halaman Roleplay */
+/* QUIZ SHARED */
+.quiz-question{font-size:17px; font-weight:700; margin-bottom:14px; line-height:1.5;}
+.quiz-option{display:block; width:100%; text-align:left; padding:12px 14px; margin-bottom:8px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:13.5px; cursor:pointer;}
+.quiz-option.correct{background:rgba(34,197,94,.2); border-color:var(--good);}
+.quiz-option.wrong{background:rgba(239,68,68,.2); border-color:var(--bad);}
+.quiz-explain{background:var(--surface2); border-radius:10px; padding:12px; margin-top:10px; font-size:13px; color:var(--muted); display:none; line-height:1.6;}
+.quiz-explain.show{display:block;}
+.quiz-score{color:var(--muted); font-size:12.5px; margin-bottom:10px;}
 
+/* IDIOM */
+.idiom-item{background:var(--surface2); border-radius:10px; padding:12px; margin-bottom:8px;}
+.idiom-phrase{font-weight:700; font-size:14px; color:var(--accent2);}
+.idiom-meaning{font-size:12.5px; margin:4px 0;}
+.idiom-example{font-size:12px; color:var(--muted); font-style:italic;}
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
-}
+/* READING */
+.passage-box{background:var(--surface2); border-radius:10px; padding:14px; font-size:13.5px; line-height:1.8; margin-bottom:14px;}
 
-.logo{
-    font-size:28px;
-    font-weight:700;
-    background:linear-gradient(90deg,#4facfe,#00f2fe);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-/* ✅ DIUBAH: Latar putih bulat pas, TANPA garis biru */
-.profile{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    background:#ffffff;
-    padding:4px;
-    object-fit:contain;
-    border:none;
-}
-
-.back-btn{
-    background:rgba(255,255,255,0.1);
-    border:none;
-    color:white;
-    padding:8px 15px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:14px;
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.hero{
-    background:linear-gradient(135deg,#1b1f2e,#252c42);
-    border-radius:30px;
-    padding:30px;
-    margin-bottom:30px;
-    position:relative;
-    overflow:hidden;
-    box-shadow:0 10px 40px rgba(0,0,0,0.4);
-}
-
-.hero::before{
-    content:'';
-    position:absolute;
-    width:200px;
-    height:200px;
-    background:rgba(79,172,254,0.15);
-    border-radius:50%;
-    top:-80px;
-    right:-80px;
-}
-
-.hero h1{
-    font-size:34px;
-    margin-bottom:15px;
-    line-height:1.2;
-}
-
-.hero p{
-    color:#b8bfd6;
-    line-height:1.7;
-    margin-bottom:25px;
-}
-
-
-.start-btn{
-    background:linear-gradient(90deg,#4facfe,#00f2fe);
-    border:none;
-    color:white;
-    padding:14px 28px;
-    border-radius:15px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.start-btn:hover{
-    transform:scale(1.05);
-}
-
-.section-title{
-    font-size:24px;
-    font-weight:600;
-    margin-bottom:20px;
-}
-
-.feature-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:18px;
-    margin-bottom:35px;
-}
-
-.feature-card{
-    background:#181c28;
-    border-radius:25px;
-    padding:22px;
-    transition:0.3s;
-    border:1px solid rgba(255,255,255,0.04);
-    cursor:pointer;
-}
-
-.Daily-Focus{
-    background:#181c28;
-    
-    padding:22px;
-    transition:0.3s;
-    
-    cursor:pointer;
-}
-
-.feature-card:hover{
-    transform:translateY(-5px);
-    background:#1f2433;
-}
-
-.icon{
-    width:60px;
-    height:60px;
-    border-radius:18px;
-    background:linear-gradient(135deg,#4facfe,#00f2fe);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:28px;
-    margin-bottom:18px;
-}
-
-.feature-card h3{
-    font-size:18px;
-    margin-bottom:10px;
-}
-
-.feature-card p{
-    font-size:14px;
-    color:#9ea7c5;
-    line-height:1.6;
-}
-
-.chat-preview{
-    background:#181c28;
-    border-radius:28px;
-    padding:25px;
-    margin-bottom:35px;
-    max-height:500px;
-    overflow-y:auto;
-    padding-bottom:120px;
-}
-
-.chat-bubble{
-    padding:15px 18px;
-    border-radius:18px;
-    margin-bottom:15px;
-    max-width:80%;
-    line-height:1.6;
-    font-size:15px;
-    word-wrap:break-word;
-    position:relative;
-}
-
-.ai{
-    background:#252c42;
-    color:white;
-}
-
-.user{
-    background:linear-gradient(90deg,#4facfe,#00f2fe);
-    margin-left:auto;
-}
-
-.msg-actions{
-    position:absolute;
-    top:-8px;
-    right:-8px;
-    display:flex;
-    gap:5px;
-    opacity:1;
-    transition:0.2s;
-}
-.chat-bubble:hover .msg-actions{
-    opacity:1;
-}
-
-.chat-placeholder{
-    color:#7d87a7;
-    text-align:left;
-    padding:40px 20px;
-    line-height:1.8;
-    font-size:15px;
-}
-
-.edit-btn, .del-btn{
-    background:rgba(0,0,0,0.6);
-    border:none;
-    color:white;
-    width:24px;
-    height:24px;
-    border-radius:50%;
-    font-size:12px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-.edit-btn:hover{background:#2ecc71;}
-.del-btn:hover{background:#e74c3c;}
-
-.edit-form{
-    display:none;
-    margin-top:8px;
-    gap:8px;
-}
-.edit-input{
-    flex:1;
-    padding:8px 12px;
-    border-radius:8px;
-    border:none;
-    background:rgba(255,255,255,0.15);
-    color:white;
-}
-.save-btn, .cancel-btn{
-    padding:6px 12px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:13px;
-}
-.save-btn{background:#2ecc71; color:white;}
-.cancel-btn{background:#95a5a6; color:white;}
-
-
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    background:#141824;
-    border-top:1px solid rgba(255,255,255,0.05);
-    display:flex;
-    justify-content:space-around;
-    padding:15px 0;
-    z-index:100;
-}
-
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    color:#7d87a7;
-    font-size:12px;
-    gap:6px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.nav-item.active{
-    color:#4facfe;
-}
-
-.nav-icon{
-    font-size:22px;
-}
-
-.mini-card-wrap{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-}
-
-.mini-card{
-    background:#181c28;
-    border-radius:24px;
-    padding:20px;
-}
-
-.mini-card h4{
-    margin-bottom:10px;
-    font-size:17px;
-}
-
-.mini-card p{
-    color:#9ea7c5;
-    font-size:14px;
-    line-height:1.6;
-}
-
-.mic-btn{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#4facfe,#00f2fe);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:34px;
-    margin:30px auto;
-    box-shadow:0 0 30px rgba(79,172,254,0.4);
-    animation:pulse 2s infinite;
-}
-
-.chat-input-area{
-    position:fixed;
-    bottom:80px;
-    left:0;
-    width:100%;
-    display:flex;
-    gap:10px;
-    padding:15px;
-    background:#0f1117;
-    z-index:99;
-}
-
-.chat-input{
-    flex:1;
-    border:none;
-    outline:none;
-    background:#181c28;
-    color:white;
-    padding:16px;
-    border-radius:18px;
-    font-size:15px;
-}
-
-.send-btn{
-    width:60px;
-    border:none;
-    border-radius:18px;
-    background:linear-gradient(135deg,#4facfe,#00f2fe);
-    color:white;
-    font-size:22px;
-    cursor:pointer;
-}
-
-/* ✅ TAMBAHAN: Style Kartu Skenario Roleplay */
-
-
-@keyframes pulse{
-    0%{ transform:scale(1); }
-    50%{ transform:scale(1.06); }
-    100%{ transform:scale(1); }
-}
-
-@media(max-width:600px){
-.hero h1{ font-size:28px; }
-.feature-grid{ grid-template-columns:1fr 1fr; }
-.mini-card-wrap{ grid-template-columns:1fr; }
-}
+.streak-box{text-align:center; padding:16px 0;}
+.streak-num{font-size:52px; font-weight:900; color:var(--accent2);}
+.streak-label{color:var(--muted); font-size:13px;}
+.log-item{padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; color:var(--muted); display:flex; justify-content:space-between;}
+.back-link{color:var(--accent2); font-weight:700; font-size:13px; margin-bottom:12px; display:inline-block; cursor:pointer;}
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- ✅ HALAMAN UTAMA -->
-<div class="container" id="mainPage">
-<div class="header">
-    <div class="logo">English AI</div>
-    <img src="icon/english ai.png" alt="Logo" class="profile">
-</div>
+<header class="top"><h1>📖 English Learn</h1></header>
 
-<div class="hero">
-    <h1>Learn English With AI</h1>
-    <p>
-        Practice speaking, grammar, listening, and roleplay naturally with your personal AI English teacher.
-    </p><button id="startLearningBtn" class="start-btn">
-        Start Learning
-    </button>
-</div>
+<nav class="maintabs">
+  <button data-tab="kosakata" class="active">📖 Kosakata</button>
+  <button data-tab="grammar">📝 Grammar</button>
+  <button data-tab="membaca">📚 Membaca</button>
+  <button data-tab="idiom">💬 Idiom</button>
+  <button data-tab="harian">🎯 Kuis Harian</button>
+  <button data-tab="progress">📈 Progress</button>
+</nav>
 
-<h2 class="section-title">AI Features</h2>
-<div class="feature-grid"> 
-    <div class="feature-card" id="chatBtn">
-    <div class="icon">💬</div>
-    <h3>AI Chat</h3>
-    <p>Talk naturally with AI and improve your English daily.</p>
-</div>
-<div class="feature-card" id="SpeakingBtn">
-    <div class="icon">🎤</div>
-    <h3>Speaking</h3>
-    <p>Practice pronunciation and speaking confidence.</p>
-</div>
-<!-- ✅ TOMBOL ROLEPLAY SUDAH DIBERI ID -->
-<div class="feature-card" id="roleplayBtn">
-    <div class="icon">🎭</div>
-    <h3>Roleplay</h3>
-    <p>Train with airport, restaurant, and interview scenarios.</p>
-</div>
-<div class="feature-card" id="writingBtn">
-    <div class="icon">✍️</div>
-    <h3>Writing</h3>
-    <p>Practice writing and get AI corrections instantly.</p>
-</div>
-</div>
+<main>
 
-<h2 class="section-title">AI Conversation</h2>
-<div class="chat-preview" id="chatPreview">
-    <div class="chat-placeholder">
-        👋 Start chatting with AI English Teacher...
-        <br><br>
-        Try:
-        <br>
-        • How do I improve my English?
-        <br>
-        • Correct my grammar
-        <br>
-        • Teach me 5 new vocabulary words
+  <!-- ================= KOSAKATA ================= -->
+  <section id="tab-kosakata" class="tab active">
+    <div class="card wotd-card">
+      <h3>✨ Kata Hari Ini</h3>
+      <div class="wotd-word" id="wotdWord">-</div>
+      <div id="wotdContent" style="text-align:left;"></div>
     </div>
-</div>
+    <div class="card">
+      <h3>🔍 Cari Kata</h3>
+      <input type="text" id="dictSearchInput" placeholder="Ketik kata bahasa Inggris...">
+      <button class="big-btn" id="dictSearchBtn">Cari Arti</button>
+      <div id="dictResult"></div>
+    </div>
+  </section>
 
-<div class="mic-btn" id="micBtn">
-    🎤
+  <!-- ================= GRAMMAR ================= -->
+  <section id="tab-grammar" class="tab">
+    <div id="grammarListView">
+      <div class="card">
+        <h3>Pilih Topik</h3>
+        <div id="grammarTopicList"></div>
+      </div>
     </div>
+    <div id="grammarDetailView" style="display:none;">
+      <span class="back-link" id="backToGrammarList">← Kembali ke Daftar Topik</span>
+      <div class="card">
+        <h3 id="grammarDetailTitle"></h3>
+        <div class="lesson-text" id="grammarLessonText"></div>
+        <div id="grammarExamples"></div>
+      </div>
+      <div class="card">
+        <h3>🎯 Kuis Topik Ini</h3>
+        <div class="quiz-score" id="grammarQuizScore">Skor: 0 benar / 0 soal</div>
+        <div class="quiz-question" id="grammarQuizQuestion">-</div>
+        <div id="grammarQuizOptions"></div>
+        <div class="quiz-explain" id="grammarQuizExplain"></div>
+        <button class="big-btn secondary" id="grammarQuizNextBtn" style="display:none;">Soal Berikutnya →</button>
+      </div>
+    </div>
+  </section>
 
-<h2 class="section-title">Daily Focus</h2>
-<div class="mini-card-wrap">
-<div class="mini-card">
-    <div class="Daily-Focus" id="vocabularyBtn">
-        <h3>Vocabulary</h3>
-        <p>Learn smart vocabulary generated by AI.</p>
+  <!-- ================= MEMBACA ================= -->
+  <section id="tab-membaca" class="tab">
+    <div id="readingListView">
+      <div class="card">
+        <h3>Pilih Bacaan</h3>
+        <div id="readingTopicList"></div>
+      </div>
     </div>
-</div>
-<div class="mini-card">
-    <div class="Daily-Focus" id="grammarBtn">
-        <h3>Grammar</h3>
-        <p>Fix grammar mistakes and learn English rules easily.</p>
+    <div id="readingDetailView" style="display:none;">
+      <span class="back-link" id="backToReadingList">← Kembali ke Daftar Bacaan</span>
+      <div class="card">
+        <h3 id="readingDetailTitle"></h3>
+        <div class="passage-box" id="readingPassageText"></div>
+      </div>
+      <div class="card">
+        <h3>❓ Pertanyaan Pemahaman</h3>
+        <div class="quiz-score" id="readingQuizScore">Soal 1 dari 3</div>
+        <div class="quiz-question" id="readingQuizQuestion">-</div>
+        <div id="readingQuizOptions"></div>
+        <div class="quiz-explain" id="readingQuizExplain"></div>
+        <button class="big-btn secondary" id="readingQuizNextBtn" style="display:none;">Lanjut →</button>
+      </div>
     </div>
-</div>
-<div class="mini-card">
-    <div class="Daily-Focus" id="QuizBtn">
-        <h3>Quiz</h3>
-        <p>Challenge yourself with English quizzes and track your learning progress every day.</p>
-    </div>
-</div>
-<div class="mini-card">
-    <div class="Daily-Focus" id="StoryBtn">
-        <h3>Story</h3>
-        <p>Learn English naturally through engaging stories and real-life situations.</p>
-    </div>
-</div>
-</div>
-</div>
+  </section>
 
-<!-- ✅ HALAMAN ROLEPLAY BARU -->
+  <!-- ================= IDIOM ================= -->
+  <section id="tab-idiom" class="tab">
+    <div class="card">
+      <h3>💬 Idiom & Frasa Umum</h3>
+      <input type="text" id="idiomSearchInput" placeholder="Cari idiom...">
+      <div id="idiomList"></div>
+    </div>
+  </section>
 
+  <!-- ================= KUIS HARIAN ================= -->
+  <section id="tab-harian" class="tab">
+    <div class="card" id="dailyIntroCard">
+      <h3>🎯 Kuis Harian</h3>
+      <p id="dailyStatusText" style="color:var(--muted); font-size:13px; margin-bottom:10px;">Memuat status...</p>
+      <button class="big-btn" id="dailyStartBtn">Mulai Kuis Hari Ini</button>
+    </div>
+    <div class="card" id="dailyQuizCard" style="display:none;">
+      <div class="quiz-score" id="dailyProgress">Soal 1 dari 6</div>
+      <div class="quiz-question" id="dailyQuestion">-</div>
+      <div id="dailyOptions"></div>
+      <div class="quiz-explain" id="dailyExplain"></div>
+      <button class="big-btn secondary" id="dailyNextBtn" style="display:none;">Lanjut →</button>
+    </div>
+    <div class="card" id="dailyResultCard" style="display:none;">
+      <h3>Hasil Hari Ini</h3>
+      <p id="dailyResultText" style="text-align:center; font-size:20px; font-weight:800;"></p>
+    </div>
+  </section>
 
-<div class="chat-input-area">
-<input type="text" id="userInput" placeholder="Type your English here..." class="chat-input"/>
-<button id="sendBtn" class="send-btn">➤</button>
-</div>
+  <!-- ================= PROGRESS ================= -->
+  <section id="tab-progress" class="tab">
+    <div class="card streak-box">
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">hari berturut-turut kuis harian 🔥</div>
+    </div>
+    <div class="card">
+      <h3>Riwayat Kuis Harian</h3>
+      <div id="logList"></div>
+    </div>
+  </section>
 
-<div class="bottom-nav">
-
-    <div class="nav-item active" id="navHomeBtn">
-        <div class="nav-icon">🏠</div>
-        Home
-    </div>
-    
-    <div class="nav-item" id="navChatBtn">
-        <div class="nav-icon">💬</div>
-        Chat
-    </div>
-    
-    <div class="nav-item" id="navSpeakingBtn">
-        <div class="nav-icon">🎤</div>
-        Speak
-    </div>
-    
-    <div class="nav-item" id="navLearnBtn">
-        <div class="nav-icon">📚</div>
-        Learn
-    </div>
-    
-    <div class="nav-item" id="navSettingsBtn">
-        <div class="nav-icon">⚙️</div>
-        Settings
-    </div>
-    
-    </div>
+</main>
 
 <script>
-
-
-// ✅ URL CLOUDFLARE WORKER
-const WORKER_URL =
-  "https://englishai.adyajaboleh197.workers.dev";
-
-
-
-
-
-
-// Elemen Utama
-const aiSendBtn = document.getElementById("sendBtn");
-const aiUserInput = document.getElementById("userInput");
-const aiChatPreview = document.getElementById("chatPreview");
-const mainPage = document.getElementById("mainPage");
-
-const micBtn =
-document.getElementById("micBtn");
-
-
-
-console.log("Button ditemukan:", aiSendBtn);
-
-// nav bar
-
-document.getElementById("navHomeBtn").onclick = () => {
-    window.location.href = "index.html";
-};
-
-document.getElementById("navChatBtn").onclick = () => {
-    window.location.href = "Tombol Chat/chat.html";
-};
-
-document.getElementById("navSpeakingBtn").onclick = () => {
-    window.location.href = "Tombol Speaking/Speaking.html";
-};
-
-document.getElementById("navLearnBtn").onclick = () => {
-    window.location.href = "Tombol-Learning/learning.html";
-};
-
-document.getElementById("navSettingsBtn").onclick = () => {
-    window.location.href = "settings.html";
-};
-
-
-// ✅ ELEMEN BARU ROLEPLAY
-
-document
-.getElementById("startLearningBtn")
-.onclick = () => {
-
-    window.location.href =
-    "Tombol-Learning/learning.html";
-
-};
-
-
-const SpeakingBtn =
-document.getElementById("SpeakingBtn");
-SpeakingBtn.onclick = () => {
-    window.location.href = "Tombol Speaking/Speaking.html";
-};
-
-const chatBtn =
-document.getElementById("chatBtn");
-
-chatBtn.onclick = () => {
-    window.location.href =
-    "Tombol Chat/chat.html";
-};
-
-const roleplayBtn =
-document.getElementById("roleplayBtn");
-roleplayBtn.onclick = () => {
-    window.location.href = "Tombol Roleplay/roleplay.html";
-};
-const vocabularyBtn =
-document.getElementById("vocabularyBtn");
-
-vocabularyBtn.onclick = () => {
-    window.location.href =
-    "Tombol-Vocabulary/Vocabulary.html";
-};
-
-const grammarBtn = document.getElementById("grammarBtn");
-
-grammarBtn.onclick = () => {
-    window.location.href = "Tombol Grammar/grammar.html";
-};
-
-const writingBtn =
-document.getElementById("writingBtn");
-
-writingBtn.onclick = () => {
-    window.location.href =
-    "Tombol Writing/writing.html";
-};
-
-const QuizBtn = document.getElementById("QuizBtn");
-if (QuizBtn) {
-  QuizBtn.onclick = () => {
-    window.location.href = "Tombol-Quiz/Quiz.html";
-  };
-}
-
-const StoryBtn = document.getElementById("StoryBtn");
-if (StoryBtn) {
-  StoryBtn.onclick = () => {
-    window.location.href = "Tombol-Story/Story.html";
-  };
-}
-
-// Pasang Tombol Umum
-aiSendBtn.onclick = kirimPesan;
-aiUserInput.addEventListener("keypress", e => e.key === "Enter" && kirimPesan());
-
-// ✅ FUNGSI PINDAH HALAMAN
-
-let isSending = false;
-  let isListening = false;
-
-  // session id SAFE (tidak error redeclare)
-  let sessionId = localStorage.getItem("session_id");
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    localStorage.setItem("session_id", sessionId);
-  }
- // ===================== SPEECH RECOGNITION SAFE
- const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  let recognition = null;
-
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-
-    micBtn.onclick = () => {
-      if (isListening) return;
-
-      try {
-        isListening = true;
-        micBtn.innerHTML = "🎙️";
-        recognition.start();
-      } catch (e) {
-        console.log("Mic error:", e);
-        isListening = false;
-      }
-    };
-
-    recognition.onresult = (event) => {
-      const text = event.results[0][0].transcript;
-      aiUserInput.value = text;
-      kirimPesan();
-    };
-
-    recognition.onerror = (e) => {
-      console.log("Speech error:", e);
-      isListening = false;
-      micBtn.innerHTML = "🎤";
-    };
-
-    recognition.onend = () => {
-      isListening = false;
-      micBtn.innerHTML = "🎤";
-    };
-  }
-
-// ===================== SEND MESSAGE
-
-
-async function kirimPesan() {
-  if (isSending) return;
-  isSending = true;
-
-  const pesan = aiUserInput.value.trim();
-  if (!pesan) {
-    isSending = false;
-    return;
-  }
-
-  aiUserInput.value = "";
-
-  tampilkanPesan({
-    id: null,
-    role: "user",
-    message: pesan,
+/* NAVIGASI */
+document.querySelectorAll("nav.maintabs button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.maintabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
   });
+});
 
-  const status = document.createElement("div");
-  status.className = "chat-bubble ai";
-  status.innerHTML = "⚡ Memproses...";
-  aiChatPreview.appendChild(status);
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pick(arr){ return arr[randInt(0,arr.length-1)]; }
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function seededRandom(seed){ let s=seed; return function(){ s=(s*9301+49297)%233280; return s/233280; }; }
+function seededPick(rng, arr){ return arr[Math.floor(rng()*arr.length)]; }
 
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: pesan,
-        session_id: sessionId,
-        mode: "chat",
-      }),
+/* ============================================================
+   📖 BANK KOSAKATA (dipakai flashcard "Kata Hari Ini" & kuis)
+   ============================================================ */
+const WORD_BANK = [
+  {word:"Ambitious", def:"Having a strong desire for success or achievement", example:"She is very ambitious about her career."},
+  {word:"Reliable", def:"Consistently good in quality; able to be trusted", example:"He is a reliable friend who always keeps his promises."},
+  {word:"Curious", def:"Eager to know or learn something", example:"The curious child asked many questions."},
+  {word:"Generous", def:"Willing to give more of something than is necessary", example:"She is generous with her time and money."},
+  {word:"Efficient", def:"Working in a well-organized way without wasting time or energy", example:"The new system is more efficient than the old one."},
+  {word:"Flexible", def:"Able to change or be changed easily to suit conditions", example:"My work schedule is quite flexible."},
+  {word:"Determined", def:"Having made a firm decision and being resolved not to change it", example:"She is determined to finish the marathon."},
+  {word:"Cautious", def:"Careful to avoid danger or mistakes", example:"Be cautious when crossing the busy street."},
+  {word:"Diligent", def:"Showing care and effort in one's work or duties", example:"He is a diligent student who studies every day."},
+  {word:"Sincere", def:"Free from pretense or deceit; genuine", example:"I offer my sincere apologies for the delay."},
+  {word:"Confident", def:"Feeling certain about one's own abilities", example:"She felt confident before the job interview."},
+  {word:"Humble", def:"Having a modest opinion of one's own importance", example:"Despite his success, he remains humble."},
+  {word:"Persistent", def:"Continuing firmly despite difficulty or opposition", example:"Being persistent helped her achieve her goals."},
+  {word:"Optimistic", def:"Hopeful and confident about the future", example:"He stays optimistic even during tough times."},
+  {word:"Considerate", def:"Careful not to cause inconvenience or harm to others", example:"She is always considerate of other people's feelings."},
+  {word:"Innovative", def:"Featuring new methods or ideas", example:"The company is known for its innovative products."},
+  {word:"Punctual", def:"Happening or done at the arranged time; not late", example:"He is always punctual for meetings."},
+  {word:"Resourceful", def:"Having the ability to find quick and clever ways to overcome difficulties", example:"A resourceful person can solve problems with limited tools."},
+  {word:"Adaptable", def:"Able to adjust to new conditions", example:"Being adaptable helps you succeed in a new job."},
+  {word:"Meticulous", def:"Showing great attention to detail; very careful and precise", example:"She is meticulous about checking her work for errors."},
+];
+
+function renderWordOfTheDay(){
+  const dateStr = todayStr();
+  let seed = 0;
+  for(let i=0;i<dateStr.length;i++) seed += dateStr.charCodeAt(i)*(i+3);
+  const w = WORD_BANK[seed % WORD_BANK.length];
+  document.getElementById("wotdWord").textContent = w.word;
+  document.getElementById("wotdContent").innerHTML = `
+    <div class="word-def">${w.def}</div>
+    <div class="word-example">"${w.example}"</div>`;
+}
+renderWordOfTheDay();
+
+/* Cari kata — Free Dictionary API (gratis, tanpa API key) */
+document.getElementById("dictSearchBtn").addEventListener("click", searchWord);
+document.getElementById("dictSearchInput").addEventListener("keypress", e=>{ if(e.key==="Enter") searchWord(); });
+
+async function searchWord(){
+  const word = document.getElementById("dictSearchInput").value.trim();
+  const resultEl = document.getElementById("dictResult");
+  if(!word){ resultEl.innerHTML = ""; return; }
+  resultEl.innerHTML = "<p style='color:var(--muted); font-size:12.5px; margin-top:10px;'>Mencari...</p>";
+
+  try{
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if(!res.ok) throw new Error("Kata tidak ditemukan");
+    const data = await res.json();
+    const entry = data[0];
+    const phonetic = entry.phonetic || (entry.phonetics.find(p=>p.text)?.text) || "";
+
+    let html = `<div class="word-result">
+      <div class="word-title">${entry.word}</div>
+      <div class="word-phonetic">${phonetic}</div>`;
+
+    entry.meanings.slice(0,3).forEach(m=>{
+      html += `<div class="word-pos">${m.partOfSpeech}</div>`;
+      m.definitions.slice(0,2).forEach(d=>{
+        html += `<div class="word-def">• ${d.definition}</div>`;
+        if(d.example) html += `<div class="word-example">"${d.example}"</div>`;
+      });
     });
-
-    const aiResult = await res.json();
-
-    const reply =
-      aiResult?.reply ||
-      aiResult?.response ||
-      aiResult?.result ||
-      aiResult?.answer ||
-      "No response";
-
-    status.remove();
-
-    tampilkanPesan({
-      id: aiResult?.id || null,
-      role: "ai",
-      message: reply,
-    });
-
-    speakText(reply);
-  } catch (err) {
-    console.error(err);
-    status.remove();
-
-    tampilkanPesan({
-      role: "ai",
-      message: "Server Error",
-    });
+    html += `</div>`;
+    resultEl.innerHTML = html;
+  }catch(err){
+    resultEl.innerHTML = `<p style='color:var(--bad); font-size:12.5px; margin-top:10px;'>❌ ${err.message}. Coba kata lain atau cek koneksi internet.</p>`;
   }
-
-  isSending = false;
 }
 
-// ===================== CHAT UI
-function tampilkanPesan(data) {
-  const placeholder = document.querySelector(".chat-placeholder");
-  if (placeholder) placeholder.remove();
+/* ============================================================
+   📝 GRAMMAR — materi + kuis per topik
+   ============================================================ */
+const GRAMMAR_TOPICS = [
+  {
+    id:"simple_present", title:"Simple Present Tense",
+    lesson:"Simple Present digunakan untuk kebiasaan, fakta umum, dan jadwal tetap. Rumus: Subjek + Verb (+s/es untuk he/she/it).",
+    examples:["I go to school every day.","She works at a hospital.","Water boils at 100°C."],
+    quiz:[
+      {q:"She ___ to the gym every morning.", options:["go","goes","going","gone"], correct:1, explain:"Untuk subjek 'she' (orang ketiga tunggal), verb ditambah -s: 'goes'."},
+      {q:"They ___ football on weekends.", options:["plays","playing","play","played"], correct:2, explain:"Untuk subjek jamak 'they', verb dasar tanpa -s: 'play'."},
+      {q:"The sun ___ in the east.", options:["rise","rises","rising","rose"], correct:1, explain:"Fakta umum pakai Simple Present; 'the sun' = orang ketiga tunggal, jadi 'rises'."},
+    ]
+  },
+  {
+    id:"simple_past", title:"Simple Past Tense",
+    lesson:"Simple Past digunakan untuk kejadian yang sudah selesai di masa lalu. Rumus: Subjek + Verb-2 (bentuk kedua/past form).",
+    examples:["I visited my grandmother last week.","She didn't come to the party.","Did you finish your homework?"],
+    quiz:[
+      {q:"I ___ a movie yesterday.", options:["watch","watched","watching","watches"], correct:1, explain:"'Yesterday' menandakan masa lalu, jadi pakai bentuk past: 'watched'."},
+      {q:"She ___ not go to school last Monday.", options:["do","did","does","done"], correct:1, explain:"Kalimat negatif Simple Past pakai 'did not' (didn't), verb kembali ke bentuk dasar."},
+      {q:"___ you see that movie last night?", options:["Do","Does","Did","Doing"], correct:2, explain:"Kalimat tanya Simple Past diawali 'Did' untuk semua subjek."},
+    ]
+  },
+  {
+    id:"present_continuous", title:"Present Continuous",
+    lesson:"Present Continuous untuk kejadian yang sedang berlangsung sekarang. Rumus: Subjek + am/is/are + Verb-ing.",
+    examples:["I am studying English now.","He is cooking dinner.","They are playing outside."],
+    quiz:[
+      {q:"She ___ a letter right now.", options:["write","writes","is writing","wrote"], correct:2, explain:"'Right now' menandakan sedang berlangsung, pakai 'is writing' (she = is)."},
+      {q:"We ___ watching TV at the moment.", options:["is","am","are","be"], correct:2, explain:"Subjek 'we' pakai 'are' dalam Present Continuous."},
+      {q:"Look! It ___ raining.", options:["is","are","am","be"], correct:0, explain:"'It' (tunggal) pakai 'is' dalam Present Continuous."},
+    ]
+  },
+  {
+    id:"articles", title:"Articles (a, an, the)",
+    lesson:"'A' dipakai sebelum kata benda tunggal berawalan bunyi konsonan. 'An' dipakai sebelum bunyi vokal (a,e,i,o,u). 'The' dipakai untuk sesuatu yang spesifik/sudah diketahui.",
+    examples:["I saw a cat in the garden.","She is an honest person.","The book on the table is mine."],
+    quiz:[
+      {q:"I need ___ umbrella, it's raining.", options:["a","an","the","-"], correct:1, explain:"'Umbrella' berawalan bunyi vokal (u dibaca 'uh'), jadi pakai 'an'."},
+      {q:"He is ___ university student.", options:["a","an","the","-"], correct:0, explain:"'University' meski berawalan huruf vokal 'u', bunyinya konsonan 'yu', jadi pakai 'a'."},
+      {q:"___ Earth revolves around ___ Sun.", options:["A / a","An / an","The / the","- / -"], correct:2, explain:"Benda unik/spesifik seperti Earth dan Sun pakai 'the'."},
+    ]
+  },
+  {
+    id:"prepositions", title:"Prepositions of Time & Place",
+    lesson:"'In' untuk bulan/tahun/kota besar. 'On' untuk hari/tanggal. 'At' untuk jam/tempat spesifik.",
+    examples:["I was born in 2000.","The meeting is on Monday.","She arrives at 7pm.","He lives at 25 Main Street."],
+    quiz:[
+      {q:"My birthday is ___ July.", options:["in","on","at","-"], correct:0, explain:"Bulan pakai 'in': 'in July'."},
+      {q:"The party starts ___ 8 o'clock.", options:["in","on","at","-"], correct:2, explain:"Jam spesifik pakai 'at': 'at 8 o'clock'."},
+      {q:"We will meet ___ Friday.", options:["in","on","at","-"], correct:1, explain:"Hari pakai 'on': 'on Friday'."},
+    ]
+  },
+  {
+    id:"comparative", title:"Comparative & Superlative",
+    lesson:"Comparative (membandingkan 2 hal): adjective+er / more+adjective + than. Superlative (paling): the+adjective+est / the most+adjective.",
+    examples:["This car is faster than that one.","She is the tallest in her class.","This book is more interesting than the movie."],
+    quiz:[
+      {q:"This puzzle is ___ than the last one.", options:["easy","easier","easiest","more easy"], correct:1, explain:"Membandingkan 2 hal pakai comparative: 'easier'."},
+      {q:"He is ___ student in the school.", options:["smart","smarter","the smartest","more smart"], correct:2, explain:"Superlative (paling) untuk kelompok besar: 'the smartest'."},
+      {q:"This phone is ___ expensive than that laptop.", options:["more","most","the most","much"], correct:0, explain:"Adjective panjang (expensive) pakai 'more' untuk comparative."},
+    ]
+  },
+];
 
-  const bubble = document.createElement("div");
-  bubble.className =
-    data.role === "user" ? "chat-bubble user" : "chat-bubble ai";
+function renderGrammarList(){
+  const wrap = document.getElementById("grammarTopicList");
+  wrap.innerHTML = "";
+  GRAMMAR_TOPICS.forEach(topic=>{
+    const item = document.createElement("div");
+    item.className = "topic-item";
+    item.innerHTML = `<h4>${topic.title}</h4><p>${topic.quiz.length} soal kuis tersedia</p>`;
+    item.addEventListener("click", ()=>openGrammarDetail(topic));
+    wrap.appendChild(item);
+  });
+}
+renderGrammarList();
 
-  bubble.innerHTML = `
-    <span class="msg-text">${data.message}</span>
+let currentGrammarTopic = null;
+let grammarQuizCorrect = 0, grammarQuizTotal = 0, grammarQuizIndex = 0, grammarQuizOrder = [];
 
-    ${
-      data.role === "ai"
-        ? `
-      <div class="msg-actions">
-        <button class="edit-btn">✏️</button>
-        <button class="del-btn">🗑️</button>
-      </div>
-    `
-        : ""
+function openGrammarDetail(topic){
+  currentGrammarTopic = topic;
+  document.getElementById("grammarListView").style.display = "none";
+  document.getElementById("grammarDetailView").style.display = "block";
+  document.getElementById("grammarDetailTitle").textContent = topic.title;
+  document.getElementById("grammarLessonText").textContent = topic.lesson;
+  document.getElementById("grammarExamples").innerHTML = topic.examples.map(e=>`<div class="lesson-example">✏️ ${e}</div>`).join("");
+
+  grammarQuizCorrect = 0; grammarQuizTotal = 0; grammarQuizIndex = 0;
+  grammarQuizOrder = shuffle(topic.quiz.map((_,i)=>i));
+  showGrammarQuizQuestion();
+}
+document.getElementById("backToGrammarList").addEventListener("click", ()=>{
+  document.getElementById("grammarDetailView").style.display = "none";
+  document.getElementById("grammarListView").style.display = "block";
+});
+
+function showGrammarQuizQuestion(){
+  if(grammarQuizIndex >= grammarQuizOrder.length) grammarQuizIndex = 0;
+  const q = currentGrammarTopic.quiz[grammarQuizOrder[grammarQuizIndex]];
+  document.getElementById("grammarQuizQuestion").textContent = q.q;
+  document.getElementById("grammarQuizExplain").classList.remove("show");
+  document.getElementById("grammarQuizNextBtn").style.display = "none";
+
+  const optWrap = document.getElementById("grammarQuizOptions");
+  optWrap.innerHTML = "";
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "quiz-option";
+    btn.textContent = opt;
+    btn.addEventListener("click", ()=>answerGrammarQuiz(i, q));
+    optWrap.appendChild(btn);
+  });
+}
+function answerGrammarQuiz(selectedIdx, q){
+  grammarQuizTotal++;
+  const buttons = document.querySelectorAll("#grammarQuizOptions .quiz-option");
+  buttons.forEach((b,i)=>{
+    b.disabled = true;
+    if(i === q.correct) b.classList.add("correct");
+    else if(i === selectedIdx) b.classList.add("wrong");
+  });
+  if(selectedIdx === q.correct) grammarQuizCorrect++;
+  document.getElementById("grammarQuizScore").textContent = `Skor: ${grammarQuizCorrect} benar / ${grammarQuizTotal} soal`;
+  document.getElementById("grammarQuizExplain").textContent = q.explain;
+  document.getElementById("grammarQuizExplain").classList.add("show");
+  document.getElementById("grammarQuizNextBtn").style.display = "block";
+}
+document.getElementById("grammarQuizNextBtn").addEventListener("click", ()=>{
+  grammarQuizIndex++;
+  showGrammarQuizQuestion();
+});
+
+/* ============================================================
+   📚 MEMBACA — reading comprehension
+   ============================================================ */
+const READING_PASSAGES = [
+  {
+    id:"morning", title:"A Morning Routine", level:"Pemula",
+    text:"Every morning, Sarah wakes up at six o'clock. She drinks a glass of water and does some light exercise. After that, she takes a shower and gets dressed. Sarah eats breakfast with her family before going to work. She usually has eggs and toast. She leaves home at seven thirty and arrives at the office at eight.",
+    questions:[
+      {q:"What time does Sarah wake up?", options:["Five o'clock","Six o'clock","Seven o'clock","Eight o'clock"], correct:1, explain:"Teks menyebutkan 'wakes up at six o'clock'."},
+      {q:"What does Sarah usually eat for breakfast?", options:["Rice and chicken","Bread and juice","Eggs and toast","Cereal and milk"], correct:2, explain:"Teks menyebutkan 'She usually has eggs and toast'."},
+      {q:"What time does Sarah arrive at the office?", options:["Seven o'clock","Seven thirty","Eight o'clock","Eight thirty"], correct:2, explain:"Teks menyebutkan 'arrives at the office at eight'."},
+    ]
+  },
+  {
+    id:"weekend_trip", title:"A Weekend Trip", level:"Menengah",
+    text:"Last weekend, Michael and his friends decided to visit a small village near the mountains. They left the city early on Saturday morning to avoid traffic. When they arrived, they explored a local market and tried traditional food. In the afternoon, they hiked up a nearby hill to watch the sunset. The view was breathtaking, and everyone agreed it was worth the tiring climb. They returned home on Sunday evening, feeling refreshed and happy.",
+    questions:[
+      {q:"Why did they leave the city early?", options:["To catch a flight","To avoid traffic","Because it was cold","To meet a friend"], correct:1, explain:"Teks menyebutkan 'to avoid traffic'."},
+      {q:"What did they do in the afternoon?", options:["Went shopping","Visited a museum","Hiked up a hill","Slept at the hotel"], correct:2, explain:"Teks menyebutkan 'they hiked up a nearby hill to watch the sunset'."},
+      {q:"How did they feel when they returned home?", options:["Tired and angry","Refreshed and happy","Bored and sleepy","Sick and worried"], correct:1, explain:"Teks menyebutkan 'feeling refreshed and happy'."},
+    ]
+  },
+  {
+    id:"new_job", title:"Starting a New Job", level:"Lanjutan",
+    text:"Starting a new job can be both exciting and nerve-wracking. On her first day, Amanda arrived thirty minutes early, unsure of what to expect. Her manager gave her a brief tour of the office and introduced her to the team. Although she felt overwhelmed by the amount of new information, her colleagues were friendly and patient, answering her questions without hesitation. By the end of the week, Amanda had settled into her new routine and felt more confident about her responsibilities. She realized that most of her initial worries had been unnecessary.",
+    questions:[
+      {q:"How did Amanda feel on her first day?", options:["Confident and calm","Excited and nervous","Angry and tired","Bored and indifferent"], correct:1, explain:"Teks menyebutkan starting a new job 'can be both exciting and nerve-wracking', dan Amanda 'unsure of what to expect'."},
+      {q:"How did her colleagues treat her?", options:["They ignored her","They were friendly and patient","They were strict and cold","They were too busy to help"], correct:1, explain:"Teks menyebutkan colleagues 'were friendly and patient'."},
+      {q:"What did Amanda realize by the end of the week?", options:["She wanted to quit","Her worries were unnecessary","The job was too easy","She needed more training"], correct:1, explain:"Kalimat terakhir: 'most of her initial worries had been unnecessary'."},
+    ]
+  },
+];
+
+function renderReadingList(){
+  const wrap = document.getElementById("readingTopicList");
+  wrap.innerHTML = "";
+  READING_PASSAGES.forEach(p=>{
+    const item = document.createElement("div");
+    item.className = "topic-item";
+    item.innerHTML = `<h4>${p.title}</h4><p>Level: ${p.level} · ${p.questions.length} pertanyaan</p>`;
+    item.addEventListener("click", ()=>openReadingDetail(p));
+    wrap.appendChild(item);
+  });
+}
+renderReadingList();
+
+let currentPassage = null, readingIndex = 0, readingCorrect = 0;
+
+function openReadingDetail(passage){
+  currentPassage = passage;
+  document.getElementById("readingListView").style.display = "none";
+  document.getElementById("readingDetailView").style.display = "block";
+  document.getElementById("readingDetailTitle").textContent = passage.title;
+  document.getElementById("readingPassageText").textContent = passage.text;
+  readingIndex = 0; readingCorrect = 0;
+  showReadingQuestion();
+}
+document.getElementById("backToReadingList").addEventListener("click", ()=>{
+  document.getElementById("readingDetailView").style.display = "none";
+  document.getElementById("readingListView").style.display = "block";
+});
+
+function showReadingQuestion(){
+  const q = currentPassage.questions[readingIndex];
+  document.getElementById("readingQuizScore").textContent = `Soal ${readingIndex+1} dari ${currentPassage.questions.length}`;
+  document.getElementById("readingQuizQuestion").textContent = q.q;
+  document.getElementById("readingQuizExplain").classList.remove("show");
+  document.getElementById("readingQuizNextBtn").style.display = "none";
+
+  const optWrap = document.getElementById("readingQuizOptions");
+  optWrap.innerHTML = "";
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "quiz-option";
+    btn.textContent = opt;
+    btn.addEventListener("click", ()=>{
+      const buttons = optWrap.querySelectorAll(".quiz-option");
+      buttons.forEach((b,j)=>{
+        b.disabled = true;
+        if(j === q.correct) b.classList.add("correct");
+        else if(j === i) b.classList.add("wrong");
+      });
+      if(i === q.correct) readingCorrect++;
+      document.getElementById("readingQuizExplain").textContent = q.explain;
+      document.getElementById("readingQuizExplain").classList.add("show");
+      document.getElementById("readingQuizNextBtn").style.display = "block";
+    });
+    optWrap.appendChild(btn);
+  });
+}
+document.getElementById("readingQuizNextBtn").addEventListener("click", ()=>{
+  readingIndex++;
+  if(readingIndex < currentPassage.questions.length){
+    showReadingQuestion();
+  } else {
+    document.getElementById("readingQuizQuestion").textContent = `Selesai! Skor: ${readingCorrect}/${currentPassage.questions.length}`;
+    document.getElementById("readingQuizOptions").innerHTML = "";
+    document.getElementById("readingQuizExplain").classList.remove("show");
+    document.getElementById("readingQuizNextBtn").style.display = "none";
+  }
+});
+
+/* ============================================================
+   💬 IDIOM & FRASA
+   ============================================================ */
+const IDIOMS = [
+  {phrase:"Break the ice", meaning:"Memulai percakapan di situasi yang canggung", example:"He told a joke to break the ice at the meeting."},
+  {phrase:"Piece of cake", meaning:"Sesuatu yang sangat mudah dilakukan", example:"The exam was a piece of cake for her."},
+  {phrase:"Hit the books", meaning:"Belajar dengan serius", example:"I need to hit the books before the final exam."},
+  {phrase:"Under the weather", meaning:"Merasa kurang sehat/sakit", example:"I'm feeling a bit under the weather today."},
+  {phrase:"Cost an arm and a leg", meaning:"Sangat mahal", example:"That new phone cost an arm and a leg."},
+  {phrase:"Once in a blue moon", meaning:"Sangat jarang terjadi", example:"We only eat out once in a blue moon."},
+  {phrase:"Let the cat out of the bag", meaning:"Membocorkan rahasia tanpa sengaja", example:"He let the cat out of the bag about the surprise party."},
+  {phrase:"On the same page", meaning:"Memiliki pemahaman/pendapat yang sama", example:"Let's make sure we're on the same page before we start."},
+  {phrase:"Hit the nail on the head", meaning:"Mengatakan sesuatu dengan sangat tepat", example:"You hit the nail on the head with that explanation."},
+  {phrase:"Bite the bullet", meaning:"Menghadapi situasi sulit dengan berani", example:"I decided to bite the bullet and ask for a raise."},
+  {phrase:"Speak of the devil", meaning:"Diucapkan saat orang yang dibicarakan tiba-tiba muncul", example:"Speak of the devil, here comes John now!"},
+  {phrase:"Time flies", meaning:"Waktu berlalu dengan cepat", example:"Time flies when you're having fun."},
+  {phrase:"Better late than never", meaning:"Lebih baik terlambat daripada tidak sama sekali", example:"He finally apologized — better late than never."},
+  {phrase:"Break a leg", meaning:"Ucapan semoga sukses (terutama sebelum pertunjukan)", example:"Break a leg on your performance tonight!"},
+  {phrase:"Get out of hand", meaning:"Menjadi tidak terkendali", example:"The party got out of hand and the neighbors called the police."},
+  {phrase:"Call it a day", meaning:"Berhenti bekerja untuk hari itu", example:"We've done enough for today, let's call it a day."},
+  {phrase:"Cut corners", meaning:"Melakukan sesuatu dengan cara termudah/termurah (biasanya mengurangi kualitas)", example:"The contractor cut corners and the roof started leaking."},
+  {phrase:"In the same boat", meaning:"Berada dalam situasi sulit yang sama dengan orang lain", example:"Don't worry, we're all in the same boat with this deadline."},
+  {phrase:"Miss the boat", meaning:"Kehilangan kesempatan", example:"If you don't apply now, you might miss the boat."},
+  {phrase:"Pull someone's leg", meaning:"Menggoda/bercanda dengan seseorang", example:"Relax, I'm just pulling your leg."},
+];
+
+function renderIdiomList(filter=""){
+  const wrap = document.getElementById("idiomList");
+  const filtered = IDIOMS.filter(i => i.phrase.toLowerCase().includes(filter.toLowerCase()) || i.meaning.toLowerCase().includes(filter.toLowerCase()));
+  wrap.innerHTML = filtered.map(i=>`
+    <div class="idiom-item">
+      <div class="idiom-phrase">${i.phrase}</div>
+      <div class="idiom-meaning">${i.meaning}</div>
+      <div class="idiom-example">"${i.example}"</div>
+    </div>`).join("") || "<p style='color:var(--muted); font-size:12.5px;'>Tidak ditemukan</p>";
+}
+renderIdiomList();
+document.getElementById("idiomSearchInput").addEventListener("input", (e)=>renderIdiomList(e.target.value));
+
+/* ============================================================
+   🎯 KUIS HARIAN — campuran, seeded per tanggal (localStorage)
+   ============================================================ */
+function generateDailyQuestions(dateStr){
+  let seed = 0;
+  for(let i=0;i<dateStr.length;i++) seed += dateStr.charCodeAt(i)*(i+11);
+  const rng = seededRandom(seed);
+  const questions = [];
+
+  // 2 soal vocab (kata -> pilih definisi yang benar)
+  for(let i=0;i<2;i++){
+    const correctWord = seededPick(rng, WORD_BANK);
+    const wrongOptions = shuffle(WORD_BANK.filter(w=>w.word!==correctWord.word)).slice(0,3).map(w=>w.def);
+    const options = shuffle([correctWord.def, ...wrongOptions]);
+    questions.push({
+      q: `What does "${correctWord.word}" mean?`,
+      options, correct: options.indexOf(correctWord.def),
+      explain: `"${correctWord.word}" means: ${correctWord.def}. Example: "${correctWord.example}"`
+    });
+  }
+  // 2 soal grammar (ambil random dari bank grammar topics)
+  for(let i=0;i<2;i++){
+    const topic = seededPick(rng, GRAMMAR_TOPICS);
+    const gq = seededPick(rng, topic.quiz);
+    questions.push({ q: gq.q, options: gq.options, correct: gq.correct, explain: gq.explain });
+  }
+  // 1 soal idiom (arti -> pilih idiom yang benar)
+  const correctIdiom = seededPick(rng, IDIOMS);
+  const wrongIdioms = shuffle(IDIOMS.filter(i=>i.phrase!==correctIdiom.phrase)).slice(0,3).map(i=>i.phrase);
+  const idiomOptions = shuffle([correctIdiom.phrase, ...wrongIdioms]);
+  questions.push({
+    q: `Which idiom means: "${correctIdiom.meaning}"?`,
+    options: idiomOptions, correct: idiomOptions.indexOf(correctIdiom.phrase),
+    explain: `"${correctIdiom.phrase}" means ${correctIdiom.meaning}. Example: "${correctIdiom.example}"`
+  });
+  // 1 soal reading comprehension acak
+  const passage = seededPick(rng, READING_PASSAGES);
+  const rq = seededPick(rng, passage.questions);
+  questions.push({ q: `(${passage.title}) ${rq.q}`, options: rq.options, correct: rq.correct, explain: rq.explain });
+
+  return questions;
+}
+
+let dailyQuestions = [], dailyIndex = 0, dailyCorrect = 0;
+
+function checkDailyStatus(){
+  const today = todayStr();
+  const history = JSON.parse(localStorage.getItem("english_daily_history") || "{}");
+  const statusText = document.getElementById("dailyStatusText");
+  if(history[today]){
+    statusText.textContent = `✅ Sudah selesai hari ini — skor: ${history[today].score}/${history[today].total}`;
+    document.getElementById("dailyStartBtn").textContent = "Ulangi Latihan (tidak mengubah skor tercatat)";
+  } else {
+    statusText.textContent = "Belum mengerjakan kuis hari ini.";
+    document.getElementById("dailyStartBtn").textContent = "Mulai Kuis Hari Ini";
+  }
+}
+checkDailyStatus();
+
+document.getElementById("dailyStartBtn").addEventListener("click", ()=>{
+  dailyQuestions = generateDailyQuestions(todayStr());
+  dailyIndex = 0; dailyCorrect = 0;
+  document.getElementById("dailyIntroCard").style.display = "none";
+  document.getElementById("dailyResultCard").style.display = "none";
+  document.getElementById("dailyQuizCard").style.display = "block";
+  showDailyQuestion();
+});
+
+function showDailyQuestion(){
+  const q = dailyQuestions[dailyIndex];
+  document.getElementById("dailyProgress").textContent = `Soal ${dailyIndex+1} dari ${dailyQuestions.length}`;
+  document.getElementById("dailyQuestion").textContent = q.q;
+  document.getElementById("dailyExplain").classList.remove("show");
+  document.getElementById("dailyNextBtn").style.display = "none";
+
+  const optWrap = document.getElementById("dailyOptions");
+  optWrap.innerHTML = "";
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "quiz-option";
+    btn.textContent = opt;
+    btn.addEventListener("click", ()=>{
+      const buttons = optWrap.querySelectorAll(".quiz-option");
+      buttons.forEach((b,j)=>{
+        b.disabled = true;
+        if(j === q.correct) b.classList.add("correct");
+        else if(j === i) b.classList.add("wrong");
+      });
+      if(i === q.correct) dailyCorrect++;
+      document.getElementById("dailyExplain").textContent = q.explain;
+      document.getElementById("dailyExplain").classList.add("show");
+      document.getElementById("dailyNextBtn").style.display = "block";
+    });
+    optWrap.appendChild(btn);
+  });
+}
+
+document.getElementById("dailyNextBtn").addEventListener("click", ()=>{
+  dailyIndex++;
+  if(dailyIndex < dailyQuestions.length){
+    showDailyQuestion();
+  } else {
+    document.getElementById("dailyQuizCard").style.display = "none";
+    document.getElementById("dailyResultCard").style.display = "block";
+    document.getElementById("dailyResultText").textContent = `${dailyCorrect} / ${dailyQuestions.length} benar`;
+
+    const today = todayStr();
+    const history = JSON.parse(localStorage.getItem("english_daily_history") || "{}");
+    if(!history[today]){
+      history[today] = { score: dailyCorrect, total: dailyQuestions.length };
+      localStorage.setItem("english_daily_history", JSON.stringify(history));
     }
-  `;
 
-  aiChatPreview.appendChild(bubble);
-
-  const editBtn = bubble.querySelector(".edit-btn");
-  const delBtn = bubble.querySelector(".del-btn");
-
-  if (editBtn) {
-    editBtn.onclick = async () => {
-      const teksBaru = prompt("Edit pesan:", data.message);
-      if (!teksBaru) return;
-
-      data.message = teksBaru;
-      bubble.querySelector(".msg-text").textContent = teksBaru;
-
-      if (data.id) {
-        await fetch(WORKER_URL, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: data.id,
-            message: teksBaru,
-          }),
-        });
-      }
-    };
+    setTimeout(()=>{
+      document.getElementById("dailyResultCard").style.display = "none";
+      document.getElementById("dailyIntroCard").style.display = "block";
+      checkDailyStatus();
+      loadProgress();
+    }, 2500);
   }
+});
 
-  if (delBtn) {
-    delBtn.onclick = async () => {
-      if (!confirm("Hapus pesan ini?")) return;
-
-      if (data.id) {
-        const res = await fetch(`${WORKER_URL}?id=${data.id}`, {
-          method: "DELETE",
-        });
-
-        const result = await res.json();
-        if (result.success) bubble.remove();
-      } else {
-        bubble.remove();
-      }
-    };
+/* ============================================================
+   📈 PROGRESS (localStorage)
+   ============================================================ */
+function calcStreak(dates){
+  if(dates.length===0) return 0;
+  let streak=0, cursor=new Date();
+  for(let i=0;i<dates.length;i++){
+    const expected = cursor.getFullYear()+"-"+String(cursor.getMonth()+1).padStart(2,"0")+"-"+String(cursor.getDate()).padStart(2,"0");
+    if(dates.includes(expected)){ streak++; cursor.setDate(cursor.getDate()-1); } else break;
   }
-
-  aiChatPreview.scrollTop = aiChatPreview.scrollHeight;
+  return streak;
 }
+function loadProgress(){
+  const history = JSON.parse(localStorage.getItem("english_daily_history") || "{}");
+  const dates = Object.keys(history).sort((a,b)=> new Date(b)-new Date(a));
+  document.getElementById("streakNum").textContent = calcStreak(dates);
 
-
- // ✅ PENUTUP fungsi tampilkanPesan()
-
-// ==========================================
-// 🎤 Speech Recognition
-// ==========================================
-
-if (SpeechRecognition) {
-
-recognition.onresult = (event) => {
-
-    const text =
-    event.results[0][0].transcript;
-
-    console.log("Voice:", text);
-
-    aiUserInput.value = text;
-
-    kirimPesan();
-};
-
-recognition.onerror = (e) => {
-
-    console.log(e);
-
-    micBtn.innerHTML = "🎤";
-};
-
-recognition.onend = () => {
-
-    micBtn.innerHTML = "🎤";
-};
-
+  const listEl = document.getElementById("logList");
+  if(dates.length===0){ listEl.innerHTML = "<p style='color:var(--muted); font-size:12.5px;'>Belum ada riwayat</p>"; return; }
+  listEl.innerHTML = dates.map(d=>`<div class="log-item"><span>${d}</span><span>${history[d].score}/${history[d].total}</span></div>`).join("");
 }
+loadProgress();
 
-
-console.log(
-"SpeechRecognition:",
-window.SpeechRecognition,
-window.webkitSpeechRecognition
-);
-
-
-  // ===================== SPEECH SYNTH FIX (WEBVIEW SAFE)
-  function speakText(text) {
-    if (!window.speechSynthesis) return;
-
-    window.speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "en-US";
-    speech.rate = 1;
-
-    window.speechSynthesis.speak(speech);
-  }
-
-// ===================== LOAD HISTORY
-async function loadHistory() {
-  try {
-    const res = await fetch(
-      `${WORKER_URL}?session_id=${sessionId}&mode=chat`
-    );
-
-    const chats = await res.json();
-
-    chats.forEach((chat) => {
-      tampilkanPesan({
-        id: chat.id,
-        role: "user",
-        message: chat.user_message,
-      });
-
-      tampilkanPesan({
-        id: chat.id,
-        role: "ai",
-        message: chat.ai_reply,
-      });
-    });
-  } catch (e) {
-    console.log("No history");
-  }
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("service-worker.js").catch(err=>{
+    console.warn("[service-worker] gagal terdaftar (aman diabaikan):", err.message);
+  });
 }
-
-
-
-window.onload = loadHistory;
-
-
-
 </script>
 </body>
 </html>

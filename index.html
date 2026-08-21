@@ -341,26 +341,17 @@ translateInput.addEventListener("keydown", (e) => {
 });
 
 translateBtn.addEventListener("click", translateSentence);
-
 function extractAIText(data) {
   if (typeof data === "string") return data.trim();
 
-  if (data && typeof data.response === "string") {
-    return data.response.trim();
-  }
-
-  if (data && typeof data.text === "string") {
-    return data.text.trim();
-  }
-
-  if (data && typeof data.result === "string") {
-    return data.result.trim();
-  }
+  if (data && typeof data.translation === "string") return data.translation.trim();  // ← add this line
+  if (data && typeof data.response === "string") return data.response.trim();
+  if (data && typeof data.text === "string") return data.text.trim();
+  if (data && typeof data.result === "string") return data.result.trim();
 
   if (data && data.result && typeof data.result.response === "string") {
     return data.result.response.trim();
   }
-
   if (data && data.result && typeof data.result.text === "string") {
     return data.result.text.trim();
   }
@@ -371,7 +362,6 @@ function extractAIText(data) {
 
   return "";
 }
-
 async function translateSentence() {
   const text = translateInput.value.trim();
 

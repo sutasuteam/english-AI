@@ -424,17 +424,16 @@ ${text}`;
     </div>`;
 
   try {
-    const response = await fetch(TRANSLATOR_WORKER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        direction: direction,
-        text: text
-      })
-    });
+    const response = await fetch(TRANSLATOR_WORKER_URL, { 
+  method: "POST", 
+  headers: { 
+    "Content-Type": "application/json" 
+  }, 
+  body: JSON.stringify({
+    text: text,
+    direction: direction
+  })
+});
 
     const raw = await response.text();
 

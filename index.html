@@ -36,7 +36,7 @@ main{padding:14px;}
 .big-btn.secondary{background:var(--surface2); color:var(--text);}
 input,select{width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:14px; margin-bottom:8px;}
 
-/* KOSAKATA */
+/* KOSAKATA & AI TRANSLATOR */
 .word-result{background:var(--surface2); border-radius:10px; padding:14px; margin-top:10px;}
 .word-title{font-size:22px; font-weight:800; color:var(--accent2);}
 .word-phonetic{color:var(--muted); font-size:13px; margin-bottom:8px;}
@@ -101,10 +101,37 @@ input,select{width:100%; padding:10px; border-radius:8px; border:1px solid var(-
       <div id="wotdContent" style="text-align:left;"></div>
     </div>
     <div class="card">
-      <h3>🔍 Cari Kata</h3>
-      <input type="text" id="dictSearchInput" placeholder="Ketik kata bahasa Inggris...">
-      <button class="big-btn" id="dictSearchBtn">Cari Arti</button>
-      <div id="dictResult"></div>
+      <h3>🌐 AI Translator</h3>
+
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button type="button" id="translateIdEnBtn"
+          class="big-btn"
+          style="margin-top:0; flex:1;">
+          🇮🇩 → 🇬🇧 Indonesia → Inggris
+        </button>
+
+        <button type="button" id="translateEnIdBtn"
+          class="big-btn secondary"
+          style="margin-top:0; flex:1;">
+          🇬🇧 → 🇮🇩 Inggris → Indonesia
+        </button>
+      </div>
+
+      <div id="translateDirection"
+        style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+        Terjemahkan Bahasa Indonesia ke Bahasa Inggris
+      </div>
+
+      <textarea id="translateInput"
+        placeholder="Ketik kalimat Bahasa Indonesia..."
+        rows="5"
+        style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:14px; resize:vertical; margin-bottom:8px;"></textarea>
+
+      <button class="big-btn" id="translateBtn">
+        ✨ Terjemahkan dengan AI
+      </button>
+
+      <div id="translateResult"></div>
     </div>
   </section>
 
@@ -261,40 +288,243 @@ function renderWordOfTheDay(){
 }
 renderWordOfTheDay();
 
-/* Cari kata — Free Dictionary API (gratis, tanpa API key) */
-document.getElementById("dictSearchBtn").addEventListener("click", searchWord);
-document.getElementById("dictSearchInput").addEventListener("keypress", e=>{ if(e.key==="Enter") searchWord(); });
+/* ============================================================
+   🌐 AI TRANSLATOR — Cloudflare Worker
+   ============================================================ */
 
-async function searchWord(){
-  const word = document.getElementById("dictSearchInput").value.trim();
-  const resultEl = document.getElementById("dictResult");
-  if(!word){ resultEl.innerHTML = ""; return; }
-  resultEl.innerHTML = "<p style='color:var(--muted); font-size:12.5px; margin-top:10px;'>Mencari...</p>";
+const TRANSLATOR_WORKER_URL =
+  "https://englishai.adyajaboleh197.workers.dev";
 
-  try{
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if(!res.ok) throw new Error("Kata tidak ditemukan");
-    const data = await res.json();
-    const entry = data[0];
-    const phonetic = entry.phonetic || (entry.phonetics.find(p=>p.text)?.text) || "";
+let translateDirection = "id-en";
 
-    let html = `<div class="word-result">
-      <div class="word-title">${entry.word}</div>
-      <div class="word-phonetic">${phonetic}</div>`;
+const translateInput = document.getElementById("translateInput");
+const translateBtn = document.getElementById("translateBtn");
+const translateResult = document.getElementById("translateResult");
+const translateDirectionText = document.getElementById("translateDirection");
+const translateIdEnBtn = document.getElementById("translateIdEnBtn");
+const translateEnIdBtn = document.getElementById("translateEnIdBtn");
 
-    entry.meanings.slice(0,3).forEach(m=>{
-      html += `<div class="word-pos">${m.partOfSpeech}</div>`;
-      m.definitions.slice(0,2).forEach(d=>{
-        html += `<div class="word-def">• ${d.definition}</div>`;
-        if(d.example) html += `<div class="word-example">"${d.example}"</div>`;
-      });
+function setTranslateDirection(direction) {
+  translateDirection = direction;
+
+  if (direction === "id-en") {
+    translateDirectionText.textContent =
+      "Terjemahkan Bahasa Indonesia ke Bahasa Inggris";
+    translateInput.placeholder =
+      "Ketik kalimat Bahasa Indonesia...";
+    translateIdEnBtn.classList.remove("secondary");
+    translateEnIdBtn.classList.add("secondary");
+  } else {
+    translateDirectionText.textContent =
+      "Translate English to Indonesian";
+    translateInput.placeholder =
+      "Type an English sentence...";
+    translateIdEnBtn.classList.add("secondary");
+    translateEnIdBtn.classList.remove("secondary");
+  }
+
+  translateInput.focus();
+}
+
+translateIdEnBtn.addEventListener("click", () => {
+  setTranslateDirection("id-en");
+});
+
+translateEnIdBtn.addEventListener("click", () => {
+  setTranslateDirection("en-id");
+});
+
+translateInput.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+    translateSentence();
+  }
+});
+
+translateBtn.addEventListener("click", translateSentence);
+
+function extractAIText(data) {
+  if (typeof data === "string") return data.trim();
+
+  if (data && typeof data.response === "string") {
+    return data.response.trim();
+  }
+
+  if (data && typeof data.text === "string") {
+    return data.text.trim();
+  }
+
+  if (data && typeof data.result === "string") {
+    return data.result.trim();
+  }
+
+  if (data && data.result && typeof data.result.response === "string") {
+    return data.result.response.trim();
+  }
+
+  if (data && data.result && typeof data.result.text === "string") {
+    return data.result.text.trim();
+  }
+
+  if (data && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+    return data.candidates[0].content.parts[0].text.trim();
+  }
+
+  return "";
+}
+
+async function translateSentence() {
+  const text = translateInput.value.trim();
+
+  if (!text) {
+    translateResult.innerHTML = `
+      <div class="word-result">
+        <div style="color:var(--warn); font-size:13px;">
+          ⚠️ Masukkan kalimat terlebih dahulu.
+        </div>
+      </div>`;
+    return;
+  }
+
+  const direction =
+    translateDirection === "id-en"
+      ? "Indonesian to English"
+      : "English to Indonesian";
+
+  const prompt = translateDirection === "id-en"
+    ? `Translate the following Indonesian sentence into natural, correct English.
+
+Rules:
+- Return only the English translation.
+- Do not explain the translation.
+- Preserve the original meaning.
+- Use natural everyday English.
+- Do not add information that is not in the original sentence.
+
+Indonesian:
+${text}`
+    : `Translate the following English sentence into natural Indonesian.
+
+Rules:
+- Return only the Indonesian translation.
+- Do not explain the translation.
+- Preserve the original meaning.
+- Use natural everyday Indonesian.
+- Do not add information that is not in the original sentence.
+
+English:
+${text}`;
+
+  translateBtn.disabled = true;
+  translateBtn.textContent = "⏳ Menerjemahkan...";
+  translateResult.innerHTML = `
+    <div class="word-result">
+      <div style="color:var(--muted); font-size:13px;">
+        ✨ AI sedang menerjemahkan...
+      </div>
+    </div>`;
+
+  try {
+    const response = await fetch(TRANSLATOR_WORKER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        direction: direction,
+        text: text
+      })
     });
-    html += `</div>`;
-    resultEl.innerHTML = html;
-  }catch(err){
-    resultEl.innerHTML = `<p style='color:var(--bad); font-size:12.5px; margin-top:10px;'>❌ ${err.message}. Coba kata lain atau cek koneksi internet.</p>`;
+
+    const raw = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `Server AI mengembalikan HTTP ${response.status}`
+      );
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      data = raw;
+    }
+
+    const translation = extractAIText(data);
+
+    if (!translation) {
+      console.error("Cloudflare Worker response:", data);
+      throw new Error(
+        "AI tidak mengembalikan hasil terjemahan."
+      );
+    }
+
+    translateResult.innerHTML = `
+      <div class="word-result">
+        <div style="font-size:11px; color:var(--muted); margin-bottom:6px;">
+          ${translateDirection === "id-en"
+            ? "🇬🇧 English"
+            : "🇮🇩 Bahasa Indonesia"}
+        </div>
+
+        <div style="
+          font-size:18px;
+          line-height:1.6;
+          font-weight:700;
+          color:var(--accent2);
+          white-space:pre-wrap;
+        ">${escapeHtml(translation)}</div>
+
+        <button
+          type="button"
+          class="big-btn secondary"
+          id="copyTranslationBtn"
+          style="margin-top:12px;">
+          📋 Salin Terjemahan
+        </button>
+      </div>`;
+
+    document
+      .getElementById("copyTranslationBtn")
+      .addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(translation);
+          document.getElementById("copyTranslationBtn").textContent =
+            "✅ Berhasil disalin";
+        } catch {
+          document.getElementById("copyTranslationBtn").textContent =
+            "❌ Gagal menyalin";
+        }
+      });
+
+  } catch (err) {
+    console.error("TRANSLATOR ERROR:", err);
+
+    translateResult.innerHTML = `
+      <div class="word-result">
+        <div style="color:var(--bad); font-size:13px; line-height:1.6;">
+          ❌ Gagal menghubungi AI.<br><br>
+          ${escapeHtml(err.message || "Unknown error")}
+        </div>
+      </div>`;
+  } finally {
+    translateBtn.disabled = false;
+    translateBtn.textContent = "✨ Terjemahkan dengan AI";
   }
 }
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+setTranslateDirection("id-en");
 
 /* ============================================================
    📝 GRAMMAR — materi + kuis per topik
